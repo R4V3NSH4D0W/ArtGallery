@@ -6,6 +6,11 @@ import MotionDiv from "../components/motiondiv";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Footer from "../components/footer";
+import ImageSlider from "../components/image_slider";
+import ArtPiecesTable from "../components/artpiece_table";
+import { IoIosColorPalette } from "react-icons/io";
+import { FaBrush, FaRulerCombined } from "react-icons/fa";
+import ReviewSection from "../components/review";
 
 function CollectionPage() {
   const [selectedType, setSelectedType] = useState<number>(1);
@@ -91,6 +96,61 @@ function CollectionPage() {
         />
         <div className="absolute bottom-0 left-0 right-0 h-[4rem] bg-gradient-to-t from-white to-transparent z-20 opacity-90" />
       </MotionDiv>
+      <main className="flex min-h-screen flex-col items-center justify-center py-2 px-[10rem]">
+        <ImageSlider />
+      </main>
+      <section className=" px-[12rem] flex flex-col">
+        <label className=" text-4xl"> Art Dimensions</label>
+        <label className=" text-stone-500 max-w-[30rem] mt-4">
+          Understand the size and scale of each string art piece to find the
+          perfect fit for your space.
+        </label>
+        <MotionDiv className=" mt-10 mb-20">
+          <ArtPiecesTable />
+        </MotionDiv>
+      </section>
+      {/* Explore section */}
+      <section className=" px-[12rem] flex flex-col items-center justify-center ">
+        <label className=" text-blue-600 text-lg pb-2">
+          Explore Our Techniques
+        </label>
+        <label className=" text-3xl">
+          Discover the Materials and Methods Behind Our Art
+        </label>
+        <div className=" border-b-2 w-[60%]  mt-10 mb-5" />
+
+        <div className=" flex flex-row gap-20">
+          <div className=" flex flex-row items-center gap-2">
+            <IoIosColorPalette className=" text-blue-600 text-lg" />
+            <label className=" text-lg text-slate-500">
+              Vibrant Color Palettes
+            </label>
+          </div>
+          <div className=" flex flex-row items-center gap-2">
+            <FaRulerCombined className=" text-blue-600 text-lg" />
+            <label className=" text-lg text-slate-500">
+              Precision Craftsmanship
+            </label>
+          </div>
+          <div className=" flex flex-row items-center gap-2">
+            <FaBrush className=" text-blue-600 text-lg" />
+            <label className=" text-lg text-slate-500">
+              Innovative Techniques
+            </label>
+          </div>
+        </div>
+      </section>
+
+      {/* Review Section */}
+      <section className=" px-[10rem] pt-[10rem]">
+        <div className=" flex flex-col">
+          <label className=" text-4xl">Artful Threads Reviews</label>
+          <label className=" text-slate-500 pt-4">5 Reviews</label>
+        </div>
+        <div className=" py-10">
+          <ReviewSection />
+        </div>
+      </section>
 
       <Footer />
     </div>

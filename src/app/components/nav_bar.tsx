@@ -44,7 +44,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`transition-all z-50 fixed top-5 left-1/2  transform -translate-x-1/2 w-[90%] rounded-3xl bg-stone-200 ${
+      className={`transition-all z-50 fixed top-5 left-1/2  transform -translate-x-1/2 w-[90%] rounded-3xl bg-slate-200 ${
         isFixed ? "shadow-lg py-2" : " py-2"
       } ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
     >
