@@ -110,3 +110,57 @@ export const socialMediaLinks = [
     icon: <FaTiktok size={40} />,
   },
 ];
+
+export const CollectionTypes = [
+  {
+    id: 1,
+    type: "Abstract Art",
+  },
+  {
+    id: 2,
+    type: "Modern Art",
+  },
+  {
+    id: 3,
+    type: "Classic Art",
+  },
+  {
+    id: 4,
+    type: "Minimalist Art",
+  },
+  {
+    id: 5,
+    type: "Pop Art",
+  },
+];
+
+export const Collections = [
+  {
+    id: 1,
+    name: "Abstract Art",
+    type: "abstract",
+    image: "https://w.wallhaven.cc/full/1p/wallhaven-1p6d79.jpg",
+    description: "Abstract art piece 1.",
+  },
+  {
+    id: 2,
+    name: "Abstract Art",
+    type: "abstract",
+    image: "https://w.wallhaven.cc/full/zy/wallhaven-zywe5j.jpg",
+    description: "Abstract art piece 2.",
+  },
+  {
+    id: 3,
+    name: "Modern Art",
+    type: "modern",
+    image: "https://w.wallhaven.cc/full/3l/wallhaven-3lp2md.jpg",
+    description: "Modern art piece 1.",
+  },
+  {
+    id: 4,
+    name: "Classic Art",
+    type: "classic",
+    image: "https://w.wallhaven.cc/full/l8/wallhaven-l81qoy.png",
+    description: "Classic art piece 1.",
+  },
+];
