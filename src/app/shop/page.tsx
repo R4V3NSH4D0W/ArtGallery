@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import PurchaseGallery from "../components/purchase_gallery";
 import Image from "next/image";
 import PaymentMethod from "../components/paymet_method";
+import MotionDiv from "../components/motiondiv";
 
 function ShopPage() {
   return (
@@ -56,12 +57,12 @@ function ShopPage() {
       </section> */}
       <section className=" flex flex-col items-center justify-center bg-blue-lightsky py-20">
         <div className=" flex flex-row gap-40 items-center">
-          <div className=" flex flex-col">
+          <MotionDiv className=" flex flex-col">
             <label className=" text-3xl font-medium">Shipping & Handling</label>
             <label className=" text-slate-500 mt-5">
               Ensuring your string art reaches you safely and swiftly.
             </label>
-          </div>
+          </MotionDiv>
           <div className=" relative h-[20rem] w-[40rem] overflow-hidden rounded-lg">
             <Image
               src="https://w.wallhaven.cc/full/kx/wallhaven-kx5v57.jpg"
@@ -108,35 +109,35 @@ function ShopPage() {
         </div>
       </section>
       <section className="bg-blue-lightsky py-8">
-        <label className="text-4xl ml-[14rem] text-center">
-          Art Purchase FAQs
-        </label>
-        <div className="border-b-[1px] w-[75%] mx-auto my-10" />
-        <div className=" flex items-center justify-center">
-          <div className=" grid grid-cols-3 gap-6 p-6  ">
-            <label className=" text-xl font-medium">
-              What is the return policy for art pieces?
-            </label>
-            <label className=" text-xl font-medium">
-              How long does shipping take?
-            </label>
-            <label className=" text-xl font-medium">
-              Can I request a custom art piece?
-            </label>
-            <label className=" w-[25rem] text-stone-500">
-              We offer a 30-day return policy for undamaged art pieces. Please
-              contact our support for assistance.
-            </label>
-            <label className=" w-[25rem] text-stone-500">
-              Shipping typically takes 5-7 business days, depending on your
-              location.
-            </label>
-            <label className=" w-[25rem] text-stone-500">
-              Yes, we welcome custom requests. Please reach out to us with your
-              ideas and requirements.
-            </label>
+        <MotionDiv>
+          <div className="text-4xl  text-center">Art Purchase FAQs</div>
+          <div className="border-b-[1px] w-[75%] mx-auto my-10" />
+          <div className=" flex items-center justify-center">
+            <div className=" grid grid-cols-3 gap-6 p-6  ">
+              <label className=" text-xl font-medium">
+                What is the return policy for art pieces?
+              </label>
+              <label className=" text-xl font-medium">
+                How long does shipping take?
+              </label>
+              <label className=" text-xl font-medium">
+                Can I request a custom art piece?
+              </label>
+              <label className=" w-[25rem] text-stone-500">
+                We offer a 30-day return policy for undamaged art pieces. Please
+                contact our support for assistance.
+              </label>
+              <label className=" w-[25rem] text-stone-500">
+                Shipping typically takes 5-7 business days, depending on your
+                location.
+              </label>
+              <label className=" w-[25rem] text-stone-500">
+                Yes, we welcome custom requests. Please reach out to us with
+                your ideas and requirements.
+              </label>
+            </div>
           </div>
-        </div>
+        </MotionDiv>
       </section>
       {/* Payment method Section */}
       <PaymentMethod />

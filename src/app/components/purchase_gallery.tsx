@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const items = [
   {
@@ -109,6 +110,14 @@ const PurchaseGallery = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className="flex justify-center items-center mt-10">
+        <Button
+          variant="secondary"
+          className=" bg-blue-600 text-white py-6 px-10 rounded-3xl hover:bg-blue-800"
+        >
+          View More
+        </Button>
       </div>
     </div>
   );

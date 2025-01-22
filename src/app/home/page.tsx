@@ -58,7 +58,7 @@ export default function HomePage() {
         {/* Hero Image */}
         <div className="absolute top-40 right-0 h-80 w-3/4 lg:h-[70%] lg:w-[45%] rounded-l-lg overflow-hidden">
           <Image
-            src="/wallhaven-d6y12l.jpg"
+            src="/stringart/string1.jpg"
             alt="Background"
             fill
             objectFit="cover"
@@ -142,7 +142,12 @@ export default function HomePage() {
 
       <MotionDiv className="lg:px-40 px:20 flex flex-col lg:flex-row mt-20 items-center">
         <div className=" relative h-[50rem] w-[40rem] rounded-lg overflow-hidden">
-          <Image src="/art/wall.jpg" alt="Threads" fill objectFit="cover" />
+          <Image
+            src="/stringart/string5.jpg"
+            alt="Threads"
+            fill
+            objectFit="cover"
+          />
         </div>
         <div className=" flex flex-col lg:pl-20 lg:w-[50%]">
           <div className=" flex flex-row items-center gap-4">
