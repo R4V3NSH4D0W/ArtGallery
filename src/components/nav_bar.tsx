@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
@@ -9,6 +10,7 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [pageHeight, setPageHeight] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const deviceWidth = window.screen.width;
 
   const handleScroll = () => {
     if (window.scrollY > pageHeight / 2) {
@@ -49,9 +51,12 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`transition-all z-50 fixed top-5 left-1/2 transform -translate-x-1/2 w-[90%] rounded-3xl bg-slate-200 ${
+      className={`transition-all z-50 fixed top-5 lg:left-1/2 transform ml-4 lg:ml-0 lg:-translate-x-1/2 w-[100%] rounded-3xl bg-slate-200 ${
         isFixed ? "py-2" : "py-2"
       } ${isVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      style={{
+        width: `${deviceWidth - 40}px`,
+      }}
     >
       <div className="px-4 sm:px-8 flex justify-between items-center">
         {/* Logo */}
@@ -90,7 +95,7 @@ export default function Navbar() {
         </ul>
 
         {menuOpen && (
-          <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-3xl p-4 md:hidden">
+          <div className="absolute top-full left-0 w-full bg-slate-200 shadow-lg  rounded-3xl p-4 md:hidden">
             <ul className="flex flex-col space-y-4 text-sm text-center">
               <li>
                 <Link href="/home">Home</Link>
@@ -106,7 +111,7 @@ export default function Navbar() {
               <li className="flex flex-row justify-center gap-2 items-center cursor-pointer">
                 Join us <FaArrowRight />
               </li>
-              <li className="flex flex-row justify-center gap-2 items-center bg-blue-500 py-1 px-4 rounded-3xl text-white cursor-pointer">
+              <li className="flex flex-row justify-center gap-2 items-center bg-blue-500 py-1 px-4 rounded-3xl h-[3rem] text-white cursor-pointer">
                 Contact us <FaArrowRight />
               </li>
             </ul>

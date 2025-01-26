@@ -1,23 +1,20 @@
 "use client";
-import React, { useState } from "react";
-import Navbar from "../components/nav_bar";
-import { Collections, CollectionTypes } from "@/lib/data";
-import MotionDiv from "../components/motiondiv";
-import Image from "next/image";
+import ArtPiecesTable from "@/components/artpiece_table";
+import ImageSlider from "@/components/image_slider";
+import MotionDiv from "@/components/motiondiv";
+import ReviewSection from "@/components/review";
 import { Button } from "@/components/ui/button";
-import Footer from "../components/footer";
-import ImageSlider from "../components/image_slider";
-import ArtPiecesTable from "../components/artpiece_table";
-import { IoIosColorPalette } from "react-icons/io";
+import { Collections, CollectionTypes } from "@/lib/data";
+import Image from "next/image";
+import React, { useState } from "react";
 import { FaBrush, FaRulerCombined } from "react-icons/fa";
-import ReviewSection from "../components/review";
+import { IoIosColorPalette } from "react-icons/io";
 
 function CollectionPage() {
   const [selectedType, setSelectedType] = useState<number>(1);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
       <MotionDiv className="flex flex-row gap-2 mt-[7rem] lg:px-[10rem] px-4 flex-wrap">
         {CollectionTypes.map((type) => (
           <div
@@ -151,8 +148,6 @@ function CollectionPage() {
           <ReviewSection />
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }

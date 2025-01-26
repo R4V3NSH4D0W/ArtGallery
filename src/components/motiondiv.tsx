@@ -1,6 +1,6 @@
+import useInViewport from "@/app/hooks/useInViewport";
 import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import useInViewport from "../hooks/useInViewport";
 
 interface MotionDivProps extends MotionProps {
   children: React.ReactNode;
