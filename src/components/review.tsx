@@ -1,6 +1,7 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import MotionDiv from "./motiondiv";
+import MotionDiv from "@/components/motiondiv";
 
 const reviews = [
   {

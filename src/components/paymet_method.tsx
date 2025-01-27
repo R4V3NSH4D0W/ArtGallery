@@ -1,6 +1,6 @@
+import MotionDiv from "@/components/motiondiv";
 import Image from "next/image";
 import React from "react";
-import MotionDiv from "./motiondiv";
 
 const PaymentMethods = [
   {

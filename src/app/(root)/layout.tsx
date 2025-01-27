@@ -1,6 +1,7 @@
+"use client";
+import Footer from "@/components/footer";
+import Navbar from "@/components/nav_bar";
 import React from "react";
-import Navbar from "../../components/nav_bar";
-import Footer from "../../components/footer";
 
 export default function Layout({
   children,
