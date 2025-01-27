@@ -16,7 +16,10 @@ COPY . .
 # Build the Next.js application
 RUN yarn run build
 
-# Expose port 3000 to the host
+# Set the environment variable for the port
+ENV PORT=4000
+
+# Expose port 4000 to the host
 EXPOSE 4000
 
 # Set the default command to start the Next.js app
