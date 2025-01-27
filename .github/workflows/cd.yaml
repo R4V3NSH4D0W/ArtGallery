@@ -31,7 +31,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: your-dockerhub-username/artgallery:latest, your-dockerhub-username/artgallery:${{ github.sha }}
+          tags: lenishmagar/artgallery:latest, lenishmagar/artgallery:${{ github.sha }}
 
       # Deploy to VPS via SSH
       - name: Deploy to VPS
@@ -43,11 +43,11 @@ jobs:
           port: 22
           script: |
             # Pull the latest Docker image
-            docker pull your-dockerhub-username/artgallery:latest
+            docker pull lenishmagar/artgallery:latest
 
             # Stop and remove the existing container
             docker stop artgallery || true
             docker rm artgallery || true
 
             # Run the new container
-            docker run -d --name artgallery -p 4000:4000 your-dockerhub-username/artgallery:latest
+            docker run -d --name artgallery -p 4000:4000 lenishmagar/artgallery:latest
