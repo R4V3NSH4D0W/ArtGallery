@@ -17,14 +17,16 @@ function HeroSection() {
       <div className="absolute top-[15%] lg:top-[30%] left-6 lg:left-[10%] flex flex-col gap-4 lg:w-[40%]">
         <div className="flex flex-row gap-4 items-center">
           <div className=" bg-blue-600 py-1 rounded-3xl flex justify-center w-auto px-4 lg:w-[15rem]">
-            <label className="text-sm text-white">FEATURED ARTIST</label>
+            <label className=" text-xs lg:text-sm text-white">
+              FEATURED ARTIST
+            </label>
           </div>
-          <label className="text-sm lg:text-md text-slate-400 w-[11rem] lg:w-full">
+          <label className="text-xs lg:text-md text-slate-400 w-[11rem] lg:w-full">
             Discover the Masterpieces of Bishal Strings
           </label>
         </div>
         <AnimatedLine width="70%" />
-        <h1 className="text-4xl lg:text-6xl lg:w-[80%] text-white leading-snug">
+        <h1 className="text-3xl lg:text-6xl w-[80%] text-white leading-snug">
           Weaving Dreams with Strings
         </h1>
         <p className="text-sm lg:text-lg text-slate-400 pt-4">

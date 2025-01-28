@@ -42,7 +42,7 @@ const ReviewSection = () => {
           className="mb-6 rounded-lg border bg-white p-6 shadow-sm"
         >
           <div className="flex justify-between items-start">
-            <div className="flex items-center">
+            <div className="flex flex-col lg:flex-row">
               {/* Render Star Rating */}
               <div className="flex text-blue-500">
                 {Array.from({ length: review.rating }, (_, i) => (
@@ -57,7 +57,7 @@ const ReviewSection = () => {
                   </svg>
                 ))}
               </div>
-              <span className="ml-2 text-gray-700">
+              <span className="lg:ml-2 mt-4 lg:mt-0 text-gray-700">
                 for <strong className="font-semibold">{review.title}</strong>
               </span>
             </div>
