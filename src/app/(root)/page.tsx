@@ -92,7 +92,7 @@ function Home() {
         {/* artful threads */}
 
         <MotionDiv className="lg:px-40 px:20 flex flex-col lg:flex-row mt-20 items-center">
-          <div className=" relative h-[50rem] w-[40rem] rounded-lg overflow-hidden">
+          <div className=" relative h-[30rem] lg:h-[50rem] w-[100%] lg:w-[40rem] rounded-lg overflow-hidden">
             <Image
               src="/stringart/string5.jpg"
               alt="Threads"
@@ -100,46 +100,53 @@ function Home() {
               objectFit="cover"
             />
           </div>
-          <div className=" flex flex-col lg:pl-20 lg:w-[50%]">
+          <div className=" flex flex-col pb-5  px-4 lg:px-0 lg:pl-20 lg:w-[50%]">
             <div className=" flex flex-row items-center gap-4">
               <FaMagic />
-              <label className=" text-3xl">Artful Threads</label>
+              <label className=" text-2xl lg:text-3xl">Artful Threads</label>
             </div>
-            <label className=" mt-10 text-xl">
+            <label className=" mt-10 text-md lg:text-xl">
               Artful Threads transformed my living space with their stunning
               string art. It&apos;s a conversation starter for every visitor.
             </label>
-            <label className=" mt-5 text-xl text-slate-500">
+            <label className=" mt-5  text-md lg:text-xl text-slate-500">
               The attention to detail and creativity in each piece is
               remarkable. I couldn’t be happier with my purchase.
             </label>
-            <label className=" text-lg mt-5 text-slate-600">
+            <label className=" 10 text-md lg:text-xl mt-5 text-slate-600">
               Leslie Alexander, Interior Designer
             </label>
           </div>
         </MotionDiv>
         {/* Connect with Us */}
-        <div className=" relative mt-20 flex bg-blue-lightsky h-[35rem]">
-          <div className="absolute bottom-0 h-[25rem] w-[50%] bg-blue-skyblue">
-            <MotionDiv className="absolute h-[24rem] w-[36rem] right-20 top-[-40px] rounded-lg overflow-hidden">
+        <div className="relative mt-20 flex flex-col lg:flex-row bg-blue-lightsky h-auto lg:h-[35rem]">
+          {/* Left Section */}
+          <div className="relative h-[15rem] lg:h-[25rem] w-full lg:w-[50%] bg-blue-skyblue">
+            <MotionDiv className="absolute h-[15rem] lg:h-[24rem] w-[80%] lg:w-[36rem] right-4 lg:right-10 top-[-20px] lg:top-[-40px] rounded-lg overflow-hidden">
               <Image src={"/art/straw.jpg"} alt="straw" fill />
             </MotionDiv>
           </div>
-          <div className=" absolute left-[58%] top-[18%] w-[35%]">
-            <label className=" text-5xl">Connect with us</label>
 
-            <div className=" flex flex-wrap gap-20 mt-10">
+          {/* Right Section */}
+          <div className="relative w-full lg:w-[50%] px-6 lg:px-10 mt-10 lg:mt-[5rem] flex flex-col ">
+            <label className="text-3xl lg:text-5xl">Connect with us</label>
+
+            {/* Office Data */}
+            <div className="flex flex-wrap gap-8 lg:gap-10 my-8">
               {officeData.map((office, index) => (
-                <MotionDiv key={index} className=" flex flex-row gap-5">
+                <MotionDiv key={index} className="flex flex-row gap-5">
+                  {/* Icon */}
                   <div className="mt-1 text-blue-500">{office.icon}</div>
-                  <div className=" flex flex-col">
-                    <label className=" text-xl">{office.title}</label>
-                    <label className=" pt-5 text-stone-500">
+
+                  {/* Office Details */}
+                  <div className="flex flex-col">
+                    <label className="text-lg lg:text-xl">{office.title}</label>
+                    <label className="pt-2 lg:pt-4 text-stone-500">
                       {office.details?.city ||
                         office.details?.days ||
                         office.details?.phone1}
                     </label>
-                    <label className=" pt-5 text-slate-500">
+                    <label className="pt-2 lg:pt-4 text-slate-500">
                       {office.details?.time ||
                         office.details?.phone2 ||
                         office.details?.country}
@@ -150,15 +157,20 @@ function Home() {
             </div>
           </div>
         </div>
+
         {/* Social Media */}
-        <MotionDiv className=" flex flex-row py-20 items-center justify-center gap-10">
+        <MotionDiv className="flex flex-wrap py-10 items-center justify-center gap-6 sm:gap-10">
           {socialMediaLinks.map((item, index) => (
-            <div key={index} className=" flex flex-row items-center gap-2">
+            <div
+              key={index}
+              className="flex flex-row items-center gap-2 text-center text-base sm:text-lg"
+            >
               <div>{item.icon}</div>
-              {item.name}
+              <span>{item.name}</span>
             </div>
           ))}
         </MotionDiv>
+
         {/* Footer */}
       </div>
     </>
