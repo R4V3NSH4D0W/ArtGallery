@@ -47,7 +47,7 @@ function HeroSection() {
       {/* Hero Image */}
       <div className="absolute bottom-5 lg:top-40 right-0 h-80  w-3/4 md:h-[25rem] lg:h-[70%] lg:w-[45%] rounded-l-lg overflow-hidden">
         <Image
-          src="/stringart/string1.jpg"
+          src="/stringart/stringart1.jpg"
           alt="Background"
           fill
           objectFit="cover"

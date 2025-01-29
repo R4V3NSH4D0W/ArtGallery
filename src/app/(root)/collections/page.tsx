@@ -1,10 +1,11 @@
 "use client";
+import ArtCollection from "@/components/art-collection";
 import ArtPiecesTable from "@/components/artpiece_table";
 import ImageSlider from "@/components/image_slider";
 import MotionDiv from "@/components/motiondiv";
 import ReviewSection from "@/components/review";
 import { Button } from "@/components/ui/button";
-import { Collections, CollectionTypes } from "@/lib/data";
+import { CollectionTypes } from "@/lib/data";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FaBrush, FaRulerCombined } from "react-icons/fa";
@@ -20,7 +21,7 @@ function CollectionPage() {
           <div
             key={type.id}
             onClick={() => setSelectedType(type.id)}
-            className={`border px-10 rounded-3xl py-2 cursor-pointer ${
+            className={`border px-3 lg:px-10 rounded-3xl py-2 cursor-pointer ${
               selectedType === type.id
                 ? " bg-blue-skyblue text-blue-900"
                 : "hover:bg-blue-background hover:text-white"
@@ -31,28 +32,8 @@ function CollectionPage() {
         ))}
       </MotionDiv>
       {/* content */}
-      <div className="lg:px-[10rem] px-4 flex flex-wrap gap-4 mt-10">
-        {Collections.map((collection, index) => (
-          <div
-            key={index}
-            className="relative h-[20rem] w-[100%] lg:w-[32.33%] rounded-sm overflow-hidden group cursor-pointer"
-          >
-            <div className="absolute inset-0 z-10 bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300" />
-            <Image
-              src={collection.image}
-              alt={collection.name}
-              layout="fill"
-              objectFit="cover"
-              className="transition-transform duration-300 group-hover:scale-110"
-            />
-            {/* Gradient at the bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-[5rem] bg-gradient-to-t from-slate-900 to-transparent z-20" />
-            <div className="absolute z-30 bottom-2 left-2 text-white">
-              {collection.name}
-            </div>
-          </div>
-        ))}
-      </div>
+      <ArtCollection />
+
       {/* discover section */}
       <section className="lg:px-[12rem] px-4 flex flex-col py-[4rem]">
         <label className=" text-md lg:text-lg text-blue-600 mb-4">

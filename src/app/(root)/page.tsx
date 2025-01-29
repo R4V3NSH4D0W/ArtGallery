@@ -91,16 +91,16 @@ function Home() {
         </div>
         {/* artful threads */}
 
-        <MotionDiv className="lg:px-40 px:20 flex flex-col lg:flex-row mt-20 items-center">
-          <div className=" relative h-[30rem] lg:h-[50rem] w-[100%] lg:w-[40rem] rounded-lg overflow-hidden">
+        <MotionDiv className="lg:px-40 px:20 pl-4  flex flex-col lg:flex-row mt-20 items-center mb-8">
+          <div className=" relative h-[30rem]  lg:h-[40rem] w-[100%] lg:w-[40rem] rounded-l-lg lg:rounded-lg overflow-hidden">
             <Image
-              src="/stringart/string5.jpg"
+              src="/stringart/stringart.jpg"
               alt="Threads"
               fill
               objectFit="cover"
             />
           </div>
-          <div className=" flex flex-col pb-5  px-4 lg:px-0 lg:pl-20 lg:w-[50%]">
+          <div className=" flex flex-col pb-5  mt-5 lg:mt-0 px-4 lg:px-0 lg:pl-20 lg:w-[50%]">
             <div className=" flex flex-row items-center gap-4">
               <FaMagic />
               <label className=" text-2xl lg:text-3xl">Artful Threads</label>
@@ -123,7 +123,12 @@ function Home() {
           {/* Left Section */}
           <div className="relative h-[15rem] lg:h-[25rem] w-full lg:w-[50%] bg-blue-skyblue">
             <MotionDiv className="absolute h-[15rem] lg:h-[24rem] w-[80%] lg:w-[36rem] right-4 lg:right-10 top-[-20px] lg:top-[-40px] rounded-lg overflow-hidden">
-              <Image src={"/art/straw.jpg"} alt="straw" fill />
+              <Image
+                src={"/stringart/string4.jpg"}
+                alt="straw"
+                fill
+                objectFit="cover"
+              />
             </MotionDiv>
           </div>
 
