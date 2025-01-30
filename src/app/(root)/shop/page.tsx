@@ -1,10 +1,7 @@
 "use client";
 import React from "react";
-
 import { Button } from "@/components/ui/button";
-
 import Image from "next/image";
-
 import MotionDiv from "@/components/motiondiv";
 import PurchaseGallery from "@/components/purchase_gallery";
 import PaymentMethod from "@/components/paymet_method";

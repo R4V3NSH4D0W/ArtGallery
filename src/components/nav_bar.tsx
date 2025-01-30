@@ -1,37 +1,54 @@
-import Image from "next/image";
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
-function NavNar() {
+const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const closeMenu = () => setMenuOpen(false);
+
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/collections", label: "Gallery" },
+    { href: "/shop", label: "Shop" },
+  ];
 
   return (
     <nav className="fixed z-50 top-5 w-full">
       <div className="flex justify-between items-center px-6 sm:px-10 bg-white py-3 mx-4 sm:mx-20 rounded-full shadow-md relative">
         {/* Logo */}
-        <Image src="/logo.png" alt="logo" width={40} height={40} />
+        <div className="relative h-6 w-6 lg:h-10 lg:w-10">
+          <Image src="/logo.png" alt="logo" fill />
+        </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex flex-row gap-8">
-          <Link
-            href="/"
-            className="text-md text-slate-800 cursor-pointer hover:text-blue-600"
-          >
-            Home
-          </Link>
-          <Link
-            href="/collections"
-            className="text-md text-slate-800 cursor-pointer hover:text-blue-600"
-          >
-            Gallery
-          </Link>
-          <Link
-            href="/shop"
-            className="text-md text-slate-800 cursor-pointer hover:text-blue-600"
-          >
-            Shop
-          </Link>
+        <div className="hidden md:flex flex-row gap-8 mx-20">
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              <motion.div
+                className={`text-md cursor-pointer w-full ${
+                  pathname === link.href
+                    ? "text-blue-600 font-bold"
+                    : "text-slate-800"
+                }`}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                {link.label}
+                {/* Add underline animation for active link */}
+                {pathname === link.href && (
+                  <motion.div
+                    className="h-[2px] bg-blue-600"
+                    layoutId="underline"
+                  />
+                )}
+              </motion.div>
+            </Link>
+          ))}
         </div>
 
         {/* Menu Button for Small Screens */}
@@ -54,36 +71,38 @@ function NavNar() {
 
       {/* Dropdown Menu for Small Screens */}
       {menuOpen && (
-        <div className="absolute top-full left-0 w-full shadow-md rounded-b-lg z-40">
-          <div className="flex flex-col py-4 items-center bg-white">
-            <Link
-              href="/"
-              className="px-6 py-2 text-md text-slate-800 cursor-pointer hover:bg-gray-100"
-            >
-              Home
-            </Link>
-            <Link
-              href="/collections"
-              className="px-6 py-2 text-md text-slate-800 cursor-pointer hover:bg-gray-100"
-            >
-              Gallery
-            </Link>
-            <Link
-              href="/shop"
-              className="px-6 py-2 text-md text-slate-800 cursor-pointer hover:bg-gray-100"
-            >
-              Shop
-            </Link>
-            <div className="px-6 mt-3">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="absolute top-10 left-0 w-full z-40"
+        >
+          <div className="flex flex-col py-4 items-center bg-white mx-5 rounded-b-3xl shadow-md">
+            {navLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={closeMenu}>
+                <motion.div
+                  className={`px-6 py-2 text-md cursor-pointer w-full ${
+                    pathname === link.href
+                      ? "text-blue-600 font-bold"
+                      : "text-slate-800"
+                  }`}
+                  whileHover={{ backgroundColor: "rgba(0, 0, 255, 0.1)" }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {link.label}
+                </motion.div>
+              </Link>
+            ))}
+            <div className="px-6 mt-3 w-full">
               <button className="bg-blue-600 text-white px-4 py-2 rounded-3xl w-full hover:bg-blue-700 transition-all">
                 Get Started
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </nav>
   );
-}
+};
 
-export default NavNar;
+export default NavBar;

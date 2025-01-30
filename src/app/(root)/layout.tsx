@@ -1,6 +1,7 @@
 "use client";
 import Footer from "@/components/footer";
-import Navbar from "@/components/nav_bar";
+import NavBar from "@/components/nav_bar";
+
 import React from "react";
 
 export default function Layout({
@@ -8,7 +9,7 @@ export default function Layout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <main>
-      <Navbar />
+      <NavBar />
       {children}
       <Footer />
     </main>

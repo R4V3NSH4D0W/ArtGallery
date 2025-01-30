@@ -86,7 +86,7 @@ export default function ImageSlider() {
       onMouseUp={handleMouseUp}
     >
       {/* Image Container */}
-      <div className="relative h-[40rem] mx-12 group">
+      <div className="relative h-[20rem] lg:h-[40rem] lg:mx-12 group">
         <Image
           src={images[currentIndex].src}
           alt={`Slider Image ${currentIndex + 1}`}
