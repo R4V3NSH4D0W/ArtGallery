@@ -3,18 +3,19 @@ import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const closeMenu = () => setMenuOpen(false);
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/collections", label: "Gallery" },
-    { href: "/shop", label: "Shop" },
+    // { href: "/shop", label: "Shop" },
   ];
 
   return (
@@ -62,9 +63,18 @@ const NavBar = () => {
         </div>
 
         {/* Get Started Button for Desktop */}
-        <div className="hidden md:block">
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-700 transition-all">
-            Get Started
+        <div className="hidden md:block ">
+          <button
+            className="  px-4 py-2 rounded-3xl transition-all hover:text-blue-600 mr-2"
+            onClick={() => router.push("/login")}
+          >
+            login
+          </button>
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-800 transition-all"
+            onClick={() => router.push("/register")}
+          >
+            Register
           </button>
         </div>
       </div>
@@ -94,8 +104,11 @@ const NavBar = () => {
               </Link>
             ))}
             <div className="px-6 mt-3 w-full">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-3xl w-full hover:bg-blue-700 transition-all">
-                Get Started
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded-3xl w-full hover:bg-blue-700 transition-all"
+                onClick={() => router.push("/register")}
+              >
+                Register
               </button>
             </div>
           </div>
