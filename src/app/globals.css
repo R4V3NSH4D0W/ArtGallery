@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -15,6 +17,11 @@ html, body {
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none; 
+}
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
 }
 
 

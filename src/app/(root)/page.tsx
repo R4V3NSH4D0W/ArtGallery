@@ -1,4 +1,5 @@
 "use client";
+import ChatBot from "@/components/chat-bot";
 import HeroSection from "@/components/hero_section";
 import MotionDiv from "@/components/motiondiv";
 import { Button } from "@/components/ui/button";
@@ -175,7 +176,7 @@ function Home() {
             </div>
           ))}
         </MotionDiv>
-
+        <ChatBot />
         {/* Footer */}
       </div>
     </>
