@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 
 import Image from "next/image";
-import { ShopSlider } from "@/components/shop-slider";
+import Link from "next/link";
 
 const products = [
   {
@@ -52,7 +52,6 @@ const products = [
 ];
 
 export default function ShopPage() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [wishlist, setWishlist] = useState<number[]>([]);
@@ -67,7 +66,7 @@ export default function ShopPage() {
 
   const filteredProducts = products.filter(
     (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      product.name.toLowerCase() &&
       (activeCategory === "all" || product.category === activeCategory) &&
       (priceFilter === "all" ||
         (priceFilter === "under50" && product.price < 50) ||
@@ -78,11 +77,6 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Carousel */}
-
-      {/* <ShopSlider products={products} /> */}
-
-      {/* Categories */}
       <section className="container mx-auto px-4 mb-8 mt-[7rem]">
         <div className="flex flex-wrap gap-4 ">
           {["all", "new", "sale", "popular"].map((category) => (
@@ -91,7 +85,7 @@ export default function ShopPage() {
               onClick={() => setActiveCategory(category)}
               className={`px-6 py-2 rounded-full transition-colors ${
                 activeCategory === category
-                  ? "bg-black text-white"
+                  ? " bg-blue-background text-white"
                   : "bg-gray-200 hover:bg-gray-300"
               }`}
             >
@@ -102,26 +96,16 @@ export default function ShopPage() {
       </section>
 
       {/* Filters */}
-      <section className="container mx-auto px-4 mb-8">
-        <div className="flex flex-wrap gap-4 items-center justify-between">
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="px-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-black"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-
-          <select
-            className="px-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-black"
-            value={priceFilter}
-            onChange={(e) => setPriceFilter(e.target.value)}
-          >
-            <option value="all">All Prices</option>
-            <option value="under50">Under $50</option>
-            <option value="50-100">$50 - $100</option>
-          </select>
-        </div>
+      <section className="container mx-auto px-4 mb-8 flex lg:justify-end">
+        <select
+          className="px-4 py-2 border rounded-lg w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-black"
+          value={priceFilter}
+          onChange={(e) => setPriceFilter(e.target.value)}
+        >
+          <option value="all">All Prices</option>
+          <option value="under50">Under $50</option>
+          <option value="50-100">$50 - $100</option>
+        </select>
       </section>
 
       {/* Product Grid */}
@@ -130,15 +114,22 @@ export default function ShopPage() {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300"
+              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 group"
             >
-              <div className="relative h-64 object-cover">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  objectFit="cover"
-                />
+              <div className="relative h-[20rem] overflow-hidden">
+                <Link href={`/detail/${product.id}`}>
+                  {/* Image with Hover Zoom Effect */}
+                  <div className="w-full h-full transition-transform duration-300 group-hover:scale-110">
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      objectFit="cover"
+                    />
+                  </div>
+                </Link>
+
+                {/* Wishlist Button */}
                 <button
                   onClick={() => toggleWishlist(product.id)}
                   className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-colors"
@@ -151,17 +142,18 @@ export default function ShopPage() {
                     }`}
                   />
                 </button>
-              </div>
 
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                <p className="text-gray-600 mb-4">
-                  ${product.price.toFixed(2)}
-                </p>
-                <button className="w-full flex items-center justify-center gap-2 bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">
-                  <FaShoppingCart className="text-lg" />
-                  Add to Cart
-                </button>
+                {/* Product Info */}
+                <div className="p-4 absolute bottom-0 bg-gradient-to-t from-black to-transparent w-full">
+                  <h3 className="font-semibold text-lg mb-2 text-white">
+                    {product.name}
+                  </h3>
+                  <p className="text-white mb-4">${product.price.toFixed(2)}</p>
+                  <button className="w-full flex items-center justify-center gap-2 border text-white py-2 rounded-lg hover:bg-blue-800 transition-colors hover:border-blue-800">
+                    <FaShoppingCart className="text-lg" />
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             </div>
           ))}

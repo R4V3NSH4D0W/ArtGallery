@@ -11,7 +11,7 @@ function Footer() {
         <label>Meet Our Artists</label>
       </div>
       <p className="text-sm mt-10 text-center">
-        © <span className="font-semibold">Codeweave</span> {currentYear}, Where
+        © <span className="font-semibold">Coreweave</span> {currentYear}, Where
         Creativity Meets Craftsmanship
       </p>
     </footer>
