@@ -12,11 +12,11 @@ function ChatBot() {
         rel="noopener noreferrer"
       >
         <div
-          className="h-[4rem] w-[4rem] bg-white flex items-center justify-center rounded-full shadow-md 
+          className="h-[3rem] w-[3rem]  bg-white flex items-center justify-center rounded-full shadow-md 
                       animate-bounce cursor-pointer"
         >
           <FaFacebookMessenger
-            size={40}
+            size={35}
             className="text-blue-500 hover:text-blue-700"
           />
         </div>

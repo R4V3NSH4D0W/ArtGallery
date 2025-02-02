@@ -13,7 +13,6 @@ import Image from "next/image";
 import React from "react";
 import { FaArrowRight, FaLinkedin, FaMagic } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-
 function Home() {
   return (
     <>

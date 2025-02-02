@@ -42,12 +42,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Pull the latest Docker image
-            docker pull lenishmagar/artgallery:latest
-
-            # Stop and remove the existing container
-            docker stop artgallery || true
-            docker rm artgallery || true
-
-            # Run the new container
-            docker run -d --name artgallery -p 4000:4000 lenishmagar/artgallery:latest
+            docker compose up
