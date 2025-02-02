@@ -44,4 +44,3 @@ jobs:
           script: |
             cd artgallery
             docker compose up
-            docker compose exec npx prisma migrate deploy
