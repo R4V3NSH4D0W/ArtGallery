@@ -25,3 +25,21 @@ export const getDeviceDimensions = () => {
     pixelRatio,
   };
 };
+
+export function getFirstLetter(name: string): string {
+  if (!name) return "";
+  return name.charAt(0).toUpperCase();
+}
+
+export function getRandomLightColor(): string {
+  const colors = [
+    "#FFD700",
+    "#FFA07A",
+    "#90EE90",
+    "#87CEFA",
+    "#DDA0DD",
+    "#FFB6C1",
+    "#F0E68C",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+}
