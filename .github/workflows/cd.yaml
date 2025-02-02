@@ -45,3 +45,4 @@ jobs:
             cd artgallery
             docker compose down
             docker compose up -d
+            docker compose exec art-gallery npx prisma migrate deploy
