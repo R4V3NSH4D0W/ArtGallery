@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -64,6 +64,12 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (Cookie.get("token")) {
+      router.push("/");
+    }
+  }, [router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

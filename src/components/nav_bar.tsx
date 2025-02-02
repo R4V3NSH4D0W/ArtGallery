@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { getFirstLetter, getRandomLightColor } from "@/lib/helper";
+import { getColorByFirstLetter, getFirstLetter } from "@/lib/helper";
 import Cookies from "js-cookie";
 import { useUser } from "@/context/userContext";
 
@@ -96,7 +96,11 @@ const NavBar = () => {
               <button
                 onClick={toggleDropdown}
                 className="w-10 h-10 flex items-center justify-center rounded-full shadow-md text-white font-semibold text-lg"
-                style={{ backgroundColor: getRandomLightColor() }}
+                style={{
+                  backgroundColor: getColorByFirstLetter(
+                    getFirstLetter(user?.name || "")
+                  ),
+                }}
               >
                 {getFirstLetter(user?.name || "")}
               </button>

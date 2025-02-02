@@ -13,7 +13,7 @@ export default function Layout({
     <main>
       <UserProvider>
         <NavBar />
-        <ToastContainer position="top-right" autoClose={5000} />
+        <ToastContainer position="top-right" autoClose={2000} />
 
         {children}
         <Footer />
