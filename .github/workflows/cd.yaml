@@ -42,4 +42,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            cd artgallery
             docker compose up
+            docker compose exec npx prisma migrate deploy
