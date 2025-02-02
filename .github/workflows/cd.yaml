@@ -43,4 +43,4 @@ jobs:
           port: 22
           script: |
             cd artgallery
-            docker compose up
+            docker compose -d up
