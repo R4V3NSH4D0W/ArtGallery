@@ -24,7 +24,7 @@ const NavBar = () => {
     Cookies.remove("token");
     refetchUser();
     closeMenu();
-    router.push("/login");
+    router.push("/signin");
   };
 
   useEffect(() => {
@@ -142,15 +142,15 @@ const NavBar = () => {
             <>
               <button
                 className="px-4 py-2 rounded-3xl transition-all hover:text-blue-600"
-                onClick={() => router.push("/login")}
+                onClick={() => router.push("/signin")}
               >
-                Login
+                Sign In
               </button>
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-800 transition-all"
-                onClick={() => router.push("/register")}
+                onClick={() => router.push("/signup")}
               >
-                Register
+                Sign Up
               </button>
             </>
           )}
@@ -213,11 +213,11 @@ const NavBar = () => {
                   <button
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-700 transition-all"
                     onClick={() => {
-                      router.push("/login");
+                      router.push("/signin");
                       closeMenu();
                     }}
                   >
-                    Login
+                    Sign In
                   </button>
                 </>
               )}

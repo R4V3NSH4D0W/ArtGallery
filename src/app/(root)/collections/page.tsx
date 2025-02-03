@@ -1,15 +1,20 @@
 "use client";
-import ArtCollection from "@/components/art-collection";
-import ArtPiecesTable from "@/components/artpiece_table";
 import ImageSlider from "@/components/image_slider";
 import MotionDiv from "@/components/motiondiv";
 import ReviewSection from "@/components/review";
 import { Button } from "@/components/ui/button";
 import { CollectionTypes } from "@/lib/data";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { FaBrush, FaRulerCombined } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
+
+const LazyArtCollection = React.lazy(
+  () => import("@/components/art-collection")
+);
+const LazyArtPiecesTable = React.lazy(
+  () => import("@/components/artpiece_table")
+);
 
 function CollectionPage() {
   const [selectedType, setSelectedType] = useState<number>(1);
@@ -23,7 +28,7 @@ function CollectionPage() {
             onClick={() => setSelectedType(type.id)}
             className={`border px-3 lg:px-10 rounded-3xl py-2 cursor-pointer ${
               selectedType === type.id
-                ? " bg-blue-skyblue text-blue-900"
+                ? "bg-blue-skyblue text-blue-900"
                 : "hover:bg-blue-background hover:text-white"
             }`}
           >
@@ -31,41 +36,45 @@ function CollectionPage() {
           </div>
         ))}
       </MotionDiv>
-      {/* content */}
-      <ArtCollection />
 
-      {/* discover section */}
+      {/* Content */}
+      <Suspense fallback={<div>Loading Art Collection...</div>}>
+        <LazyArtCollection />
+      </Suspense>
+
+      {/* Discover Section */}
       <section className="lg:px-[12rem] px-4 flex flex-col py-[4rem]">
-        <label className=" text-md lg:text-lg text-blue-600 mb-4">
+        <label className="text-md lg:text-lg text-blue-600 mb-4">
           Inspired by Nature and Imagination
         </label>
-        <label className=" text-3xl  lg:text-4xl">
+        <label className="text-3xl lg:text-4xl">
           Captivating Craftsmanship
         </label>
-        <div className=" flex flex-col lg:flex-row mt-[1rem] lg:mt-[3rem] justify-between text-slate-600">
-          <div className=" lg:w-[50%] flex flex-col">
+        <div className="flex flex-col lg:flex-row mt-[1rem] lg:mt-[3rem] justify-between text-slate-600">
+          <div className="lg:w-[50%] flex flex-col">
             <label>
               Each string art piece is a unique expression of creativity,
               meticulously crafted to inspire and captivate.
             </label>
-            <label className=" mt-[2rem]">
+            <label className="mt-[2rem]">
               Our collection celebrates the fusion of traditional craftsmanship
               with modern artistic vision.
             </label>
             <Button
               variant="secondary"
-              className=" w-[10rem] px-10 py-6 bg-blue-400 text-white hover:bg-blue-700 mt-5 lg:mt-10"
+              className="w-[10rem] px-10 py-6 bg-blue-400 text-white hover:bg-blue-700 mt-5 lg:mt-10"
             >
               Discover More
             </Button>
           </div>
-          <label className=" mt-5 lg:mt-0">
+          <label className="mt-5 lg:mt-0">
             Discover the stories and techniques behind our art, where
             imagination meets precision.
           </label>
         </div>
       </section>
 
+      {/* Image Section */}
       <MotionDiv className="relative flex items-center justify-center w-[95%] sm:w-[90%] md:w-[85%] lg:w-[70%] h-[20rem] sm:h-[25rem] md:h-[30rem] lg:h-[40rem] overflow-hidden mx-auto mb-10 rounded-t-lg">
         <Image
           src={"/art/kelly-sikkema-n4-ev9L8KHc-unsplash.jpg"}
@@ -80,17 +89,20 @@ function CollectionPage() {
       <main className="flex lg:min-h-screen flex-col items-center justify-center py-2 px-4 lg:px-[10rem]">
         <ImageSlider />
       </main>
-      <section className=" px-[1rem] lg:px-[12rem] flex flex-col">
-        <label className=" text-4xl"> Art Dimensions</label>
-        <label className=" text-stone-500 max-w-[30rem] mt-4">
+
+      {/* Art Dimensions Section */}
+      <section className="px-[1rem] lg:px-[12rem] flex flex-col">
+        <label className="text-4xl">Art Dimensions</label>
+        <label className="text-stone-500 max-w-[30rem] mt-4">
           Understand the size and scale of each string art piece to find the
           perfect fit for your space.
         </label>
-        <MotionDiv className=" mt-10 mb-20">
-          <ArtPiecesTable />
-        </MotionDiv>
+        <Suspense fallback={<div>Loading Art Pieces Table...</div>}>
+          <LazyArtPiecesTable />
+        </Suspense>
       </section>
-      {/* Explore section */}
+
+      {/* Explore Techniques Section */}
       <section className="px-6 md:px-12 lg:px-[12rem] flex flex-col items-center justify-center">
         <label className="text-blue-600 text-lg pb-2">
           Explore Our Techniques
@@ -123,16 +135,14 @@ function CollectionPage() {
       </section>
 
       {/* Review Section */}
-      <section className=" px-4 lg:px-[10rem] lg:pt-[10rem] mt-10 lg:mt-0">
-        <div className=" flex flex-col">
-          <label className=" text-2xl lg:text-4xl">
-            Artful Threads Reviews
-          </label>
-          <label className=" text-slate-500 pt-4 text-md lg:text-lg">
+      <section className="px-4 lg:px-[10rem] lg:pt-[10rem] mt-10 lg:mt-0">
+        <div className="flex flex-col">
+          <label className="text-2xl lg:text-4xl">Artful Threads Reviews</label>
+          <label className="text-slate-500 pt-4 text-md lg:text-lg">
             5 Reviews
           </label>
         </div>
-        <div className=" py-10">
+        <div className="py-10">
           <ReviewSection />
         </div>
       </section>

@@ -15,12 +15,12 @@ export async function POST(req: Request) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "Incorrct email or password" }, { status: 404 });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid email or password" }, { status: 400 });
     }
 
     const token = signJwt({ id: user.id, email: user.email, name: user.name });
