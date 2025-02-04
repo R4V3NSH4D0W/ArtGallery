@@ -17,6 +17,7 @@
     "@radix-ui/react-slot": "^1.1.1",
     "@react-spring/web": "^9.7.5",
     "@types/bcryptjs": "^2.4.6",
+    "@types/cookie": "^1.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/swiper": "^6.0.0",

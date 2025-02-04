@@ -1,3 +1,4 @@
+"use client";
 import useInViewport from "@/app/hooks/useInViewport";
 import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";

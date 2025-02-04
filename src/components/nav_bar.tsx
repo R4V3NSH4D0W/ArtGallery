@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { getColorByFirstLetter, getFirstLetter } from "@/lib/helper";
-import Cookies from "js-cookie";
-import { useUser } from "@/context/userContext";
+import { useLogout } from "@/app/hooks/useLogout";
+import { useAuthContext } from "@/context/AuthContext";
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,17 +14,17 @@ const NavBar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
-  const { user, isUser, refetchUser } = useUser();
-
+  const { isUser, refetchUser, user } = useAuthContext();
+  const { logout } = useLogout();
   const closeMenu = () => setMenuOpen(false);
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const closeDropdown = () => setDropdownOpen(false);
 
   const handleLogout = () => {
-    Cookies.remove("token");
-    refetchUser();
+    logout();
     closeMenu();
-    router.push("/login");
+    refetchUser();
+    router.push("/signin");
   };
 
   useEffect(() => {
@@ -142,15 +142,15 @@ const NavBar = () => {
             <>
               <button
                 className="px-4 py-2 rounded-3xl transition-all hover:text-blue-600"
-                onClick={() => router.push("/login")}
+                onClick={() => router.push("/signin")}
               >
-                Login
+                Sign In
               </button>
               <button
                 className="bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-800 transition-all"
-                onClick={() => router.push("/register")}
+                onClick={() => router.push("/signup")}
               >
-                Register
+                Sign Up
               </button>
             </>
           )}
@@ -213,11 +213,11 @@ const NavBar = () => {
                   <button
                     className="w-full bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-700 transition-all"
                     onClick={() => {
-                      router.push("/login");
+                      router.push("/signin");
                       closeMenu();
                     }}
                   >
-                    Login
+                    Sign In
                   </button>
                 </>
               )}

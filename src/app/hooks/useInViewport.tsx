@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef } from "react";
 
 const useInViewport = (threshold: number = 0.1) => {
