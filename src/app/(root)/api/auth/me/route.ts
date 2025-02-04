@@ -31,7 +31,7 @@ export async function GET(req: Request) {
       },
     });
   } catch (error) {
-    console.error("Error verifying JWT:", error); // Log errors
+    console.error("Error verifying JWT:", error); 
     return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
   }
 }
