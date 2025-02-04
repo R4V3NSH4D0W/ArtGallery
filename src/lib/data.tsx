@@ -92,22 +92,22 @@ export const socialMediaLinks = [
   {
     name: "Facebook",
     url: "https://www.facebook.com",
-    icon: <FaFacebook size={40} />,
+    icon: <FaFacebook size={30} />,
   },
   {
     name: "Instagram",
     url: "https://www.instagram.com",
-    icon: <FaInstagram size={40} />,
+    icon: <FaInstagram size={30} />,
   },
   {
     name: "Twitter",
     url: "https://www.twitter.com",
-    icon: <FaTwitter size={40} />,
+    icon: <FaTwitter size={30} />,
   },
   {
     name: "TikTok",
     url: "https://www.tiktok.com",
-    icon: <FaTiktok size={40} />,
+    icon: <FaTiktok size={30} />,
   },
 ];
 

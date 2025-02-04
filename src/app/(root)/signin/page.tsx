@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useAuthContext } from "@/context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
+import BackgroundWrapper from "@/components/background-wrapper";
 
 const schema = z.object({
   email: z.string().email("Invalid email format"),
@@ -36,6 +38,7 @@ export default function SignInPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  // Load remembered email
   useEffect(() => {
     const savedEmail = Cookie.get("rememberEmail");
     if (savedEmail) {
@@ -44,6 +47,7 @@ export default function SignInPage() {
     }
   }, [setValue]);
 
+  // 🔹 Handles form submission
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     setError(null);
@@ -51,35 +55,37 @@ export default function SignInPage() {
     try {
       const res = await fetch("/api/auth/signin", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
         credentials: "include",
       });
 
-      const result = await res.json();
-
-      if (res.ok) {
-        toast.success("Logged in successfully!");
-        refetchUser();
-        if (rememberMe) {
-          Cookie.set("rememberEmail", data.email, { expires: 7 });
-        } else {
-          Cookie.remove("rememberEmail");
-        }
-        router.push("/");
-      } else {
-        setError(result.error || "Login failed");
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Invalid server response (not JSON)");
       }
-    } catch {
-      toast.error("An error occurred. Please try again.");
-      setError("An error occurred. Please try again.");
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Login failed");
+
+      if (!result.redirectUrl) throw new Error("Invalid server response");
+
+      toast.success("Logged in successfully!");
+      refetchUser();
+      if (rememberMe) {
+        Cookie.set("rememberEmail", data.email, { expires: 7 });
+      } else {
+        Cookie.remove("rememberEmail");
+      }
+      router.push(result.redirectUrl);
+    } catch (error) {
+      setError((error as Error).message);
     } finally {
       setLoading(false);
     }
   };
 
+  // 🔹 Google Login (Dummy)
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
     setTimeout(() => {
@@ -89,100 +95,101 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md p-6 shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">
-            Sign In
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <Input
-              placeholder="Email"
-              {...register("email")}
-              className="w-full"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-
-            <div className="relative">
+    <BackgroundWrapper>
+      <div className="flex items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md p-6 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl font-bold">
+              Sign In
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <Input
-                type={passwordVisible ? "text" : "password"}
-                placeholder="Password"
-                {...register("password")}
+                placeholder="Email"
+                {...register("email")}
                 className="w-full"
               />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 flex items-center"
-                onClick={() => setPasswordVisible(!passwordVisible)}
-              >
-                {passwordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-              {errors.password && (
-                <p className="text-red-500 text-sm">
-                  {errors.password.message}
-                </p>
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
-            </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-              />
-              <label htmlFor="rememberMe" className="text-sm">
-                Remember Me
+              <div className="relative">
+                <Input
+                  type={passwordVisible ? "text" : "password"}
+                  placeholder="Password"
+                  {...register("password")}
+                  className="w-full"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
+                >
+                  {passwordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+                {errors.password && (
+                  <p className="text-red-500 text-sm">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                />
+                <label htmlFor="rememberMe" className="text-sm">
+                  Remember Me
+                </label>
+              </div>
+
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
+              <Button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-600"
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="animate-spin" /> : "Login"}
+              </Button>
+            </form>
+
+            <div className="flex justify-center mt-5">
+              <label className="text-sm">
+                Don&apos;t have an account?{" "}
+                <a href="/signup" className="text-blue-600">
+                  Sign Up
+                </a>
               </label>
             </div>
 
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <div className="flex flex-row items-center mt-4">
+              <div className="w-full h-[1px] bg-gray-400" />
+              <label className="pl-2 pr-2 text-gray-400">or</label>
+              <div className="w-full h-[1px] bg-gray-400" />
+            </div>
 
             <Button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600"
-              disabled={loading}
+              variant="secondary"
+              className="w-full mt-4 flex items-center justify-center"
+              onClick={handleGoogleLogin}
+              disabled={googleLoading}
             >
-              {loading ? <Loader2 className="animate-spin" /> : "Login"}
+              {googleLoading ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                <>
+                  <FcGoogle className="scale-110 mr-1" /> Continue with Google
+                </>
+              )}
             </Button>
-          </form>
-
-          <div className="flex justify-center mt-5">
-            <label className="text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="/signup" className="text-blue-600">
-                Sign Up
-              </a>
-            </label>
-          </div>
-
-          <div className="flex felx-row items-center mt-4">
-            <div className="w-full h-[1px] bg-gray-400" />
-            <label className="pl-2 pr-2 text-gray-400">or</label>
-            <div className="w-full h-[1px] bg-gray-400" />
-          </div>
-
-          <Button
-            variant={"secondary"}
-            className="w-full mt-4 flex items-center justify-center"
-            onClick={handleGoogleLogin}
-            disabled={googleLoading}
-          >
-            {googleLoading ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              <>
-                <FcGoogle className=" scale-110 mr-1" />
-                Continue with Google
-              </>
-            )}
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
+    </BackgroundWrapper>
   );
 }

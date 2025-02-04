@@ -18,29 +18,32 @@ function Home() {
       <div className="flex flex-col">
         <HeroSection />
         {/* Grid Section */}
-        <section className="bg-blue-dark px-4 lg:px-60 py-10 lg:py-20">
-          <div className="flex flex-col lg:flex-row gap-10">
-            <div className="flex flex-col w-full lg:w-1/2">
-              <h2 className="text-3xl lg:text-6xl text-white leading-tight">
+        <section className="bg-blue-dark px-4 md:px-10 lg:px-60 py-10 lg:py-20">
+          <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Left Side */}
+            <div className="flex flex-col">
+              <h2 className="text-3xl lg:text-5xl xl:text-6xl text-white leading-tight">
                 Craftmanship Meets Creativity
               </h2>
-              <p className="text-sm lg:text-lg text-stone-300 mt-6">
+              <p className="text-sm lg:text-lg text-stone-300 mt-6 max-w-[40ch]">
                 Explore the intricate designs and vibrant colors that define our
                 string art collection, each piece a testament to exceptional
                 craftsmanship.
               </p>
-              <Button className="bg-blue-500 hover:bg-blue-300 text-white mt-6 w-full lg:w-[10rem] h-[3rem]">
-                <FaArrowRight />
+              <Button className="bg-blue-500 hover:bg-blue-300 text-white mt-6 w-full lg:w-[10rem] h-[3rem] flex items-center justify-center">
+                <FaArrowRight className="ml-2" />
                 Discover Art
               </Button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full lg:w-1/2 ">
+
+            {/* Right Side - Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {gridData.map((item, index) => (
                 <MotionDiv
                   key={index}
-                  className="flex border-[1px] h-[18rem] flex-col rounded-lg p-10 border-blue-strong hover:bg-blue-strong cursor-pointer"
+                  className="flex border-[1px] min-h-[14rem] flex-col rounded-lg p-6 border-blue-strong hover:bg-blue-strong cursor-pointer"
                 >
-                  <div className=" text-blue-300"> {item.icon}</div>
+                  <div className="text-blue-300 text-3xl">{item.icon}</div>
                   <h3 className="text-lg font-bold mt-4 text-white">
                     {item.title}
                   </h3>
@@ -132,29 +135,33 @@ function Home() {
           </div>
 
           {/* Right Section */}
-          <div className="relative w-full lg:w-[50%] px-6 lg:px-10 mt-10 lg:mt-[5rem] flex flex-col ">
-            <label className="text-3xl lg:text-5xl">Connect with us</label>
+          <div className="relative w-full lg:w-[50%] px-6 lg:px-10 mt-10 lg:mt-[5rem] flex flex-col">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl ">
+              Connect with Us
+            </h3>
 
             {/* Office Data */}
-            <div className="flex flex-wrap gap-8 lg:gap-10 my-8">
+            <div className="flex flex-wrap gap-6 lg:gap-8 my-6">
               {officeData.map((office, index) => (
-                <MotionDiv key={index} className="flex flex-row gap-5">
+                <MotionDiv key={index} className="flex flex-row gap-4">
                   {/* Icon */}
-                  <div className="mt-1 text-blue-500">{office.icon}</div>
+                  <div className="mt-1 text-blue-500 text-2xl">
+                    {office.icon}
+                  </div>
 
                   {/* Office Details */}
                   <div className="flex flex-col">
-                    <label className="text-lg lg:text-xl">{office.title}</label>
-                    <label className="pt-2 lg:pt-4 text-stone-500">
+                    <h4 className="text-lg md:text-xl  ">{office.title}</h4>
+                    <p className="pt-2 lg:pt-3 text-stone-400 text-sm md:text-base leading-relaxed">
                       {office.details?.city ||
                         office.details?.days ||
                         office.details?.phone1}
-                    </label>
-                    <label className="pt-2 lg:pt-4 text-slate-500">
+                    </p>
+                    <p className="pt-2 lg:pt-3 text-slate-400 text-sm md:text-base leading-relaxed">
                       {office.details?.time ||
                         office.details?.phone2 ||
                         office.details?.country}
-                    </label>
+                    </p>
                   </div>
                 </MotionDiv>
               ))}
@@ -175,7 +182,6 @@ function Home() {
           ))}
         </MotionDiv>
         <ChatBot />
-        {/* Footer */}
       </div>
     </>
   );

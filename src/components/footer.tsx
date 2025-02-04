@@ -3,14 +3,23 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="h-[15rem] flex justify-center items-center bg-blue-lightsky flex-col px-4 md:px-10">
-      <div className="flex flex-col sm:flex-row lg:gap-10 gap-4  text-center sm:text-left">
-        <label>Explore Artful Threads</label>
-        <label>Our Collection</label>
-        <label>Purchase Art</label>
-        <label>Meet Our Artists</label>
+    <footer className="h-auto py-10 flex flex-col items-center bg-blue-lightsky px-6 md:px-12 lg:px-20">
+      <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-between gap-4 sm:gap-8 text-center sm:text-left text-base md:text-lg font-medium">
+        <label className="cursor-pointer hover:text-blue-700 transition">
+          Explore Artful Threads
+        </label>
+        <label className="cursor-pointer hover:text-blue-700 transition">
+          Our Collection
+        </label>
+        <label className="cursor-pointer hover:text-blue-700 transition">
+          Purchase Art
+        </label>
+        <label className="cursor-pointer hover:text-blue-700 transition">
+          Meet Our Artists
+        </label>
       </div>
-      <p className="text-sm mt-10 text-center">
+
+      <p className="text-xs sm:text-sm mt-8 text-center text-gray-700">
         © <span className="font-semibold">Coreweave</span> {currentYear}, Where
         Creativity Meets Craftsmanship
       </p>

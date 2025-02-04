@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { getColorByFirstLetter, getFirstLetter } from "@/lib/helper";
 import { useLogout } from "@/app/hooks/useLogout";
 import { useAuthContext } from "@/context/AuthContext";
+import { FaArrowRight } from "react-icons/fa";
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,6 +25,11 @@ const NavBar = () => {
     logout();
     closeMenu();
     refetchUser();
+    router.push("/signin");
+  };
+
+  const handleJoinUs = () => {
+    closeMenu();
     router.push("/signin");
   };
 
@@ -50,9 +56,12 @@ const NavBar = () => {
     <nav className="fixed z-50 top-5 w-full">
       <div className="flex justify-between items-center px-6 sm:px-10 bg-white py-3 mx-4 sm:mx-20 rounded-full shadow-md relative">
         {/* Logo */}
-        <div className="relative h-6 w-6 lg:h-10 lg:w-10">
+        <button
+          className="relative h-6 w-6 lg:h-10 lg:w-10"
+          onClick={() => router.push("/")}
+        >
           <Image src="/logo.png" alt="logo" fill />
-        </div>
+        </button>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex flex-row gap-8 mx-20">
@@ -141,16 +150,10 @@ const NavBar = () => {
           ) : (
             <>
               <button
-                className="px-4 py-2 rounded-3xl transition-all hover:text-blue-600"
-                onClick={() => router.push("/signin")}
+                className=" flex flex-row items-center gap-2 hover:text-blue-600 hover:scale-105 transition-all"
+                onClick={() => handleJoinUs()}
               >
-                Sign In
-              </button>
-              <button
-                className="bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-800 transition-all"
-                onClick={() => router.push("/signup")}
-              >
-                Sign Up
+                Join Us <FaArrowRight />
               </button>
             </>
           )}
@@ -211,13 +214,10 @@ const NavBar = () => {
               ) : (
                 <>
                   <button
-                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-3xl hover:bg-blue-700 transition-all"
-                    onClick={() => {
-                      router.push("/signin");
-                      closeMenu();
-                    }}
+                    className=" flex flex-row items-center gap-2"
+                    onClick={() => handleJoinUs()}
                   >
-                    Sign In
+                    Join Us <FaArrowRight />
                   </button>
                 </>
               )}

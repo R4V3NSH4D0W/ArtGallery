@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
-import { signJwt } from "@/lib/jwt";
-import { serialize } from "cookie";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
+   
     const { email, password } = await req.json();
+
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
     }
-    const user = await prisma.user.findUnique({ where: { email } });
 
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json({ error: "Incorrect email or password" }, { status: 401 });
     }
@@ -22,19 +23,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Incorrect email or password" }, { status: 401 });
     }
 
-    const token = signJwt({ id: user.id, email: user.email, name: user.name });
+    const token = jwt.sign(
+      { id: user.id, role: user.role, name: user.name, email: user.email },
+      process.env.JWT_SECRET!,
+      { expiresIn: "7d" }
+    );
 
-    // Set token in an HTTP-only cookie
-    const cookie = serialize("auth_token", token, {
+  
+    const response = NextResponse.json({
+      message: "Login successful",
+      redirectUrl: user.role === "ADMIN" ? "/admin-dashboard" : "/",
+    });
+
+    response.cookies.set("auth_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", 
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24, // 24 hours
+      maxAge: 60 * 60 * 24 * 7, 
     });
-
-    const response = NextResponse.json({ message: "Login successful" });
-    response.headers.set("Set-Cookie", cookie);
 
     return response;
   } catch (error) {
