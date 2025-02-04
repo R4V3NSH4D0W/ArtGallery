@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import Image from "next/image";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
+import { FcGoogle } from "react-icons/fc";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -18,6 +18,7 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +43,14 @@ const SignUpPage = () => {
     } else {
       setError(data.message);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    setTimeout(() => {
+      setGoogleLoading(false);
+      toast.error("Unable to Login with Google!");
+    }, 2000);
   };
 
   return (
@@ -121,17 +130,24 @@ const SignUpPage = () => {
           </form>
           <div className="flex felx-row items-center mt-4">
             <div className="w-full h-[1px] bg-gray-400" />
-            <label className=" pl-2 pr-2 text-gray-400">or</label>
+            <label className="pl-2 pr-2 text-gray-400">or</label>
             <div className="w-full h-[1px] bg-gray-400" />
           </div>
-          <Button variant={"secondary"} className="w-full mt-4">
-            <Image
-              src="/utils/google.png"
-              alt="Google Logo"
-              width={20}
-              height={20}
-            />
-            Continue with Google
+
+          <Button
+            variant={"secondary"}
+            className="w-full mt-4 flex items-center justify-center"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading}
+          >
+            {googleLoading ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <>
+                <FcGoogle className=" scale-110 mr-1" />
+                Continue with Google
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>

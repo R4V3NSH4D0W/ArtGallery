@@ -10,8 +10,8 @@ import { Loader2, Eye, EyeOff } from "lucide-react";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useUser } from "@/context/userContext";
-import Image from "next/image";
+import { useAuthContext } from "@/context/AuthContext";
+import { FcGoogle } from "react-icons/fc";
 
 const schema = z.object({
   email: z.string().email("Invalid email format"),
@@ -21,7 +21,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function SignInPage() {
-  const { refetchUser } = useUser();
+  const { refetchUser } = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -30,18 +30,16 @@ export default function SignInPage() {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const router = useRouter();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   useEffect(() => {
     const savedEmail = Cookie.get("rememberEmail");
-    const savedPassword = Cookie.get("rememberPassword");
-    if (savedEmail && savedPassword) {
+    if (savedEmail) {
       setValue("email", savedEmail);
-      setValue("password", savedPassword);
       setRememberMe(true);
     }
   }, [setValue]);
@@ -57,26 +55,22 @@ export default function SignInPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result = await res.json();
 
       if (res.ok) {
         toast.success("Logged in successfully!");
-        Cookie.set("token", result.token, { expires: 1 });
         refetchUser();
-
         if (rememberMe) {
           Cookie.set("rememberEmail", data.email, { expires: 7 });
-          Cookie.set("rememberPassword", data.password, { expires: 7 });
         } else {
           Cookie.remove("rememberEmail");
-          Cookie.remove("rememberPassword");
         }
-
         router.push("/");
       } else {
-        setError(result.error);
+        setError(result.error || "Login failed");
       }
     } catch {
       toast.error("An error occurred. Please try again.");
@@ -84,6 +78,14 @@ export default function SignInPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    setTimeout(() => {
+      setGoogleLoading(false);
+      toast.error("Unable to Login with Google!");
+    }, 2000);
   };
 
   return (
@@ -96,16 +98,15 @@ export default function SignInPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Input
-                placeholder="Email"
-                {...register("email")}
-                className="w-full"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-            </div>
+            <Input
+              placeholder="Email"
+              {...register("email")}
+              className="w-full"
+            />
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
+
             <div className="relative">
               <Input
                 type={passwordVisible ? "text" : "password"}
@@ -138,7 +139,9 @@ export default function SignInPage() {
                 Remember Me
               </label>
             </div>
+
             {error && <p className="text-red-500 text-sm">{error}</p>}
+
             <Button
               type="submit"
               className="w-full bg-blue-500 hover:bg-blue-600"
@@ -146,38 +149,38 @@ export default function SignInPage() {
             >
               {loading ? <Loader2 className="animate-spin" /> : "Login"}
             </Button>
-            <div className="flex justify-center">
-              <label className="text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="/signup" className="text-blue-600">
-                  Sign Up
-                </a>
-              </label>
-            </div>
           </form>
-          <div className="flex flex-row items-center mt-4">
+
+          <div className="flex justify-center mt-5">
+            <label className="text-sm">
+              Don&apos;t have an account?{" "}
+              <a href="/signup" className="text-blue-600">
+                Sign Up
+              </a>
+            </label>
+          </div>
+
+          <div className="flex felx-row items-center mt-4">
             <div className="w-full h-[1px] bg-gray-400" />
             <label className="pl-2 pr-2 text-gray-400">or</label>
             <div className="w-full h-[1px] bg-gray-400" />
           </div>
-          <Button variant={"secondary"} className="w-full mt-4">
-            <Image
-              src="/utils/google.png"
-              alt="Google Logo"
-              width={20}
-              height={20}
-            />
-            Continue with Google
-          </Button>
 
-          {/* <div className="text-left">
-            <button
-              onClick={() => router.push("/forgot-password")}
-              className="text-blue-600 text-sm"
-            >
-              Forgot Password?
-            </button>
-          </div> */}
+          <Button
+            variant={"secondary"}
+            className="w-full mt-4 flex items-center justify-center"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading}
+          >
+            {googleLoading ? (
+              <Loader2 className="animate-spin" size={20} />
+            ) : (
+              <>
+                <FcGoogle className=" scale-110 mr-1" />
+                Continue with Google
+              </>
+            )}
+          </Button>
         </CardContent>
       </Card>
     </div>
