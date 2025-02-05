@@ -1,41 +1,53 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ImagePlus, Trash2, Plus, Minus } from "lucide-react";
+import { ImagePlus, Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import { useRefetch } from "@/context/refetchContext";
 
-export default function AddProductModal() {
-  const [open, setOpen] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
-  const [quantity, setQuantity] = useState(1);
-  const [category, setCategory] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
-  const [description, setDescription] = useState<string>("");
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  description: string;
+  category: string;
+  images: string[];
+}
+
+export default function EditProductModal({
+  open,
+  setOpen,
+  product,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  product: Product;
+}) {
+  const [images, setImages] = useState<(File | string)[]>([...product.images]);
+  const [quantity, setQuantity] = useState(product.quantity);
+  const [category, setCategory] = useState(product.category);
+  const [name, setName] = useState(product.name);
+  const [price, setPrice] = useState(product.price);
+  const [description, setDescription] = useState(product.description);
   const { setRefetchFlag } = useRefetch();
 
-  const categories = [
-    "Geometry",
-    "Abstract",
-    "Impressionism",
-    "Cubism",
-    "Surrealism",
-    "Expressionism",
-    "Minimalism",
-    "Pop Art",
-  ];
+  useEffect(() => {
+    setCategory(product.category);
+    setName(product.name);
+    setPrice(product.price);
+    setQuantity(product.quantity);
+    setDescription(product.description);
+    setImages([...product.images]);
+  }, [product]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -44,9 +56,18 @@ export default function AddProductModal() {
     }
   };
 
-  const removeImage = (event: React.MouseEvent, index: number) => {
+  const removeImage = (
+    event: React.MouseEvent,
+    index: number,
+    image: string | File
+  ) => {
     event.preventDefault();
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+
+    if (typeof image === "string") {
+      setImages((prev) => prev.filter((img, imgIndex) => imgIndex !== index));
+    } else {
+      setImages((prev) => prev.filter((img, imgIndex) => imgIndex !== index));
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -57,7 +78,7 @@ export default function AddProductModal() {
     }
 
     const formData = new FormData();
-    formData.append("action", "create-product");
+    formData.append("id", product.id);
     formData.append("name", name);
     formData.append("price", String(price));
     formData.append("quantity", String(quantity));
@@ -65,21 +86,30 @@ export default function AddProductModal() {
     formData.append("category", category);
 
     images.forEach((image) => {
-      formData.append("images", image);
+      if (typeof image !== "string") {
+        formData.append("images", image);
+      }
+    });
+
+    const deletedImages = product.images.filter(
+      (image) => !images.includes(image) && typeof image === "string"
+    );
+    deletedImages.forEach((deletedImage) => {
+      formData.append("deletedImages", deletedImage);
     });
 
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const res = await fetch(`/api/products?id=${product.id}`, {
+        method: "PUT",
         body: formData,
         credentials: "include",
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to save product");
+        throw new Error(errorData.error || "Failed to update product");
       }
-      toast.success("Product saved successfully");
+      toast.success("Product updated successfully");
       setRefetchFlag(true);
       setOpen(false);
       setImages([]);
@@ -95,16 +125,10 @@ export default function AddProductModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-1 h-8">
-          <PlusCircle className="h-3.5 w-3.5" />
-          Add Product
-        </Button>
-      </DialogTrigger>
       <DialogContent className="max-w-xl rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-gray-800">
-            Add New Product
+            Edit Product
           </DialogTitle>
         </DialogHeader>
 
@@ -182,7 +206,7 @@ export default function AddProductModal() {
             </div>
 
             {/* Category Selection */}
-            <div>
+            <section>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Category
               </label>
@@ -192,13 +216,22 @@ export default function AddProductModal() {
                 className="rounded-lg w-full py-2 px-3 border border-gray-300"
               >
                 <option value="">Select Category</option>
-                {categories.map((cat, index) => (
+                {[
+                  "Geometry",
+                  "Abstract",
+                  "Impressionism",
+                  "Cubism",
+                  "Surrealism",
+                  "Expressionism",
+                  "Minimalism",
+                  "Pop Art",
+                ].map((cat, index) => (
                   <option key={index} value={cat}>
                     {cat}
                   </option>
                 ))}
               </select>
-            </div>
+            </section>
           </div>
 
           <div className="space-y-4">
@@ -231,7 +264,7 @@ export default function AddProductModal() {
               />
             </div>
 
-            {images.length > 0 && (
+            {images.length > 0 ? (
               <div className="grid grid-cols-4 gap-3">
                 {images.map((image, index) => (
                   <div
@@ -239,20 +272,26 @@ export default function AddProductModal() {
                     className="relative group aspect-square rounded-lg overflow-hidden shadow-sm"
                   >
                     <Image
-                      src={URL.createObjectURL(image)}
-                      alt="Preview"
+                      src={
+                        typeof image === "string"
+                          ? image
+                          : URL.createObjectURL(image)
+                      }
+                      alt={`Image ${index}`}
                       layout="fill"
                       objectFit="cover"
                     />
                     <button
                       className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => removeImage(e, index)}
+                      onClick={(e) => removeImage(e, index, image)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 ))}
               </div>
+            ) : (
+              <p>No images to display</p>
             )}
           </div>
 
@@ -260,7 +299,7 @@ export default function AddProductModal() {
             type="submit"
             className="w-full bg-black rounded-lg py-3 font-semibold transition-opacity"
           >
-            Save Product
+            Save Changes Product
           </Button>
         </form>
       </DialogContent>

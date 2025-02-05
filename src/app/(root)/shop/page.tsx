@@ -1,60 +1,48 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 
 import Image from "next/image";
 import Link from "next/link";
+export interface IProducts {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  description: string;
+  category: string;
+  images: string[];
+  createdAt: string;
+  status: string;
+}
 
-const products = [
-  {
-    id: 1,
-    name: "Product 1",
-    price: 49.99,
-    category: "new",
-    image: "/stringart/string1.jpg",
-  },
-  {
-    id: 2,
-    name: "Product 2",
-    price: 79.99,
-    category: "sale",
-    image: "/stringart/string2.jpg",
-  },
-  {
-    id: 3,
-    name: "Product 2",
-    price: 79.99,
-    category: "sale",
-    image: "/stringart/string3.jpg",
-  },
-  {
-    id: 4,
-    name: "Product 2",
-    price: 79.99,
-    category: "sale",
-    image: "/stringart/string4.jpg",
-  },
-  {
-    id: 5,
-    name: "Product 2",
-    price: 79.99,
-    category: "sale",
-    image: "/stringart/string5.jpg",
-  },
-  {
-    id: 6,
-    name: "Product 2",
-    price: 79.99,
-    category: "sale",
-    image: "/stringart/string6.jpg",
-  },
-];
+async function getProducts(search: string, offset: number, status: string) {
+  const response = await fetch(
+    `/api/products?q=${search}&offset=${offset}&status=${status}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch products");
+  }
+  return await response.json();
+}
 
 export default function ShopPage() {
   const [priceFilter, setPriceFilter] = useState("all");
   const [activeCategory, setActiveCategory] = useState("all");
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [products, setProducts] = useState<IProducts[]>([]);
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const data = await getProducts("", 0, activeCategory);
+        setProducts(data.products);
+      } catch {
+        console.error("Failed to load products");
+      }
+    }
+    fetchProducts();
+  }, [activeCategory]);
 
   const toggleWishlist = (productId: number) => {
     setWishlist((prev) =>
@@ -103,8 +91,8 @@ export default function ShopPage() {
           onChange={(e) => setPriceFilter(e.target.value)}
         >
           <option value="all">All Prices</option>
-          <option value="under50">Under $50</option>
-          <option value="50-100">$50 - $100</option>
+          <option value="under NRP 5000">Under NRP 5000</option>
+          <option value="5000- 1000000">NRP 5000 - above</option>
         </select>
       </section>
 
@@ -121,7 +109,7 @@ export default function ShopPage() {
                   {/* Image with Hover Zoom Effect */}
                   <div className="w-full h-full transition-transform duration-300 group-hover:scale-110">
                     <Image
-                      src={product.image}
+                      src={product.images[0]}
                       alt={product.name}
                       fill
                       objectFit="cover"
@@ -148,7 +136,9 @@ export default function ShopPage() {
                   <h3 className="font-semibold text-lg mb-2 text-white">
                     {product.name}
                   </h3>
-                  <p className="text-white mb-4">${product.price.toFixed(2)}</p>
+                  <p className="text-white mb-4">
+                    NRS {product.price.toLocaleString()}
+                  </p>
                   <button className="w-full flex items-center justify-center gap-2 border text-white py-2 rounded-lg hover:bg-blue-800 transition-colors hover:border-blue-800">
                     <FaShoppingCart className="text-lg" />
                     Add to Cart
