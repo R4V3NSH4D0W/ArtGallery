@@ -299,7 +299,7 @@ export default function EditProductModal({
             type="submit"
             className="w-full bg-black rounded-lg py-3 font-semibold transition-opacity"
           >
-            Save Changes Product
+            Save Changes
           </Button>
         </form>
       </DialogContent>

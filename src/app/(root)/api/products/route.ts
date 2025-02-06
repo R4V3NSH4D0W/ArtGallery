@@ -37,6 +37,10 @@ export async function POST(req: Request) {
         if (action === "change-status") {
           return await CHANGE_STATUS(productId, status);
         }
+        if(action ==="get-product"){
+          return await GET_PRODUCT(productId);
+
+        }
       }
   
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
@@ -45,6 +49,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
   }
+
+  async function GET_PRODUCT(productId: string) {
+    const id = parseInt(productId, 10);
+    if (isNaN(id)) {
+      return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
+    }
+    
+    try {
+      const product = await prisma.product.findUnique({
+        where: { id },
+      });
+  
+      if (!product) {
+        return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      }
+  
+      return NextResponse.json({ success: true, product }, { status: 200 });
+    } catch (error) {
+      console.error("Error fetching product by ID:", error);
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+  }
+  
 
   async function CREATE_PRODUCT(req: Request) {
     const formData = await req.formData();
@@ -133,12 +160,16 @@ export async function POST(req: Request) {
 
   
 
+ 
+
   export async function GET(req: Request) {
     const url = new URL(req.url);
   
     const search = url.searchParams.get("q") || "";
-    const offset = parseInt(url.searchParams.get("offset") || "0", 10);
+    const offset = parseInt(url.searchParams.get("offset") || "0", 10); // Default offset to 0 if not provided
     const status = url.searchParams.get("status") || "all";
+    const category = url.searchParams.get("category") || "All";
+    const limit = parseInt(url.searchParams.get("limit") || "6", 10); // Read `limit` from query parameters, default to 6
   
     const cookies = req.headers.get("cookie");
     const token = cookies
@@ -149,35 +180,39 @@ export async function POST(req: Request) {
     const user = token ? verifyJwt(token) : null;
   
     try {
-      let whereCondition: Prisma.ProductWhereInput = {
+      const whereCondition: Prisma.ProductWhereInput = {
         ...(search && {
           name: {
             contains: search,
             mode: Prisma.QueryMode.insensitive,
           },
         }),
+        ...(category !== "All" && { category }),
       };
   
-
+      // Enforce "active" status for non-admin users
       if (!user || user.role === "USER") {
-        whereCondition = { ...whereCondition, status: "active" };
+        whereCondition.status = "active";
       }
   
-   
-      if (user && user.role === "ADMIN" && status && status !== "all") {
-        whereCondition = { ...whereCondition, status };
+      // Allow admins to filter by status
+      if (user?.role === "ADMIN" && status !== "all") {
+        whereCondition.status = status;
       }
   
       const products = await prisma.product.findMany({
         where: whereCondition,
         skip: offset,
-        take: 10,
+        take: limit, // Use `limit` from the query string
       });
   
       const totalProducts = await prisma.product.count({ where: whereCondition });
   
+      // Calculate the next offset value for pagination
+      const newOffset = offset + limit;
+  
       return NextResponse.json(
-        { success: true, products, totalProducts, newOffset: offset + 10 },
+        { success: true, products, totalProducts, newOffset },
         { status: 200 }
       );
     } catch (error) {
