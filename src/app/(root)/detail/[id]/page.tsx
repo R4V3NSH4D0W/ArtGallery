@@ -12,14 +12,14 @@ import { BeatLoader } from "react-spinners";
 export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>();
   const [product, setProduct] = useState<ProductResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Add a loading state
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { id } = useParams();
   const router = useRouter();
 
   useEffect(() => {
     if (id) {
-      setLoading(true); // Set loading to true when fetching data
+      setLoading(true);
       fetch(`/api/products/${id}`)
         .then((response) => {
           if (!response.ok) {
@@ -34,19 +34,18 @@ export default function ProductDetail() {
             if (data.images && data.images.length > 0) {
               setSelectedImage(data.images[0]);
             }
-            setLoading(false); // Set loading to false once data is fetched
+            setLoading(false);
           }
         })
         .catch((error) => {
           console.error("Error fetching product:", error);
           router.push("/not_found");
-          setLoading(false); // Ensure loading state is false on error
+          setLoading(false);
         });
     }
   }, [id, router]);
 
   if (loading) {
-    // Show loading spinner while fetching the product
     return (
       <div className="flex items-center justify-center min-h-screen">
         <BeatLoader size={15} color="black" loading={loading} />
@@ -201,7 +200,7 @@ export default function ProductDetail() {
             </p>
             <p className="text-sm text-gray-500">{product.quantity} In stock</p>
           </div>
-          <Button className="gap-2 flex-1 max-w-xs">
+          <Button className="gap-2 flex-1 max-w-xs bg-blue-500">
             <FaShoppingCart />
             Add to Cart
           </Button>

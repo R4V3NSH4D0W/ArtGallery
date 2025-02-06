@@ -44,7 +44,6 @@ export default function EditProductModal({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   product: Product;
 }) {
-  console.log(product);
   const [images, setImages] = useState<(File | string)[]>([...product.images]);
   const [quantity, setQuantity] = useState(product.quantity);
   const [category, setCategory] = useState<Option[]>(
