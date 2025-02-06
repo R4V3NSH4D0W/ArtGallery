@@ -13,7 +13,7 @@ export async function middleware(req: Request) {
 
   try {
   
-    const apiUrl = new URL("http://localhost:4000/api/auth/me");
+    const apiUrl = new URL(`${process.env.NEXTAUTH_URL}/api/auth/me`);
     const res = await fetch(apiUrl, {
       headers: {
         'Cookie': `auth_token=${token}`,
