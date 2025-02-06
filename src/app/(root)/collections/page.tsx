@@ -38,9 +38,8 @@ function CollectionPage() {
       </MotionDiv>
 
       {/* Content */}
-      <Suspense fallback={<div>Loading Art Collection...</div>}>
-        <LazyArtCollection />
-      </Suspense>
+
+      <LazyArtCollection />
 
       {/* Discover Section */}
       <section className="lg:px-[12rem] px-4 flex flex-col py-[4rem]">

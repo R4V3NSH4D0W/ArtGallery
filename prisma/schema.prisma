@@ -20,4 +20,27 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  role      Role     @default(USER)
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Float
+  quantity    Int
+  description String
+  category    String[] // Change to an array of strings to handle multiple categories
+  material    String[] // Add a material field as an array of strings
+  length      Float? // Optional field for product length
+  width       Float? // Optional field for product width
+  breadth     Float? // Optional field for product breadth
+  images      String[] // Array of image URLs/paths
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  status      String   @default("inactive")
 }

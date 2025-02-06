@@ -10,11 +10,11 @@ export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <main>
+    <main className="flex flex-col min-h-screen">
       <AuthProvider>
         <NavBar />
         <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
-        {children}
+        <div className="flex-grow">{children}</div>
         <Footer />
       </AuthProvider>
     </main>

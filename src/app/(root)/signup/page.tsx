@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
+import BackgroundWrapper from "@/components/background-wrapper";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -54,104 +55,110 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md p-6 shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl font-bold">
-            Sign Up
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input
-              type="text"
-              placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <Input
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <div className="relative">
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-3 text-gray-600"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-            <div className="relative">
-              <Input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-3 text-gray-600"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-            {error && <p className="text-red-500 text-center">{error}</p>}
-            <Button
-              type="submit"
-              className="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
+    <BackgroundWrapper>
+      <div className="flex items-center justify-center min-h-screen ">
+        <Card className="w-full max-w-md p-6 shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl font-bold">
               Sign Up
-            </Button>
-            <div className="text-center">
-              <p className="text-sm">
-                Already have an account?{" "}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <Input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <Input
+                type="email"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
                 <button
-                  onClick={() => router.replace("/signin")}
-                  className="text-blue-600"
+                  type="button"
+                  className="absolute right-3 top-3 text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  Sign In
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
-              </p>
+              </div>
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-3 text-gray-600"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
+              {error && <p className="text-red-500 text-center">{error}</p>}
+              <Button
+                type="submit"
+                className="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
+                Sign Up
+              </Button>
+              <div className="text-center">
+                <p className="text-sm">
+                  Already have an account?{" "}
+                  <button
+                    onClick={() => router.replace("/signin")}
+                    className="text-blue-600"
+                  >
+                    Sign In
+                  </button>
+                </p>
+              </div>
+            </form>
+            <div className="flex felx-row items-center mt-4">
+              <div className="w-full h-[1px] bg-gray-400" />
+              <label className="pl-2 pr-2 text-gray-400">or</label>
+              <div className="w-full h-[1px] bg-gray-400" />
             </div>
-          </form>
-          <div className="flex felx-row items-center mt-4">
-            <div className="w-full h-[1px] bg-gray-400" />
-            <label className="pl-2 pr-2 text-gray-400">or</label>
-            <div className="w-full h-[1px] bg-gray-400" />
-          </div>
 
-          <Button
-            variant={"secondary"}
-            className="w-full mt-4 flex items-center justify-center"
-            onClick={handleGoogleLogin}
-            disabled={googleLoading}
-          >
-            {googleLoading ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              <>
-                <FcGoogle className=" scale-110 mr-1" />
-                Continue with Google
-              </>
-            )}
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+            <Button
+              variant={"secondary"}
+              className="w-full mt-4 flex items-center justify-center"
+              onClick={handleGoogleLogin}
+              disabled={googleLoading}
+            >
+              {googleLoading ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                <>
+                  <FcGoogle className=" scale-110 mr-1" />
+                  Continue with Google
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </BackgroundWrapper>
   );
 };
 

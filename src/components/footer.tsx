@@ -3,17 +3,31 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="h-[15rem] flex justify-center items-center bg-blue-lightsky flex-col px-4 md:px-10">
-      <div className="flex flex-col sm:flex-row lg:gap-10 gap-4  text-center sm:text-left">
-        <label>Explore Artful Threads</label>
-        <label>Our Collection</label>
-        <label>Purchase Art</label>
-        <label>Meet Our Artists</label>
+    <footer className="h-auto py-12 flex flex-col items-center bg-blue-lightsky px-6 md:px-12 lg:px-20">
+      <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-between gap-6 sm:gap-10 text-center sm:text-left text-base md:text-lg font-medium">
+        <label className="cursor-pointer hover:text-blue-700 transition-all duration-300">
+          Explore Artful Threads
+        </label>
+        <label className="cursor-pointer hover:text-blue-700 transition-all duration-300">
+          Our Collection
+        </label>
+        <label className="cursor-pointer hover:text-blue-700 transition-all duration-300">
+          Purchase Art
+        </label>
+        <label className="cursor-pointer hover:text-blue-700 transition-all duration-300">
+          Meet Our Artists
+        </label>
       </div>
-      <p className="text-sm mt-10 text-center">
-        © <span className="font-semibold">Coreweave</span> {currentYear}, Where
-        Creativity Meets Craftsmanship
-      </p>
+
+      <div className="mt-8 text-center text-gray-700 space-y-2">
+        <p className="text-sm sm:text-base">
+          © <span className="font-semibold">Coreweave</span> {currentYear},
+          Where Creativity Meets Craftsmanship
+        </p>
+        <p className="text-xs text-gray-500">
+          All Rights Reserved | Privacy Policy | Terms of Service
+        </p>
+      </div>
     </footer>
   );
 }
