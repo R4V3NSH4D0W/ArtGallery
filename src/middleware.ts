@@ -13,7 +13,8 @@ export async function middleware(req: Request) {
 
   try {
   
-    const res = await fetch(new URL("/api/auth/me", req.url), {
+    const apiUrl = new URL("http://localhost:3000/api/auth/me");
+    const res = await fetch(apiUrl, {
       headers: {
         'Cookie': `auth_token=${token}`,
       },
