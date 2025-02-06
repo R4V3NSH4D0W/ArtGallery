@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaHeart } from "react-icons/fa";
 import Image from "next/image";
@@ -69,7 +70,6 @@ export default function ShopPage() {
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
-  console.log("products", products);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -103,7 +103,7 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 mt-[7rem]">
+    <div className="container mx-auto px-4 mt-[6rem] lg:mt-[7rem]">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

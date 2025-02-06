@@ -37,10 +37,7 @@ export async function POST(req: Request) {
         if (action === "change-status") {
           return await CHANGE_STATUS(productId, status);
         }
-        if(action ==="get-product"){
-          return await GET_PRODUCT(productId);
-
-        }
+       
       }
   
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
@@ -50,45 +47,22 @@ export async function POST(req: Request) {
     }
   }
 
-  async function GET_PRODUCT(productId: string) {
-    const id = parseInt(productId, 10);
-    if (isNaN(id)) {
-      return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
-    }
-    
-    try {
-      const product = await prisma.product.findUnique({
-        where: { id },
-      });
-  
-      if (!product) {
-        return NextResponse.json({ error: "Product not found" }, { status: 404 });
-      }
-  
-      return NextResponse.json({ success: true, product }, { status: 200 });
-    } catch (error) {
-      console.error("Error fetching product by ID:", error);
-      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-    }
-  }
+
   
 
   async function CREATE_PRODUCT(req: Request) {
     const formData = await req.formData();
-  
-    // Extract form data fields
     const name = formData.get("name") as string;
     const price = parseFloat(formData.get("price") as string);
     const quantity = parseInt(formData.get("quantity") as string);
     const description = formData.get("description") as string;
-    const category = JSON.parse(formData.get("category") as string) as string[];  // Parsing category from JSON string
-    const material = JSON.parse(formData.get("material") as string) as string[];  // Parsing material from JSON string
+    const category = JSON.parse(formData.get("category") as string) as string[];
+    const material = JSON.parse(formData.get("material") as string) as string[]; 
     const length = parseFloat(formData.get("length") as string);
     const width = parseFloat(formData.get("width") as string);
     const breadth = parseFloat(formData.get("breadth") as string);
     const images = formData.getAll("images") as File[];
   
-    // Validation
     if (!name || !price || !category.length) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
@@ -118,7 +92,6 @@ export async function POST(req: Request) {
     }
   
     try {
-      // Create product record in the database
       const product = await prisma.product.create({
         data: {
           name,
@@ -205,17 +178,15 @@ export async function POST(req: Request) {
         }),
         ...(category !== "All" && {
           category: {
-            has: category, // Use `has` for array filtering
+            has: category,
           },
         }),
       };
   
-      // Enforce "active" status for non-admin users
       if (!user || user.role === "USER") {
         whereCondition.status = "active";
       }
   
-      // Allow admins to filter by status
       if (user?.role === "ADMIN" && status !== "all") {
         whereCondition.status = status;
       }
@@ -223,23 +194,22 @@ export async function POST(req: Request) {
       const products = await prisma.product.findMany({
         where: whereCondition,
         skip: offset,
-        take: limit, // Use `limit` from the query string
+        take: limit,
       });
   
       const totalProducts = await prisma.product.count({ where: whereCondition });
   
-      // Format the response by adding `dimensions` field as an object
       const formattedProducts = products.map(product => {
         const { length, width, breadth, ...rest } = product;
         return {
           ...rest,
           dimensions: length && width && breadth
             ? { length, width, breadth }
-            : undefined,  // Include dimensions as an object only if all fields exist
+            : undefined, 
         };
       });
   
-      // Calculate the next offset value for pagination
+      
       const newOffset = offset + limit;
   
       return NextResponse.json(
@@ -337,14 +307,14 @@ export async function DELETE(req: Request) {
     const price = parseFloat(formData.get("price") as string);
     const quantity = parseInt(formData.get("quantity") as string);
     const description = formData.get("description") as string;
-    const category = JSON.parse(formData.get("category") as string) as string[];  // Ensure category is parsed as an array
-    const material = JSON.parse(formData.get("material") as string) as string[];  // Ensure material is parsed as an array
+    const category = JSON.parse(formData.get("category") as string) as string[]; 
+    const material = JSON.parse(formData.get("material") as string) as string[];  
     const images = formData.getAll("images") as File[];
     const deletedImages = formData.getAll("deletedImages") as string[];
   
-    const length = parseFloat(formData.get("length") as string);  // Get length from formData
-    const width = parseFloat(formData.get("width") as string);    // Get width from formData
-    const breadth = parseFloat(formData.get("breadth") as string); // Get breadth from formData
+    const length = parseFloat(formData.get("length") as string); 
+    const width = parseFloat(formData.get("width") as string);  
+    const breadth = parseFloat(formData.get("breadth") as string);
   
     const existingProduct = await prisma.product.findUnique({
       where: { id: productId },

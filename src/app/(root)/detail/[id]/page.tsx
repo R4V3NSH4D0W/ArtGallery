@@ -1,48 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaShoppingCart, FaHeart, FaTruck, FaPalette } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
-
-const product = {
-  name: "Elegant String Art",
-  price: "$199",
-  description:
-    "This handcrafted string art piece brings a unique geometric aesthetic to your space. Designed with precision and passion, it adds a modern and sophisticated touch to any room.",
-  images: [
-    "/stringart/string1.jpg",
-    "/stringart/string2.jpg",
-    "/stringart/string3.jpg",
-  ],
-  details: {
-    materials: "Premium oak wood & cotton threads",
-    dimensions: "60cm × 60cm × 2cm",
-    shipping: "Free worldwide shipping",
-  },
-};
+import { ProductResponse } from "@/lib/types";
 
 export default function ProductDetail() {
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [zoomActive, setZoomActive] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | undefined>();
+  const [product, setProduct] = useState<ProductResponse | null>(null);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      fetch(`/api/products/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setProduct(data);
+          if (data.images && data.images.length > 0) {
+            setSelectedImage(data.images[0]);
+          }
+        })
+        .catch((error) => console.error("Error fetching product:", error));
+    }
+  }, [id]);
+
+  if (!product) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-[7rem]">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-[3rem] lg:mt-[5rem]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16">
         {/* Image Gallery */}
         <div className="relative group">
           <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
             <Image
-              src={selectedImage}
+              src={selectedImage!}
               alt="Product"
               fill
-              className="object-cover cursor-zoom-in"
-              onClick={() => setZoomActive(!zoomActive)}
+              className="object-cover "
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
-
-            {/* Zoom Indicator */}
           </div>
 
           {/* Thumbnails Carousel */}
@@ -69,23 +71,23 @@ export default function ProductDetail() {
         </div>
 
         {/* Product Details */}
-        <div className="flex flex-col gap-6  top-20 h-fit">
+        <div className="flex flex-col gap-6 top-20 h-fit">
           {/* Header */}
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <Typography
-                variant="h1"
-                className="text-4xl font-bold tracking-tight"
-              >
-                {product.name}
-              </Typography>
-            </div>
-
             <Typography
-              variant="h2"
-              className="text-3xl font-semibold text-primary"
+              variant="h1"
+              className="text-4xl font-bold tracking-tight"
             >
-              {product.price}
+              {product.name}
+            </Typography>
+            <Typography variant="h3" className=" font-semibold text-primary">
+              NRS {product.price.toLocaleString()}
+            </Typography>
+            {/* In Stock Display */}
+            <Typography variant="p" className=" text-gray-600">
+              {product.quantity > 0
+                ? ` ${product.quantity} In Stock`
+                : "Out of Stock"}
             </Typography>
           </div>
 
@@ -103,27 +105,53 @@ export default function ProductDetail() {
 
           {/* Description */}
           <Typography
-            variant="p"
-            className="text-lg leading-relaxed text-gray-600 dark:text-gray-300"
+            variant="span"
+            className=" leading-relaxed  dark:text-gray-300"
           >
             {product.description}
           </Typography>
 
-          {/* Product Specs */}
-          <div className="grid grid-cols-2 gap-4">
-            {Object.entries(product.details).map(([key, value]) => (
-              <div key={key} className="p-4 bg-background rounded-xl border">
-                <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
-                  {key}
-                </h4>
-                <p className="font-medium">{value}</p>
-              </div>
-            ))}
-          </div>
+          {/* Dimensions, Material, and Category Section */}
+          {(product.dimensions ||
+            (product.material && product.material.length > 0) ||
+            (product.category && product.category.length > 0)) && (
+            <div className="grid grid-cols-2  gap-4">
+              {/* Dimensions */}
+              {product.dimensions && (
+                <div className="p-4 bg-background rounded-xl border">
+                  <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
+                    Dimensions
+                  </h4>
+                  <p className="font-medium">
+                    {product.dimensions.length} cm x {product.dimensions.width}{" "}
+                    cm x {product.dimensions.breadth} cm
+                  </p>
+                </div>
+              )}
+              {/* Material */}
+              {product.material && product.material.length > 0 && (
+                <div className="p-4 bg-background rounded-xl border">
+                  <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
+                    Material
+                  </h4>
+                  <p className="font-medium">{product.material.join(", ")}</p>
+                </div>
+              )}
+              {/* Category */}
+              {product.category && product.category.length > 0 && (
+                <div className="p-4 bg-background rounded-xl border">
+                  <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
+                    Category
+                  </h4>
+                  <p className="font-medium">{product.category.join(", ")}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-4">
-            <Button className="flex-1 h-14 text-lg gap-3 hover:scale-[1.02] transition-transform">
+            <Button className="flex-1 h-14 text-lg gap-3 hover:scale-[1.02] transition-transform bg-blue-500 hover:bg-blue-600">
               <FaShoppingCart className="w-5 h-5" />
               Add to Cart
             </Button>
@@ -135,34 +163,17 @@ export default function ProductDetail() {
               Wishlist
             </Button>
           </div>
-
-          {/* Trust Badges */}
         </div>
       </div>
-
-      {/* Zoom Modal */}
-      {zoomActive && (
-        <div
-          className="fixed inset-0 bg-black/90 backdrop-blur z-50 flex items-center justify-center p-4 cursor-zoom-out"
-          onClick={() => setZoomActive(false)}
-        >
-          <div className="relative w-full max-w-4xl aspect-square">
-            <Image
-              src={selectedImage}
-              alt="Zoomed Product"
-              fill
-              className="object-contain"
-            />
-          </div>
-        </div>
-      )}
 
       {/* Mobile Sticky Footer */}
       <div className="fixed bottom-0 inset-x-0 bg-background border-t lg:hidden p-4 shadow-lg">
         <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
           <div>
-            <p className="text-primary font-bold text-xl">{product.price}</p>
-            <p className="text-sm text-gray-500">In stock</p>
+            <p className="text-primary font-bold text-xl">
+              NRS {product.price.toLocaleString()}
+            </p>
+            <p className="text-sm text-gray-500">{product.quantity} In stock</p>
           </div>
           <Button className="gap-2 flex-1 max-w-xs">
             <FaShoppingCart />
