@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ImagePlus, Trash2, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import { useRefetch } from "@/context/refetchContext";
 import Select from "react-select";
@@ -20,18 +19,45 @@ interface Option {
   label: string;
 }
 
-export default function AddProductModal() {
-  const [open, setOpen] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
-  const [quantity, setQuantity] = useState(1);
-  const [category, setCategory] = useState<Option[]>([]);
-  const [name, setName] = useState<string>("");
-  const [price, setPrice] = useState<number>(0);
-  const [description, setDescription] = useState<string>("");
-  const [length, setLength] = useState<number>(0);
-  const [width, setWidth] = useState<number>(0);
-  const [breadth, setBreadth] = useState<number>(0);
-  const [material, setMaterial] = useState<Option[]>([]);
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  description: string;
+  category: string[];
+  images: string[];
+  dimensions: {
+    length: number;
+    width: number;
+    breadth: number;
+  };
+  material: string[];
+}
+
+export default function EditProductModal({
+  open,
+  setOpen,
+  product,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  product: Product;
+}) {
+  const [images, setImages] = useState<(File | string)[]>([...product.images]);
+  const [quantity, setQuantity] = useState(product.quantity);
+  const [category, setCategory] = useState<Option[]>(
+    product.category.map((cat) => ({ value: cat, label: cat }))
+  );
+  const [name, setName] = useState(product.name);
+  const [price, setPrice] = useState(product.price);
+  const [description, setDescription] = useState(product.description);
+  const [length, setLength] = useState(product.dimensions.length);
+  const [width, setWidth] = useState(product.dimensions.width);
+  const [breadth, setBreadth] = useState(product.dimensions.breadth);
+  const [material, setMaterial] = useState<Option[]>(
+    product.material.map((mat) => ({ value: mat, label: mat }))
+  );
   const { setRefetchFlag } = useRefetch();
 
   const categories = [
@@ -46,6 +72,21 @@ export default function AddProductModal() {
   ];
 
   const availableMaterials = ["Wood", "Metal", "Plastic", "Glass", "Fabric"];
+
+  useEffect(() => {
+    setCategory(product.category.map((cat) => ({ value: cat, label: cat })));
+    setMaterial(product.material.map((mat) => ({ value: mat, label: mat })));
+    setImages([...product.images]);
+    setQuantity(product.quantity);
+    setName(product.name);
+    setPrice(product.price);
+    setDescription(product.description);
+    if (product.dimensions) {
+      setLength(product.dimensions.length || 0);
+      setWidth(product.dimensions.width || 0);
+      setBreadth(product.dimensions.breadth || 0);
+    }
+  }, [product]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -67,7 +108,7 @@ export default function AddProductModal() {
     }
 
     const formData = new FormData();
-    formData.append("action", "create-product");
+    formData.append("id", product.id);
     formData.append("name", name);
     formData.append("price", String(price));
     formData.append("quantity", String(quantity));
@@ -85,21 +126,30 @@ export default function AddProductModal() {
     );
 
     images.forEach((image) => {
-      formData.append("images", image);
+      if (typeof image !== "string") {
+        formData.append("images", image);
+      }
+    });
+
+    const deletedImages = product.images.filter(
+      (image) => !images.includes(image) && typeof image === "string"
+    );
+    deletedImages.forEach((deletedImage) => {
+      formData.append("deletedImages", deletedImage);
     });
 
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const res = await fetch(`/api/products?id=${product.id}`, {
+        method: "PUT",
         body: formData,
         credentials: "include",
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to save product");
+        throw new Error(errorData.error || "Failed to update product");
       }
-      toast.success("Product saved successfully");
+      toast.success("Product updated successfully");
       setRefetchFlag(true);
       setOpen(false);
       setImages([]);
@@ -119,16 +169,10 @@ export default function AddProductModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-1 h-8">
-          <PlusCircle className="h-3.5 w-3.5" />
-          Add Product
-        </Button>
-      </DialogTrigger>
       <DialogContent className="max-w-3xl rounded-xl p-6 h-[100vh] max-h-[100vh] overflow-y-auto sm:h-auto sm:max-h-none sm:overflow-visible">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-gray-800">
-            Add New Product
+            Edit Product
           </DialogTitle>
         </DialogHeader>
 
@@ -285,13 +329,12 @@ export default function AddProductModal() {
                 htmlFor="file-upload"
                 className="cursor-pointer flex flex-col items-center gap-2"
               >
-                <ImagePlus className="h-8 w-8 text-primary" />
-                <div className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600">
                   <span className="text-primary font-medium">
                     Click to upload
                   </span>{" "}
                   or drag and drop
-                </div>
+                </span>
                 <span className="text-xs text-gray-500">
                   PNG, JPG up to 5MB
                 </span>
@@ -299,10 +342,10 @@ export default function AddProductModal() {
               <Input
                 id="file-upload"
                 type="file"
-                accept="image/*"
                 multiple
-                onChange={handleImageUpload}
                 className="hidden"
+                onChange={handleImageUpload}
+                accept="image/*"
               />
             </div>
             {images.length > 0 && (
@@ -312,12 +355,21 @@ export default function AddProductModal() {
                     key={index}
                     className="relative w-16 h-16 bg-gray-200 rounded-lg overflow-hidden"
                   >
-                    <Image
-                      src={URL.createObjectURL(image)}
-                      alt={`image-${index}`}
-                      layout="fill"
-                      objectFit="cover"
-                    />
+                    {typeof image === "string" ? (
+                      <Image
+                        src={image}
+                        alt={`image-${index}`}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    ) : (
+                      <Image
+                        src={URL.createObjectURL(image)}
+                        alt={`image-${index}`}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    )}
                     <button
                       onClick={(e) => removeImage(e, index)}
                       className="absolute top-1 right-1 bg-white rounded-full p-1 text-red-600"
