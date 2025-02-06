@@ -1,3 +1,4 @@
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -5,18 +6,7 @@ const nextConfig: NextConfig = {
     JWT_SECRET: process.env.JWT_SECRET,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'artgallery.lenishmagar.me',
-        pathname: '/uploads/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'w.wallhaven.cc',
-        pathname: '/**',
-      },
-    ],
+    domains: ['artgallery.lenishmagar.me','w.wallhaven.cc'],
   },
 };
 
