@@ -12,13 +12,13 @@ export async function middleware(req: Request) {
   }
 
   try {
-    const url = new URL(req.url);
-
-    const res = await fetch(`${url.origin}/api/auth/me`, {
+  
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/me`, {
       headers: {
-        'Cookie': `auth_token=${token}`, 
+        'Cookie': `auth_token=${token}`,
       },
     });
+    
 
     const data = await res.json();
 
