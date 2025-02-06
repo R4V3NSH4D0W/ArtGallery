@@ -61,9 +61,22 @@ export function getColorByFirstLetter(letter: string): string {
     Z: "#6A5ACD", // Slate Blue
   };
 
-  // Convert to uppercase to make sure it's case-insensitive
   const upperLetter = letter.toUpperCase();
 
-  // Return the color if the letter exists, otherwise return a default color
-  return colors[upperLetter] || "#CCCCCC"; // Default gray if letter is unknown
+  return colors[upperLetter] || "#CCCCCC";
+}
+
+export function getStatusClass(status: string) {
+  switch (status) {
+    case "active":
+      return "#8BC34A";
+    case "inactive":
+      return "#B0BEC5";
+    case "draft":
+      return "#FFB74D";
+    case "archived":
+      return "#90A4AE";
+    default:
+      return "";
+  }
 }

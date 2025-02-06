@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     domains: ['w.wallhaven.cc'],
   },
   
+  
 };
 
 export default nextConfig;

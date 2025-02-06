@@ -34,5 +34,5 @@ export async function middleware(req: Request) {
 }
 
 export const config = {
-  matcher: "/admin-dashboard/:path*", 
+  matcher: "/dashboard/:path*", 
 };
