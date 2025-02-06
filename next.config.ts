@@ -2,10 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   env: {
-    JWT_SECRET: process.env.JWT_SECRET,  
+    JWT_SECRET: process.env.JWT_SECRET,
   },
   images: {
-    domains: ['w.wallhaven.cc', 'artgallery.lenishmagar.me'], 
+    domains: [
+      "w.wallhaven.cc", 
+      "artgallery.lenishmagar.me",  
+      "lenishmagar.me",             
+    ],
   },
 };
 
