@@ -9,9 +9,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ImagePlus, Trash2, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import { useRefetch } from "@/context/refetchContext";
+import Select from "react-select";
+
+interface Option {
+  value: string;
+  label: string;
+}
 
 interface Product {
   id: string;
@@ -19,8 +25,14 @@ interface Product {
   price: number;
   quantity: number;
   description: string;
-  category: string;
+  category: string[];
   images: string[];
+  dimensions: {
+    length: number;
+    width: number;
+    breadth: number;
+  };
+  material: string[];
 }
 
 export default function EditProductModal({
@@ -32,21 +44,49 @@ export default function EditProductModal({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   product: Product;
 }) {
+  console.log(product);
   const [images, setImages] = useState<(File | string)[]>([...product.images]);
   const [quantity, setQuantity] = useState(product.quantity);
-  const [category, setCategory] = useState(product.category);
+  const [category, setCategory] = useState<Option[]>(
+    product.category.map((cat) => ({ value: cat, label: cat }))
+  );
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
   const [description, setDescription] = useState(product.description);
+  const [length, setLength] = useState(product.dimensions.length);
+  const [width, setWidth] = useState(product.dimensions.width);
+  const [breadth, setBreadth] = useState(product.dimensions.breadth);
+  const [material, setMaterial] = useState<Option[]>(
+    product.material.map((mat) => ({ value: mat, label: mat }))
+  );
   const { setRefetchFlag } = useRefetch();
 
+  const categories = [
+    "Geometry",
+    "Abstract",
+    "Impressionism",
+    "Cubism",
+    "Surrealism",
+    "Expressionism",
+    "Minimalism",
+    "Pop Art",
+  ];
+
+  const availableMaterials = ["Wood", "Metal", "Plastic", "Glass", "Fabric"];
+
   useEffect(() => {
-    setCategory(product.category);
+    setCategory(product.category.map((cat) => ({ value: cat, label: cat })));
+    setMaterial(product.material.map((mat) => ({ value: mat, label: mat })));
+    setImages([...product.images]);
+    setQuantity(product.quantity);
     setName(product.name);
     setPrice(product.price);
-    setQuantity(product.quantity);
     setDescription(product.description);
-    setImages([...product.images]);
+    if (product.dimensions) {
+      setLength(product.dimensions.length || 0);
+      setWidth(product.dimensions.width || 0);
+      setBreadth(product.dimensions.breadth || 0);
+    }
   }, [product]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,18 +96,9 @@ export default function EditProductModal({
     }
   };
 
-  const removeImage = (
-    event: React.MouseEvent,
-    index: number,
-    image: string | File
-  ) => {
+  const removeImage = (event: React.MouseEvent, index: number) => {
     event.preventDefault();
-
-    if (typeof image === "string") {
-      setImages((prev) => prev.filter((img, imgIndex) => imgIndex !== index));
-    } else {
-      setImages((prev) => prev.filter((img, imgIndex) => imgIndex !== index));
-    }
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -83,7 +114,17 @@ export default function EditProductModal({
     formData.append("price", String(price));
     formData.append("quantity", String(quantity));
     formData.append("description", description);
-    formData.append("category", category);
+    formData.append(
+      "category",
+      JSON.stringify(category.map((cat) => cat.value))
+    );
+    formData.append("length", String(length));
+    formData.append("width", String(width));
+    formData.append("breadth", String(breadth));
+    formData.append(
+      "material",
+      JSON.stringify(material.map((mat) => mat.value))
+    );
 
     images.forEach((image) => {
       if (typeof image !== "string") {
@@ -114,10 +155,14 @@ export default function EditProductModal({
       setOpen(false);
       setImages([]);
       setQuantity(1);
-      setCategory("");
+      setCategory([]);
       setName("");
       setPrice(0);
       setDescription("");
+      setLength(0);
+      setWidth(0);
+      setBreadth(0);
+      setMaterial([]);
     } catch (error) {
       toast.error((error as Error).message);
     }
@@ -125,39 +170,40 @@ export default function EditProductModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-xl rounded-xl">
+      <DialogContent className="max-w-3xl rounded-xl p-6">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-gray-800">
             Edit Product
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Product Name
               </label>
               <Input
-                className="rounded-lg"
+                className="rounded-lg w-full"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+            <div className="flex gap-4">
+              <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Price
                 </label>
                 <Input
                   type="number"
-                  className="rounded-lg"
+                  className="rounded-lg w-[15rem]"
                   value={price}
                   onChange={(e) => setPrice(Number(e.target.value))}
                 />
               </div>
-              <div>
+
+              <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Quantity
                 </label>
@@ -192,6 +238,42 @@ export default function EditProductModal({
                   </Button>
                 </div>
               </div>
+
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Length (cm)
+                </label>
+                <Input
+                  type="number"
+                  value={length}
+                  onChange={(e) => setLength(Number(e.target.value))}
+                  className="rounded-lg w-full"
+                />
+              </div>
+
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Width (cm)
+                </label>
+                <Input
+                  type="number"
+                  value={width}
+                  onChange={(e) => setWidth(Number(e.target.value))}
+                  className="rounded-lg w-full"
+                />
+              </div>
+
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Breadth (cm)
+                </label>
+                <Input
+                  type="number"
+                  value={breadth}
+                  onChange={(e) => setBreadth(Number(e.target.value))}
+                  className="rounded-lg w-full"
+                />
+              </div>
             </div>
 
             <div>
@@ -199,57 +281,61 @@ export default function EditProductModal({
                 Description
               </label>
               <Textarea
-                className="rounded-lg min-h-[100px]"
+                className="rounded-lg w-full min-h-[100px]"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
-            {/* Category Selection */}
-            <section>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="rounded-lg w-full py-2 px-3 border border-gray-300"
-              >
-                <option value="">Select Category</option>
-                {[
-                  "Geometry",
-                  "Abstract",
-                  "Impressionism",
-                  "Cubism",
-                  "Surrealism",
-                  "Expressionism",
-                  "Minimalism",
-                  "Pop Art",
-                ].map((cat, index) => (
-                  <option key={index} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </section>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <Select
+                  isMulti
+                  options={categories.map((cat) => ({
+                    label: cat,
+                    value: cat,
+                  }))}
+                  value={category}
+                  onChange={(newValue) => setCategory(newValue as Option[])}
+                  className="w-full"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Material
+                </label>
+                <Select
+                  isMulti
+                  options={availableMaterials.map((mat) => ({
+                    label: mat,
+                    value: mat,
+                  }))}
+                  value={material}
+                  onChange={(newValue) => setMaterial(newValue as Option[])}
+                  className="w-full"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-gray-700">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Product Images
             </label>
-            <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center transition-colors hover:border-primary/50">
+            <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center">
               <label
                 htmlFor="file-upload"
                 className="cursor-pointer flex flex-col items-center gap-2"
               >
-                <ImagePlus className="h-8 w-8 text-primary" />
-                <div className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600">
                   <span className="text-primary font-medium">
                     Click to upload
                   </span>{" "}
                   or drag and drop
-                </div>
+                </span>
                 <span className="text-xs text-gray-500">
                   PNG, JPG up to 5MB
                 </span>
@@ -263,43 +349,45 @@ export default function EditProductModal({
                 accept="image/*"
               />
             </div>
-
-            {images.length > 0 ? (
-              <div className="grid grid-cols-4 gap-3">
+            {images.length > 0 && (
+              <div className="flex gap-2 mt-4">
                 {images.map((image, index) => (
                   <div
                     key={index}
-                    className="relative group aspect-square rounded-lg overflow-hidden shadow-sm"
+                    className="relative w-16 h-16 bg-gray-200 rounded-lg overflow-hidden"
                   >
-                    <Image
-                      src={
-                        typeof image === "string"
-                          ? image
-                          : URL.createObjectURL(image)
-                      }
-                      alt={`Image ${index}`}
-                      layout="fill"
-                      objectFit="cover"
-                    />
+                    {typeof image === "string" ? (
+                      <Image
+                        src={image}
+                        alt={`image-${index}`}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    ) : (
+                      <Image
+                        src={URL.createObjectURL(image)}
+                        alt={`image-${index}`}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    )}
                     <button
-                      className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => removeImage(e, index, image)}
+                      onClick={(e) => removeImage(e, index)}
+                      className="absolute top-1 right-1 bg-white rounded-full p-1 text-red-600"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 ))}
               </div>
-            ) : (
-              <p>No images to display</p>
             )}
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-black rounded-lg py-3 font-semibold transition-opacity"
+            className="w-full h-12 mt-6 bg-primary text-white"
           >
-            Save Changes
+            Save Product
           </Button>
         </form>
       </DialogContent>

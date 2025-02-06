@@ -45,9 +45,17 @@ async function getProducts(
 ) {
   const categoryQuery = category !== "All" ? `category=${category}` : "";
   const typeQuery = type !== "All" ? `status=${type}` : "";
-  const response = await fetch(
-    `/api/products?${categoryQuery}&${typeQuery}&offset=${offset}&limit=${limit}`
-  );
+
+  const queryParams = [
+    categoryQuery,
+    typeQuery,
+    `offset=${offset}`,
+    `limit=${limit}`,
+  ]
+    .filter(Boolean)
+    .join("&");
+
+  const response = await fetch(`/api/products?${queryParams}`);
   if (!response.ok) {
     throw new Error("Failed to fetch products");
   }
@@ -61,6 +69,7 @@ export default function ShopPage() {
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
+  console.log("products", products);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -90,7 +99,7 @@ export default function ShopPage() {
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
-    setOffset(0);
+    setOffset(0); // Reset offset when changing category
   };
 
   return (
@@ -144,46 +153,73 @@ export default function ShopPage() {
         </aside>
 
         <section className="w-full md:w-3/4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all relative"
+          {products.length === 0 ? (
+            <div className="w-full text-center py-20 ">
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                Oops! No products found
+              </h2>
+              <p className="text-lg text-gray-600 mb-6">
+                We couldn&apos;t find any products in this category. Try another
+                filter or check back later!
+              </p>
+              <Link
+                href="/"
+                className="px-6 py-2 bg-blue-600 text-white rounded-full  hover:bg-blue-700 transition-all"
               >
-                <Link href={`/detail/${product.id}`}>
-                  <div className="relative w-full h-64">
-                    <Image
-                      src={product.images[0]}
-                      alt={product.name}
-                      fill
-                      className="object-cover rounded-t-lg"
-                    />
-                  </div>
-                </Link>
-                <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+                Go Back to Home
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all relative"
                 >
-                  <FaHeart
-                    className={`text-lg ${
-                      wishlist.includes(product.id)
-                        ? "text-red-500"
-                        : "text-gray-400"
-                    }`}
-                  />
-                </button>
-                <div className="px-4 pb-4">
-                  <h3 className="font-semibold text-md mt-3 text-gray-900">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-500 text-sm">{product.category}</p>
-                  <p className="font-semibold text-md mt-2 text-gray-800">
-                    NRS {product.price.toLocaleString()}
-                  </p>
+                  <Link href={`/detail/${product.id}`}>
+                    <div className="relative w-full h-64">
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        fill
+                        className="object-cover rounded-t-lg"
+                      />
+                    </div>
+                  </Link>
+                  <button
+                    onClick={() => toggleWishlist(product.id)}
+                    className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+                  >
+                    <FaHeart
+                      className={`text-lg ${
+                        wishlist.includes(product.id)
+                          ? "text-red-500"
+                          : "text-gray-400"
+                      }`}
+                    />
+                  </button>
+                  <div className="px-4 pb-4">
+                    <h3 className="font-semibold text-md mt-3 mb-1 text-gray-900">
+                      {product.name}
+                    </h3>
+                    {Array.isArray(product.category)
+                      ? product.category.map((cat, index) => (
+                          <span
+                            key={index}
+                            className="mr-2 bg-blue-500 p-2 text-white rounded-lg text-xs hover:bg-blue-600 transition-all"
+                          >
+                            {cat}
+                          </span>
+                        ))
+                      : " "}
+                    <p className="font-semibold text-md mt-2 text-gray-800">
+                      NRS {product.price.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className="flex justify-between items-center mt-6 mb-6">
             <p className="text-gray-700">

@@ -18,35 +18,22 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "./product";
-
-// Define the type for a product
-export interface SelectProduct {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  description: string;
-  category: string;
-  images: string[];
-  createdAt: string;
-  status: string;
-}
+import { ProductResponse } from "@/lib/types";
 
 export function ProductsTable({
   products,
   offset,
   totalProducts,
-  limit, // received as a prop
+  limit,
 }: {
-  products: SelectProduct[];
+  products: ProductResponse[];
   offset: number;
   totalProducts: number;
   limit: number;
 }) {
   const router = useRouter();
-  const productsPerPage = limit; // Use the passed limit (6)
+  const productsPerPage = limit;
 
-  // Navigate to the previous page by reducing the offset
   function prevPage() {
     if (offset > 0) {
       const newOffset = Math.max(0, offset - productsPerPage);
@@ -56,7 +43,6 @@ export function ProductsTable({
     }
   }
 
-  // Navigate to the next page by increasing the offset
   function nextPage() {
     if (offset + productsPerPage < totalProducts) {
       const newOffset = offset + productsPerPage;

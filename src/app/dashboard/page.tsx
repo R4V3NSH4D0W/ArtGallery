@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { File } from "lucide-react";
 import AddProductModal from "./components/addproduct";
-import { ProductsTable, SelectProduct } from "./product-table";
+import { ProductsTable } from "./product-table";
 import { useRefetch } from "@/context/refetchContext";
 import { BeatLoader } from "react-spinners";
+import { ProductResponse } from "@/lib/types";
 
 async function getProducts(
   search: string,
@@ -26,7 +27,7 @@ async function getProducts(
 export default function DashBoard(props: {
   searchParams: Promise<{ q: string; offset: string; limit?: string }>;
 }) {
-  const [products, setProducts] = useState<SelectProduct[]>([]);
+  const [products, setProducts] = useState<ProductResponse[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(6);

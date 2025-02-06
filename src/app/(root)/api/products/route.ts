@@ -76,23 +76,28 @@ export async function POST(req: Request) {
   async function CREATE_PRODUCT(req: Request) {
     const formData = await req.formData();
   
+    // Extract form data fields
     const name = formData.get("name") as string;
     const price = parseFloat(formData.get("price") as string);
     const quantity = parseInt(formData.get("quantity") as string);
     const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
+    const category = JSON.parse(formData.get("category") as string) as string[];  // Parsing category from JSON string
+    const material = JSON.parse(formData.get("material") as string) as string[];  // Parsing material from JSON string
+    const length = parseFloat(formData.get("length") as string);
+    const width = parseFloat(formData.get("width") as string);
+    const breadth = parseFloat(formData.get("breadth") as string);
     const images = formData.getAll("images") as File[];
   
-    if (!name || !price || !category) {
+    // Validation
+    if (!name || !price || !category.length) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
-
+  
     const uploadDir = join(process.cwd(), "public", "uploads");
     await mkdir(uploadDir, { recursive: true });
   
     const imagePaths: string[] = [];
     for (const image of images) {
-        console.log("File type:", image.type);
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       const maxSize = 5 * 1024 * 1024; // 5MB
   
@@ -111,20 +116,31 @@ export async function POST(req: Request) {
       await writeFile(filePath, buffer);
       imagePaths.push(`/uploads/${uniqueName}`);
     }
-
-    const product = await prisma.product.create({
-      data: {
-        name,
-        price,
-        quantity,
-        description,
-        category,
-        images: imagePaths,
-      },
-    });
   
-    return NextResponse.json({ success: true, product }, { status: 201 });
+    try {
+      // Create product record in the database
+      const product = await prisma.product.create({
+        data: {
+          name,
+          price,
+          quantity,
+          description,
+          category: { set: category }, 
+          images: imagePaths,
+          material: { set: material }, 
+          length,
+          width,
+          breadth,
+        },
+      });
+  
+      return NextResponse.json({ success: true, product }, { status: 201 });
+    } catch (error) {
+      console.error("Error creating product:", error);
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
   }
+  
   
   async function CHANGE_STATUS(productId: number, status: string) {
     const validStatuses = ["active", "inactive", "archived", "draft"];
@@ -166,10 +182,10 @@ export async function POST(req: Request) {
     const url = new URL(req.url);
   
     const search = url.searchParams.get("q") || "";
-    const offset = parseInt(url.searchParams.get("offset") || "0", 10); // Default offset to 0 if not provided
+    const offset = parseInt(url.searchParams.get("offset") || "0", 10);
     const status = url.searchParams.get("status") || "all";
     const category = url.searchParams.get("category") || "All";
-    const limit = parseInt(url.searchParams.get("limit") || "6", 10); // Read `limit` from query parameters, default to 6
+    const limit = parseInt(url.searchParams.get("limit") || "6", 10);
   
     const cookies = req.headers.get("cookie");
     const token = cookies
@@ -187,7 +203,11 @@ export async function POST(req: Request) {
             mode: Prisma.QueryMode.insensitive,
           },
         }),
-        ...(category !== "All" && { category }),
+        ...(category !== "All" && {
+          category: {
+            has: category, // Use `has` for array filtering
+          },
+        }),
       };
   
       // Enforce "active" status for non-admin users
@@ -208,11 +228,22 @@ export async function POST(req: Request) {
   
       const totalProducts = await prisma.product.count({ where: whereCondition });
   
+      // Format the response by adding `dimensions` field as an object
+      const formattedProducts = products.map(product => {
+        const { length, width, breadth, ...rest } = product;
+        return {
+          ...rest,
+          dimensions: length && width && breadth
+            ? { length, width, breadth }
+            : undefined,  // Include dimensions as an object only if all fields exist
+        };
+      });
+  
       // Calculate the next offset value for pagination
       const newOffset = offset + limit;
   
       return NextResponse.json(
-        { success: true, products, totalProducts, newOffset },
+        { success: true, products: formattedProducts, totalProducts, newOffset },
         { status: 200 }
       );
     } catch (error) {
@@ -306,9 +337,14 @@ export async function DELETE(req: Request) {
     const price = parseFloat(formData.get("price") as string);
     const quantity = parseInt(formData.get("quantity") as string);
     const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
-    const images = formData.getAll("images") as File[]; 
+    const category = JSON.parse(formData.get("category") as string) as string[];  // Ensure category is parsed as an array
+    const material = JSON.parse(formData.get("material") as string) as string[];  // Ensure material is parsed as an array
+    const images = formData.getAll("images") as File[];
     const deletedImages = formData.getAll("deletedImages") as string[];
+  
+    const length = parseFloat(formData.get("length") as string);  // Get length from formData
+    const width = parseFloat(formData.get("width") as string);    // Get width from formData
+    const breadth = parseFloat(formData.get("breadth") as string); // Get breadth from formData
   
     const existingProduct = await prisma.product.findUnique({
       where: { id: productId },
@@ -328,9 +364,6 @@ export async function DELETE(req: Request) {
       const maxSize = 5 * 1024 * 1024; // 5MB
   
       for (const image of images) {
-        console.log("File type:", image.type);
-        console.log("File name:", image.name);
-  
         if (!allowedTypes.includes(image.type)) {
           return NextResponse.json({ error: "Invalid file type" }, { status: 400 });
         }
@@ -377,8 +410,12 @@ export async function DELETE(req: Request) {
         price: price || existingProduct.price,
         quantity: quantity || existingProduct.quantity,
         description: description || existingProduct.description,
-        category: category || existingProduct.category,
+        category: { set: category.length > 0 ? category : existingProduct.category }, // Update category
+        material: { set: material.length > 0 ? material : existingProduct.material }, // Update material
         images: imagePaths,
+        length: length || existingProduct.length,   // Update length
+        width: width || existingProduct.width,      // Update width
+        breadth: breadth || existingProduct.breadth, // Update breadth
       },
     });
   
@@ -392,3 +429,4 @@ export async function DELETE(req: Request) {
       console.error(`Failed to delete image at ${filePath}:`, error);
     }
   }
+  

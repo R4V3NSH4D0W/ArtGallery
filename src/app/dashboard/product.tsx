@@ -15,13 +15,13 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { toast } from "react-toastify";
-import { SelectProduct } from "./product-table";
 import { useRefetch } from "@/context/refetchContext";
 import EditProductModal from "./components/editproduct";
 import { getStatusClass } from "@/lib/helper";
 import ConfirmationModal from "./components/confirmationModel";
+import { ProductResponse } from "@/lib/types";
 
-export function Product({ product }: { product: SelectProduct }) {
+export function Product({ product }: { product: ProductResponse }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
