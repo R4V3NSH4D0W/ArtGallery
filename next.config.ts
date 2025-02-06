@@ -5,10 +5,17 @@ const nextConfig: NextConfig = {
     JWT_SECRET: process.env.JWT_SECRET,
   },
   images: {
-    domains: [
-      "w.wallhaven.cc", 
-      "artgallery.lenishmagar.me",  
-      "lenishmagar.me",             
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'artgallery.lenishmagar.me',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'w.wallhaven.cc',
+        pathname: '/**',
+      },
     ],
   },
 };
