@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { ProductResponse } from "@/lib/types";
-
-const prisma = new PrismaClient();
-
+import prisma from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string } >} 
 ) {
-  const { id } = params;
+
+  const { id } = await context.params;
 
   if (!id) {
     return NextResponse.json(
@@ -32,23 +30,22 @@ export async function GET(
       );
     }
 
-  
     const productResponse: ProductResponse = {
       id: product.id.toString(),
       name: product.name,
       price: product.price,
       quantity: product.quantity,
       description: product.description,
-      category: product.category, 
+      category: product.category,
       images: product.images,
       createdAt: product.createdAt.toISOString(),
       status: product.status,
       dimensions: {
         length: product.length ?? 0,
-        width: product.width ?? 0,   
+        width: product.width ?? 0,
         breadth: product.breadth ?? 0,
       },
-      material: product.material, 
+      material: product.material,
     };
 
     return NextResponse.json(productResponse, { status: 200 });

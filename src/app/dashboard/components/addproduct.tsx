@@ -125,7 +125,7 @@ export default function AddProductModal() {
           Add Product
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl rounded-xl p-6">
+      <DialogContent className="max-w-3xl rounded-xl p-6 h-[100vh] max-h-[100vh] overflow-y-auto sm:h-auto sm:max-h-none sm:overflow-visible">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-gray-800">
             Add New Product
@@ -145,14 +145,14 @@ export default function AddProductModal() {
               />
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Price
                 </label>
                 <Input
                   type="number"
-                  className="rounded-lg w-[15rem]"
+                  className="rounded-lg w-full sm:w-[15rem]"
                   value={price}
                   onChange={(e) => setPrice(Number(e.target.value))}
                 />
@@ -242,7 +242,7 @@ export default function AddProductModal() {
               />
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Category
@@ -299,10 +299,10 @@ export default function AddProductModal() {
               <Input
                 id="file-upload"
                 type="file"
-                multiple
-                className="hidden"
-                onChange={handleImageUpload}
                 accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="hidden"
               />
             </div>
             {images.length > 0 && (
@@ -330,6 +330,14 @@ export default function AddProductModal() {
             )}
           </div>
 
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setOpen(false)}
+            className="block sm:hidden w-full h-12 mt-6" // Visible only on small screens
+          >
+            Cancel
+          </Button>
           <Button
             type="submit"
             className="w-full h-12 mt-6 bg-primary text-white"

@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaHeart } from "react-icons/fa";
 import Image from "next/image";
@@ -11,6 +10,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { BeatLoader } from "react-spinners";
 
 export interface IProducts {
   id: number;
@@ -35,7 +35,7 @@ const categories = [
   "Minimalism",
   "Pop Art",
 ];
-const types = ["All", "New", "Sale", "Popular"];
+const types = ["All", "New"];
 const LIMIT = 6;
 
 async function getProducts(
@@ -70,9 +70,11 @@ export default function ShopPage() {
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchProducts() {
+      setLoading(true);
       try {
         const data = await getProducts(
           activeCategory,
@@ -84,6 +86,8 @@ export default function ShopPage() {
         setTotal(data.totalProducts);
       } catch {
         console.error("Failed to load products");
+      } finally {
+        setLoading(false);
       }
     }
     fetchProducts();
@@ -153,7 +157,12 @@ export default function ShopPage() {
         </aside>
 
         <section className="w-full md:w-3/4">
-          {products.length === 0 ? (
+          {/* Loading state */}
+          {loading ? (
+            <div className="flex justify-center items-center min-h-[400px]">
+              <BeatLoader size={15} color="#000000" loading={loading} />
+            </div>
+          ) : products.length === 0 ? (
             <div className="w-full text-center py-20 ">
               <h2 className="text-3xl font-bold text-gray-800 mb-4">
                 Oops! No products found

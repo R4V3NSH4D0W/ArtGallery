@@ -1,35 +1,61 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaShoppingCart, FaHeart, FaTruck, FaPalette } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Typography } from "@/components/ui/typography";
 import { ProductResponse } from "@/lib/types";
+import { BeatLoader } from "react-spinners";
 
 export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>();
   const [product, setProduct] = useState<ProductResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // Add a loading state
 
   const { id } = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
+      setLoading(true); // Set loading to true when fetching data
       fetch(`/api/products/${id}`)
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            router.push("/not_found");
+            return;
+          }
+          return response.json();
+        })
         .then((data) => {
-          setProduct(data);
-          if (data.images && data.images.length > 0) {
-            setSelectedImage(data.images[0]);
+          if (data) {
+            setProduct(data);
+            if (data.images && data.images.length > 0) {
+              setSelectedImage(data.images[0]);
+            }
+            setLoading(false); // Set loading to false once data is fetched
           }
         })
-        .catch((error) => console.error("Error fetching product:", error));
+        .catch((error) => {
+          console.error("Error fetching product:", error);
+          router.push("/not_found");
+          setLoading(false); // Ensure loading state is false on error
+        });
     }
-  }, [id]);
+  }, [id, router]);
+
+  if (loading) {
+    // Show loading spinner while fetching the product
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <BeatLoader size={15} color="black" loading={loading} />
+      </div>
+    );
+  }
 
   if (!product) {
-    return <p>Loading...</p>;
+    return <div>Product not found</div>; // Handle product not found
   }
 
   return (
