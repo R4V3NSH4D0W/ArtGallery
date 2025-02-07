@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { useRefetch } from "@/context/refetchContext";
 import Select from "react-select";
@@ -58,6 +58,7 @@ export default function EditProductModal({
   const [material, setMaterial] = useState<Option[]>(
     product.material.map((mat) => ({ value: mat, label: mat }))
   );
+  const [loading, setLoading] = useState(false);
   const { setRefetchFlag } = useRefetch();
 
   const categories = [
@@ -101,9 +102,11 @@ export default function EditProductModal({
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
+    setLoading(true);
     event.preventDefault();
     if (images.length === 0) {
       toast.error("Please add at least one image for the product.");
+      setLoading(false);
       return;
     }
 
@@ -147,6 +150,7 @@ export default function EditProductModal({
 
       if (!res.ok) {
         const errorData = await res.json();
+        setLoading(false);
         throw new Error(errorData.error || "Failed to update product");
       }
       toast.success("Product updated successfully");
@@ -162,7 +166,9 @@ export default function EditProductModal({
       setWidth(0);
       setBreadth(0);
       setMaterial([]);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       toast.error((error as Error).message);
     }
   };
@@ -386,15 +392,16 @@ export default function EditProductModal({
             type="button"
             variant="outline"
             onClick={() => setOpen(false)}
-            className="block sm:hidden w-full h-12 mt-6" // Visible only on small screens
+            className="block sm:hidden w-full h-12 mt-6"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             className="w-full h-12 mt-6 bg-primary text-white"
+            disabled={loading}
           >
-            Save Product
+            {loading ? <Loader2 className="animate-spin" /> : "Save Changes"}
           </Button>
         </form>
       </DialogContent>

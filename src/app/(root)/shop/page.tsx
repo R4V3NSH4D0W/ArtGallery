@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -11,6 +11,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { BeatLoader } from "react-spinners";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface IProducts {
   id: number;
@@ -179,14 +181,14 @@ export default function ShopPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
               {products.map((product) => (
                 <div
                   key={product.id}
                   className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all relative"
                 >
                   <Link href={`/detail/${product.id}`}>
-                    <div className="relative w-full h-64">
+                    <div className="relative w-full h-36 lg:h-64">
                       <Image
                         src={product.images[0]}
                         alt={product.name}
@@ -207,21 +209,23 @@ export default function ShopPage() {
                       }`}
                     />
                   </button>
-                  <div className="px-4 pb-4">
-                    <h3 className="font-semibold text-md mt-3 mb-1 text-gray-900">
+                  <div className="px-2 pb-2 lg:px-4 lg:pb-4">
+                    <h3 className="font-bold text-sm lg:text-md mt-3 mb-1 text-gray-900">
                       {product.name}
                     </h3>
-                    {Array.isArray(product.category)
-                      ? product.category.map((cat, index) => (
-                          <span
-                            key={index}
-                            className="mr-2 bg-blue-500 p-2 text-white rounded-lg text-xs hover:bg-blue-600 transition-all"
-                          >
-                            {cat}
-                          </span>
-                        ))
-                      : " "}
-                    <p className="font-semibold text-md mt-2 text-gray-800">
+                    <div className="flex flex-wrap gap-1 lg:gap-2">
+                      {Array.isArray(product.category)
+                        ? product.category.map((cat, index) => (
+                            <span
+                              key={index}
+                              className="bg-blue-500 px-2 py-1 text-white rounded-lg text-xs hover:bg-blue-600 transition-all"
+                            >
+                              {cat}
+                            </span>
+                          ))
+                        : null}
+                    </div>
+                    <p className="font-semibold text-sm lg:text-md mt-2 text-gray-800">
                       NRS {product.price.toLocaleString()}
                     </p>
                   </div>
@@ -231,24 +235,31 @@ export default function ShopPage() {
           )}
 
           <div className="flex justify-between items-center mt-6 mb-6">
-            <p className="text-gray-700">
+            <div className="text-sm lg:text-md text-muted-foreground">
               Showing{" "}
-              {products.length > 0
-                ? `${offset + 1} - ${Math.min(offset + LIMIT, total)}`
-                : "0"}{" "}
-              out of {total} products
-            </p>
+              <strong>
+                {products.length > 0
+                  ? `${offset + 1} - ${Math.min(offset + LIMIT, total)}`
+                  : "0"}{" "}
+              </strong>{" "}
+              of <strong>{total}</strong> products
+            </div>
 
-            <div className="flex gap-4">
-              <button
+            <div className="flex gap-2 items-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
                 onClick={() => setOffset(Math.max(0, offset - LIMIT))}
                 disabled={offset === 0}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
               >
-                <FaChevronLeft className="text-lg text-gray-600" />
-              </button>
-
-              <button
+                <ChevronLeft className="h-6 w-6" />
+                <label className="text-sm lg:text-md">Prev</label>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
                 onClick={() => {
                   if (offset + LIMIT < total) {
                     setOffset(offset + LIMIT);
@@ -257,10 +268,10 @@ export default function ShopPage() {
                   }
                 }}
                 disabled={offset + LIMIT >= total}
-                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
               >
-                <FaChevronRight className="text-lg text-gray-600" />
-              </button>
+                <label className="text-sm lg:text-md">Next</label>
+                <ChevronRight className=" h-6 w-6" />
+              </Button>
             </div>
           </div>
         </section>

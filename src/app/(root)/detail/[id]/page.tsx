@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaShoppingCart, FaHeart, FaTruck, FaPalette } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { Typography } from "@/components/ui/typography";
 import { ProductResponse } from "@/lib/types";
 import { BeatLoader } from "react-spinners";
 
@@ -54,12 +53,12 @@ export default function ProductDetail() {
   }
 
   if (!product) {
-    return <div>Product not found</div>; // Handle product not found
+    return <div>Product not found</div>;
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-[3rem] lg:mt-[5rem]">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 xl:gap-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-[4rem] lg:mt-[6rem] relative">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10 xl:gap-16">
         {/* Image Gallery */}
         <div className="relative group">
           <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
@@ -67,17 +66,17 @@ export default function ProductDetail() {
               src={selectedImage!}
               alt="Product"
               fill
-              className="object-cover "
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
           </div>
 
           {/* Thumbnails Carousel */}
-          <div className="flex gap-4 mt-6 overflow-x-auto pb-2">
+          <div className="flex gap-4 mt-4 lg:mt-6 overflow-x-auto pb-2">
             {product.images.map((img, index) => (
               <div
                 key={index}
-                className="relative shrink-0 w-24 h-24 cursor-pointer group"
+                className="relative shrink-0 w-20 h-20 sm:w-24 sm:h-24 cursor-pointer"
                 onClick={() => setSelectedImage(img)}
               >
                 <Image
@@ -96,86 +95,93 @@ export default function ProductDetail() {
         </div>
 
         {/* Product Details */}
-        <div className="flex flex-col gap-6 top-20 h-fit">
-          {/* Header */}
-          <div className="space-y-2">
-            <Typography
-              variant="h1"
-              className="text-4xl font-bold tracking-tight"
+        <div className="flex flex-col gap-4 lg:gap-6">
+          {/* Header with Wishlist Icon for small screens */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h1 className="text-xl lg:text-4xl font-bold tracking-tight">
+                {product.name}
+              </h1>
+              <h2 className="text-lg lg:text-3xl text-primary font-semibold">
+                NRS {product.price.toLocaleString()}
+              </h2>
+              <p className="text-gray-600 text-sm lg:text-base">
+                {product.quantity > 0
+                  ? `${product.quantity} In Stock`
+                  : "Out of Stock"}
+              </p>
+            </div>
+            {/* Wishlist icon (only visible on small screens) */}
+            <button
+              className="block lg:hidden p-2 rounded-full bg-accent/20 shadow-lg"
+              aria-label="Wishlist"
             >
-              {product.name}
-            </Typography>
-            <Typography variant="h3" className=" font-semibold text-primary">
-              NRS {product.price.toLocaleString()}
-            </Typography>
-            {/* In Stock Display */}
-            <Typography variant="p" className=" text-gray-600">
-              {product.quantity > 0
-                ? ` ${product.quantity} In Stock`
-                : "Out of Stock"}
-            </Typography>
+              <FaHeart className="w-6 h-6 text-primary" />
+            </button>
           </div>
 
           {/* Highlights */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 p-4 bg-accent/20 rounded-xl">
-              <FaPalette className="w-6 h-6 text-primary" />
-              <span className="font-medium">Handcrafted Design</span>
+          <div className="grid grid-cols-2 gap-2 lg:gap-4">
+            <div className="flex items-center gap-2 p-3 bg-accent/20 rounded-xl">
+              <FaPalette className="w-5 h-5 text-primary" />
+              <span className="font-medium text-sm lg:text-base">
+                Handcrafted Design
+              </span>
             </div>
-            <div className="flex items-center gap-3 p-4 bg-accent/20 rounded-xl">
-              <FaTruck className="w-6 h-6 text-primary" />
-              <span className="font-medium">Free Shipping</span>
+            <div className="flex items-center gap-2 p-3 bg-accent/20 rounded-xl">
+              <FaTruck className="w-5 h-5 text-primary" />
+              <span className="font-medium text-sm lg:text-base">
+                Free Shipping
+              </span>
             </div>
           </div>
 
           {/* Description */}
-          <Typography
-            variant="span"
-            className=" leading-relaxed  dark:text-gray-300"
-          >
+          <p className="leading-relaxed dark:text-gray-300 text-sm lg:text-base">
             {product.description}
-          </Typography>
+          </p>
 
           {/* Dimensions, Material, and Category Section */}
           {(product.dimensions ||
             (product.material && product.material.length > 0) ||
             (product.category && product.category.length > 0)) && (
-            <div className="grid grid-cols-2  gap-4">
-              {/* Dimensions */}
+            <div className="grid grid-cols-2 gap-4">
               {product.dimensions && (
                 <div className="p-4 bg-background rounded-xl border">
-                  <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
+                  <h4 className="text-xs md:text-sm font-semibold uppercase text-gray-500 mb-1">
                     Dimensions
                   </h4>
-                  <p className="font-medium">
+                  <p className="font-medium text-xs md:text-sm">
                     {product.dimensions.length} cm x {product.dimensions.width}{" "}
                     cm x {product.dimensions.breadth} cm
                   </p>
                 </div>
               )}
-              {/* Material */}
               {product.material && product.material.length > 0 && (
                 <div className="p-4 bg-background rounded-xl border">
-                  <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
+                  <h4 className="text-xs md:text-sm font-semibold uppercase text-gray-500 mb-1">
                     Material
                   </h4>
-                  <p className="font-medium">{product.material.join(", ")}</p>
+                  <p className="font-medium text-xs md:text-sm">
+                    {product.material.join(", ")}
+                  </p>
                 </div>
               )}
-              {/* Category */}
               {product.category && product.category.length > 0 && (
                 <div className="p-4 bg-background rounded-xl border">
-                  <h4 className="text-sm font-semibold uppercase text-gray-500 mb-1">
+                  <h4 className="text-xs md:text-sm font-semibold uppercase text-gray-500 mb-1">
                     Category
                   </h4>
-                  <p className="font-medium">{product.category.join(", ")}</p>
+                  <p className="font-medium text-xs md:text-sm">
+                    {product.category.join(", ")}
+                  </p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+          {/* Original Action Buttons (visible on larger screens) */}
+          <div className="hidden lg:flex flex-col sm:flex-row gap-4 mt-4">
             <Button className="flex-1 h-14 text-lg gap-3 hover:scale-[1.02] transition-transform bg-blue-500 hover:bg-blue-600">
               <FaShoppingCart className="w-5 h-5" />
               Add to Cart
@@ -191,20 +197,13 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Mobile Sticky Footer */}
-      <div className="fixed bottom-0 inset-x-0 bg-background border-t lg:hidden p-4 shadow-lg">
-        <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
-          <div>
-            <p className="text-primary font-bold text-xl">
-              NRS {product.price.toLocaleString()}
-            </p>
-            <p className="text-sm text-gray-500">{product.quantity} In stock</p>
-          </div>
-          <Button className="gap-2 flex-1 max-w-xs bg-blue-500">
-            <FaShoppingCart />
-            Add to Cart
-          </Button>
-        </div>
+      <div className="fixed bottom-4 right-4 lg:hidden z-50">
+        <Button
+          className="h-12 w-12 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg transition duration-300"
+          aria-label="Add to Cart"
+        >
+          <FaShoppingCart className="w-6 h-6 text-white" />
+        </Button>
       </div>
     </div>
   );
