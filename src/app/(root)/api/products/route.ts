@@ -69,8 +69,7 @@ export async function POST(req: Request) {
   
     const imagePaths: string[] = [];
 
-    const url = new URL(req.url);
-    const baseUrl = url.origin;
+  
     for (const image of images) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       const maxSize = 5 * 1024 * 1024; // 5MB
@@ -89,7 +88,7 @@ export async function POST(req: Request) {
   
       await writeFile(filePath, buffer);
   
-      imagePaths.push(`${baseUrl}/api/uploads?file=${uniqueName}`);
+      imagePaths.push(`${process.env.NEXT_PUBLIC_API_URL}/api/uploads?file=${uniqueName}`);
     }
   
     try {
@@ -295,7 +294,6 @@ export async function POST(req: Request) {
 
   export async function PUT(req: Request) {
     const url = new URL(req.url);
-    const baseUrl = url.origin;
     const cookies = req.headers.get("cookie");
     const token = cookies
       ?.split("; ")
@@ -364,7 +362,7 @@ export async function POST(req: Request) {
         const filePath = join(uploadDir, uniqueName);
   
         await writeFile(filePath, buffer);
-        imagePaths.push(`${baseUrl}/api/uploads?file=${uniqueName}`);
+        imagePaths.push(`${process.env.NEXT_PUBLIC_API_URL}/api/uploads?file=${uniqueName}`);
       }
     }
   
