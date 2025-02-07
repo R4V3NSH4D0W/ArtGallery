@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'artgallery.lenishmagar.me',
-        port: '4000', 
         pathname: '/**',
       },
       {
