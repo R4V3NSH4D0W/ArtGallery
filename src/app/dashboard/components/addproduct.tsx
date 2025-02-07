@@ -10,7 +10,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ImagePlus, Trash2, Plus, Minus } from "lucide-react";
+import {
+  PlusCircle,
+  ImagePlus,
+  Trash2,
+  Plus,
+  Minus,
+  Loader2,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { useRefetch } from "@/context/refetchContext";
 import Select from "react-select";
@@ -32,6 +39,7 @@ export default function AddProductModal() {
   const [width, setWidth] = useState<number>(0);
   const [breadth, setBreadth] = useState<number>(0);
   const [material, setMaterial] = useState<Option[]>([]);
+  const [loading, setLoading] = useState(false);
   const { setRefetchFlag } = useRefetch();
 
   const categories = [
@@ -61,8 +69,10 @@ export default function AddProductModal() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
     if (images.length === 0) {
       toast.error("Please add at least one image for the product.");
+      setLoading(false);
       return;
     }
 
@@ -112,7 +122,9 @@ export default function AddProductModal() {
       setWidth(0);
       setBreadth(0);
       setMaterial([]);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       toast.error((error as Error).message);
     }
   };
@@ -334,15 +346,16 @@ export default function AddProductModal() {
             type="button"
             variant="outline"
             onClick={() => setOpen(false)}
-            className="block sm:hidden w-full h-12 mt-6" // Visible only on small screens
+            className="block sm:hidden w-full h-12 mt-6"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             className="w-full h-12 mt-6 bg-primary text-white"
+            disabled={loading}
           >
-            Save Product
+            {loading ? <Loader2 className="animate-spin" /> : "Save Product"}
           </Button>
         </form>
       </DialogContent>

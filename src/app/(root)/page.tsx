@@ -124,14 +124,14 @@ function Home() {
         <div className="relative mt-20 flex flex-col lg:flex-row bg-blue-lightsky h-auto lg:h-[35rem]">
           {/* Left Section */}
           <div className="relative h-[15rem] lg:h-[25rem] w-full lg:w-[50%] bg-blue-skyblue">
-            <MotionDiv className="absolute h-[15rem] lg:h-[24rem] w-[80%] lg:w-[36rem] right-4 lg:right-10 top-[-20px] lg:top-[-40px] rounded-lg overflow-hidden">
+            <div className="absolute h-[15rem] lg:h-[24rem] w-[80%] lg:w-[36rem] right-4 lg:right-10 top-[-20px] lg:top-[-40px] rounded-lg overflow-hidden">
               <Image
                 src={"/stringart/string4.jpg"}
                 alt="straw"
                 fill
                 objectFit="cover"
               />
-            </MotionDiv>
+            </div>
           </div>
 
           {/* Right Section */}
@@ -143,7 +143,7 @@ function Home() {
             {/* Office Data */}
             <div className="flex flex-wrap gap-6 lg:gap-8 my-6">
               {officeData.map((office, index) => (
-                <MotionDiv key={index} className="flex flex-row gap-4">
+                <div key={index} className="flex flex-row gap-4">
                   {/* Icon */}
                   <div className="mt-1 text-blue-500 text-2xl">
                     {office.icon}
@@ -163,14 +163,14 @@ function Home() {
                         office.details?.country}
                     </p>
                   </div>
-                </MotionDiv>
+                </div>
               ))}
             </div>
           </div>
         </div>
 
         {/* Social Media */}
-        <MotionDiv className="flex flex-wrap py-10 items-center justify-center gap-6 sm:gap-10">
+        <div className="flex flex-wrap py-10 items-center justify-center gap-6 sm:gap-10">
           {socialMediaLinks.map((item, index) => (
             <div
               key={index}
@@ -180,7 +180,7 @@ function Home() {
               <span>{item.name}</span>
             </div>
           ))}
-        </MotionDiv>
+        </div>
         <ChatBot />
       </div>
     </>
