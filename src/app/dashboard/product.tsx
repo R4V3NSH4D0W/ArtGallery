@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +26,6 @@ export function Product({ product }: { product: ProductResponse }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
   const { setRefetchFlag } = useRefetch();
 
   const handleEditClick = () => {
@@ -101,17 +101,17 @@ export function Product({ product }: { product: ProductResponse }) {
     deleteProduct(product.id);
     setIsDeleteModalOpen(false);
   };
-
+  // src="http://localhost:4000/api/uploads?file=1e6be9d7-d667-44f5-9cef-ed26a6f9b6b5.png"
   return (
     <>
       <TableRow>
         <TableCell className="hidden sm:table-cell">
           <Image
-            alt="Product image"
             className="aspect-square rounded-md object-cover"
-            height="64"
             src={product.images[0]}
-            width="64"
+            alt="Product Image"
+            width={64}
+            height={64}
           />
         </TableCell>
         <TableCell className="font-medium">{product.name}</TableCell>

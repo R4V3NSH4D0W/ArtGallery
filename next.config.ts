@@ -10,11 +10,18 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'artgallery.lenishmagar.me',
-        pathname: '/uploads/**',
+        port: '4000', 
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'w.wallhaven.cc',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '4000',  
         pathname: '/**',
       },
     ],

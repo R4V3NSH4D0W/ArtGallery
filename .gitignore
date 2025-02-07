@@ -17,7 +17,8 @@
 /.next/
 /out/
 /public/uploads/
-
+/uploads/products/
+/uploads/profile/
 # production
 /build
 

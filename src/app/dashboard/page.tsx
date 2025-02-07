@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { File } from "lucide-react";
@@ -24,30 +25,41 @@ async function getProducts(
   return await response.json();
 }
 
-export default function DashBoard(props: {
-  searchParams: Promise<{ q: string; offset: string; limit?: string }>;
-}) {
+function DashBoard() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const q = searchParams.get("q") ?? "";
+  const offsetParam = searchParams.get("offset") ?? "0";
+  const limitParam = searchParams.get("limit") ?? "6";
+  const statusParam = searchParams.get("status") ?? "all";
+
   const [products, setProducts] = useState<ProductResponse[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(6);
+  const [offset, setOffset] = useState(parseInt(offsetParam, 10));
+  const [limit, setLimit] = useState(parseInt(limitParam, 10));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { refetchFlag, setRefetchFlag } = useRefetch();
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState(statusParam);
+
+  const handleTabChange = (tab: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set("status", tab);
+    newSearchParams.set("offset", "0");
+    router.push(`/dashboard?${newSearchParams.toString()}`);
+    setActiveTab(tab);
+  };
 
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const searchParams = await props.searchParams;
-        const search = searchParams.q ?? "";
-        const initialOffset = parseInt(searchParams.offset ?? "0", 10);
-        const initialLimit = parseInt(searchParams.limit ?? "6", 10);
+        const initialOffset = parseInt(offsetParam, 10);
+        const initialLimit = parseInt(limitParam, 10);
         setOffset(initialOffset);
         setLimit(initialLimit);
 
         const data = await getProducts(
-          search,
+          q,
           initialOffset,
           activeTab,
           initialLimit
@@ -67,7 +79,7 @@ export default function DashBoard(props: {
     } else {
       fetchProducts();
     }
-  }, [props.searchParams, refetchFlag, setRefetchFlag, activeTab]);
+  }, [q, offsetParam, limitParam, refetchFlag, setRefetchFlag, activeTab]);
 
   if (loading) {
     return (
@@ -83,7 +95,7 @@ export default function DashBoard(props: {
 
   return (
     <>
-      <Tabs defaultValue="all" onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
         <div className="flex items-center">
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
@@ -147,5 +159,19 @@ export default function DashBoard(props: {
         </TabsContent>
       </Tabs>
     </>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <BeatLoader size={15} color="black" />
+        </div>
+      }
+    >
+      <DashBoard />
+    </Suspense>
   );
 }

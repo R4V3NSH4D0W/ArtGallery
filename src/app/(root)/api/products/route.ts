@@ -8,7 +8,6 @@ import { unlink } from "fs/promises";
 
 import { v4 as uuidv4 } from "uuid";
 import { Prisma } from "@prisma/client";
-import fs from "fs";
 
 
 
@@ -48,8 +47,6 @@ export async function POST(req: Request) {
   }
 
 
-  
-
   async function CREATE_PRODUCT(req: Request) {
     const formData = await req.formData();
     const name = formData.get("name") as string;
@@ -57,7 +54,7 @@ export async function POST(req: Request) {
     const quantity = parseInt(formData.get("quantity") as string);
     const description = formData.get("description") as string;
     const category = JSON.parse(formData.get("category") as string) as string[];
-    const material = JSON.parse(formData.get("material") as string) as string[]; 
+    const material = JSON.parse(formData.get("material") as string) as string[];
     const length = parseFloat(formData.get("length") as string);
     const width = parseFloat(formData.get("width") as string);
     const breadth = parseFloat(formData.get("breadth") as string);
@@ -67,10 +64,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
   
-    const uploadDir = join(process.cwd(), "public", "uploads");
+    const uploadDir = join(process.cwd(), "uploads", "products");
     await mkdir(uploadDir, { recursive: true });
   
     const imagePaths: string[] = [];
+
+    const url = new URL(req.url);
+    const baseUrl = url.origin;
     for (const image of images) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       const maxSize = 5 * 1024 * 1024; // 5MB
@@ -88,7 +88,8 @@ export async function POST(req: Request) {
       const filePath = join(uploadDir, uniqueName);
   
       await writeFile(filePath, buffer);
-      imagePaths.push(`/uploads/${uniqueName}`);
+  
+      imagePaths.push(`${baseUrl}/api/uploads?file=${uniqueName}`);
     }
   
     try {
@@ -98,9 +99,9 @@ export async function POST(req: Request) {
           price,
           quantity,
           description,
-          category: { set: category }, 
-          images: imagePaths,
-          material: { set: material }, 
+          category: { set: category },
+          images: imagePaths, 
+          material: { set: material },
           length,
           width,
           breadth,
@@ -226,30 +227,27 @@ export async function POST(req: Request) {
   }
   
 
-export async function DELETE(req: Request) {
-  
+
+  export async function DELETE(req: Request) {
     const cookies = req.headers.get("cookie");
     const token = cookies
       ?.split("; ")
       .find((cookie) => cookie.startsWith("auth_token="))
       ?.split("=")[1];
-    
+
     const user = token ? verifyJwt(token) : null;
     if (!user || user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
   
     try {
-  
       const url = new URL(req.url);
-      const productId = parseInt(url.searchParams.get("productId") || "0", 10); 
-    
+      const productId = parseInt(url.searchParams.get("productId") || "0", 10);
   
       if (!productId) {
         return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
       }
   
-
       const product = await prisma.product.findUnique({
         where: { id: productId },
       });
@@ -257,18 +255,30 @@ export async function DELETE(req: Request) {
       if (!product) {
         return NextResponse.json({ error: "Product not found" }, { status: 404 });
       }
-
-      const uploadDir = join(process.cwd(), "public", "uploads");
+  
+      const uploadDir = join(process.cwd(), "uploads", "products");
+  
+      // Loop through the product images and delete each one
       for (const imagePath of product.images) {
-        const filePath = join(uploadDir, imagePath.split("/uploads/")[1]); 
-        try {
-          await unlink(filePath);
-        } catch (error) {
-          console.error(`Failed to delete image: ${filePath}`, error);
+        // Extract the file name from the URL (after "?file=")
+        const urlParams = new URL(imagePath);
+        const fileName = urlParams.searchParams.get("file");
+  
+        if (fileName) {
+          const filePath = join(uploadDir, fileName);
+  
+          try {
+            // Attempt to delete the image file
+            await unlink(filePath);
+          } catch (error) {
+            console.error(`Failed to delete image: ${filePath}`, error);
+          }
+        } else {
+          console.warn(`No file name found in the URL: ${imagePath}`);
         }
       }
   
-
+      // Delete the product from the database
       await prisma.product.delete({
         where: { id: productId },
       });
@@ -277,15 +287,15 @@ export async function DELETE(req: Request) {
   
     } catch (error) {
       console.error("Error deleting product:", error);
-      return NextResponse.json(
-        { error: "Internal server error" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
   }
+  
+
 
   export async function PUT(req: Request) {
     const url = new URL(req.url);
+    const baseUrl = url.origin;
     const cookies = req.headers.get("cookie");
     const token = cookies
       ?.split("; ")
@@ -307,13 +317,13 @@ export async function DELETE(req: Request) {
     const price = parseFloat(formData.get("price") as string);
     const quantity = parseInt(formData.get("quantity") as string);
     const description = formData.get("description") as string;
-    const category = JSON.parse(formData.get("category") as string) as string[]; 
-    const material = JSON.parse(formData.get("material") as string) as string[];  
+    const category = JSON.parse(formData.get("category") as string) as string[];
+    const material = JSON.parse(formData.get("material") as string) as string[];
     const images = formData.getAll("images") as File[];
     const deletedImages = formData.getAll("deletedImages") as string[];
   
-    const length = parseFloat(formData.get("length") as string); 
-    const width = parseFloat(formData.get("width") as string);  
+    const length = parseFloat(formData.get("length") as string);
+    const width = parseFloat(formData.get("width") as string);
     const breadth = parseFloat(formData.get("breadth") as string);
   
     const existingProduct = await prisma.product.findUnique({
@@ -324,11 +334,12 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
   
-    const uploadDir = join(process.cwd(), "public", "uploads");
+    const uploadDir = join(process.cwd(), "uploads", "products");
     await mkdir(uploadDir, { recursive: true });
   
     const imagePaths: string[] = [...existingProduct.images];
   
+    // Handle new images
     if (images.length > 0) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/pjpeg"];
       const maxSize = 5 * 1024 * 1024; // 5MB
@@ -353,26 +364,34 @@ export async function DELETE(req: Request) {
         const filePath = join(uploadDir, uniqueName);
   
         await writeFile(filePath, buffer);
-        imagePaths.push(`/uploads/${uniqueName}`);
+        imagePaths.push(`${baseUrl}/api/uploads?file=${uniqueName}`);
       }
     }
   
+    // Handle deleted images
     if (deletedImages.length > 0) {
       for (const deletedImage of deletedImages) {
-        const filePath = join(process.cwd(), "public", deletedImage);
-        try {
-          await removeImage(filePath);
-        } catch (error) {
-          console.error(`Error deleting image ${deletedImage}:`, error);
-        }
+        const fileUrl = new URL(deletedImage);
+        const fileName = fileUrl.searchParams.get("file");
   
-        const index = imagePaths.indexOf(deletedImage);
-        if (index !== -1) {
-          imagePaths.splice(index, 1);
+        if (fileName) {
+          const filePath = join(uploadDir, fileName);
+          try {
+            await unlink(filePath); // Delete the image from the server
+          } catch (error) {
+            console.error(`Error deleting image: ${filePath}`, error);
+          }
+  
+          // Remove the image from the imagePaths array
+          const index = imagePaths.indexOf(deletedImage);
+          if (index !== -1) {
+            imagePaths.splice(index, 1);
+          }
         }
       }
     }
   
+    // Update the product in the database
     const updatedProduct = await prisma.product.update({
       where: { id: productId },
       data: {
@@ -380,23 +399,16 @@ export async function DELETE(req: Request) {
         price: price || existingProduct.price,
         quantity: quantity || existingProduct.quantity,
         description: description || existingProduct.description,
-        category: { set: category.length > 0 ? category : existingProduct.category }, // Update category
-        material: { set: material.length > 0 ? material : existingProduct.material }, // Update material
+        category: { set: category.length > 0 ? category : existingProduct.category },
+        material: { set: material.length > 0 ? material : existingProduct.material },
         images: imagePaths,
-        length: length || existingProduct.length,   // Update length
-        width: width || existingProduct.width,      // Update width
-        breadth: breadth || existingProduct.breadth, // Update breadth
+        length: length || existingProduct.length,
+        width: width || existingProduct.width,
+        breadth: breadth || existingProduct.breadth,
       },
     });
   
     return NextResponse.json({ success: true, product: updatedProduct }, { status: 200 });
   }
   
-  async function removeImage(filePath: string) {
-    try {
-      await fs.promises.unlink(filePath);
-    } catch (error) {
-      console.error(`Failed to delete image at ${filePath}:`, error);
-    }
-  }
   
