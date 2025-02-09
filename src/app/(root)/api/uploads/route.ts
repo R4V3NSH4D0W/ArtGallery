@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'File name is required' }, { status: 400 });
   }
 
-  // Correct the file path to 'uploads/products' folder
   const filePath = path.join(process.cwd(), 'uploads', 'products', fileName);
 
   if (!fs.existsSync(filePath)) {
