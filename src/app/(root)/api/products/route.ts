@@ -115,7 +115,7 @@ export async function POST(req: Request) {
   }
   
   
-  async function CHANGE_STATUS(productId: number, status: string) {
+  async function CHANGE_STATUS(productId: string, status: string) {
     const validStatuses = ["active", "inactive", "archived", "draft"];
   
 
@@ -241,7 +241,7 @@ export async function POST(req: Request) {
   
     try {
       const url = new URL(req.url);
-      const productId = parseInt(url.searchParams.get("productId") || "0", 10);
+      const productId = url.searchParams.get("productId");
   
       if (!productId) {
         return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
@@ -257,9 +257,7 @@ export async function POST(req: Request) {
   
       const uploadDir = join(process.cwd(), "uploads", "products");
   
-      // Loop through the product images and delete each one
       for (const imagePath of product.images) {
-        // Extract the file name from the URL (after "?file=")
         const urlParams = new URL(imagePath);
         const fileName = urlParams.searchParams.get("file");
   
@@ -267,7 +265,6 @@ export async function POST(req: Request) {
           const filePath = join(uploadDir, fileName);
   
           try {
-            // Attempt to delete the image file
             await unlink(filePath);
           } catch (error) {
             console.error(`Failed to delete image: ${filePath}`, error);
@@ -305,7 +302,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
   
-    const productId = parseInt(url.searchParams.get("id") as string, 10);
+    const productId = url.searchParams.get("id");
     if (!productId) {
       return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
     }
@@ -366,7 +363,6 @@ export async function POST(req: Request) {
       }
     }
   
-    // Handle deleted images
     if (deletedImages.length > 0) {
       for (const deletedImage of deletedImages) {
         const fileUrl = new URL(deletedImage);
@@ -375,12 +371,11 @@ export async function POST(req: Request) {
         if (fileName) {
           const filePath = join(uploadDir, fileName);
           try {
-            await unlink(filePath); // Delete the image from the server
+            await unlink(filePath); 
           } catch (error) {
             console.error(`Error deleting image: ${filePath}`, error);
           }
   
-          // Remove the image from the imagePaths array
           const index = imagePaths.indexOf(deletedImage);
           if (index !== -1) {
             imagePaths.splice(index, 1);
@@ -389,7 +384,6 @@ export async function POST(req: Request) {
       }
     }
   
-    // Update the product in the database
     const updatedProduct = await prisma.product.update({
       where: { id: productId },
       data: {

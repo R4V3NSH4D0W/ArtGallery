@@ -4,11 +4,9 @@ import prisma from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  context: { params: Promise<{ id: string } >} 
+  context: { params: { id: string } }
 ) {
-
-  const { id } = await context.params;
-
+  const { id } = context.params;
   if (!id) {
     return NextResponse.json(
       { message: "Product ID is required" },
@@ -19,7 +17,7 @@ export async function GET(
   try {
     const product = await prisma.product.findUnique({
       where: {
-        id: parseInt(id, 10),
+        id: id,
       },
     });
 
