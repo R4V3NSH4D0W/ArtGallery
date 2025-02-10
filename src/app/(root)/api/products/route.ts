@@ -16,7 +16,7 @@ type ActionType = "change-status";
 
 const validStatuses = ["active", "inactive", "archived", "draft"];
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 async function verifyAdmin(request: Request): Promise<UserPayload | null> {
   const cookies = request.headers.get("cookie");
@@ -72,7 +72,7 @@ async function CREATE_PRODUCT(req: Request): Promise<NextResponse> {
   if (typeof categoryInput !== "string") {
     return NextResponse.json({ error: "Invalid category data" }, { status: 400 });
   }
-  
+
   const category = JSON.parse(categoryInput) as string[];
   if (!Array.isArray(category) || category.length === 0) {
     return NextResponse.json({ error: "Invalid category format" }, { status: 400 });
@@ -268,14 +268,12 @@ export async function PUT(req: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    // Handle file deletions
     const deletedImages = formData.getAll("deletedImages") as string[];
     const updatedImages = existingProduct.images.filter((imageUrl) => {
       const fileName = new URL(imageUrl).searchParams.get("file");
       return !deletedImages.some((deletedUrl) => deletedUrl.includes(fileName || ""));
     });
 
-    // Handle new file uploads
     const newImages = formData.getAll("images") as File[];
     const newImagePaths = await handleFileUpload(newImages);
 

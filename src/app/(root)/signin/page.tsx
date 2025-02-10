@@ -38,7 +38,6 @@ export default function SignInPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // Load remembered email
   useEffect(() => {
     const savedEmail = Cookie.get("rememberEmail");
     if (savedEmail) {
@@ -47,7 +46,6 @@ export default function SignInPage() {
     }
   }, [setValue]);
 
-  // 🔹 Handles form submission
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     setError(null);

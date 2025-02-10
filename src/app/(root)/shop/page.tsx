@@ -105,7 +105,7 @@ export default function ShopPage() {
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
-    setOffset(0); // Reset offset when changing category
+    setOffset(0);
   };
 
   return (
@@ -199,7 +199,7 @@ export default function ShopPage() {
                   </Link>
                   <button
                     onClick={() => toggleWishlist(product.id)}
-                    className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+                    className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
                   >
                     <FaHeart
                       className={`text-lg ${
