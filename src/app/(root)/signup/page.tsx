@@ -1,25 +1,50 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { toast } from "react-toastify";
-import { FcGoogle } from "react-icons/fc";
 import BackgroundWrapper from "@/components/background-wrapper";
+import MotionDiv from "@/components/motiondiv";
+import { getRemainingTime } from "@/lib/utils";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
+  const [otp, setOtp] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
+  const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [otpExpires, setOtpExpires] = useState<Date | null>(null);
+  const [remainingTime, setRemainingTime] = useState<string>("");
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (otpExpires) {
+      const interval = setInterval(() => {
+        const timeRemaining = getRemainingTime(otpExpires.toISOString());
+        setRemainingTime(timeRemaining);
+      }, 1000);
+
+      return () => clearInterval(interval); // Cleanup on unmount
+    }
+  }, [otpExpires]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,22 +52,25 @@ const SignUpPage = () => {
       setError("Passwords do not match");
       return;
     }
+    setLoading(true);
 
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password, name }),
-    });
+    try {
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const data = await res.json();
+      const data = await response.json();
+      setOtpExpires(new Date(data.expiresAt)); // Save expiration date
+      if (!response.ok) throw new Error(data.message || "Error sending OTP");
 
-    if (res.ok) {
       toast.success(data.message);
-      router.push("/signin");
-    } else {
-      setError(data.message);
+      setOtpModalOpen(true);
+    } catch (error) {
+      setError((error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,9 +82,48 @@ const SignUpPage = () => {
     }, 2000);
   };
 
+  const handleOtpSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        body: JSON.stringify({ email, otp, password, name }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Error verifying OTP");
+
+      toast.success(data.message);
+      router.push("/signin");
+    } catch (error) {
+      setError((error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Error resending OTP");
+
+      toast.success(data.message);
+      setOtpExpires(new Date(data.expiresAt)); // Reset OTP expiration time
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
   return (
     <BackgroundWrapper>
-      <div className="flex items-center justify-center min-h-screen ">
+      <div className="flex items-center justify-center min-h-screen">
         <Card className="w-full max-w-md p-6 shadow-xl">
           <CardHeader>
             <CardTitle className="text-center text-2xl font-bold">
@@ -118,9 +185,14 @@ const SignUpPage = () => {
               {error && <p className="text-red-500 text-center">{error}</p>}
               <Button
                 type="submit"
+                disabled={loading}
                 className="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600"
               >
-                Sign Up
+                {loading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  "Sign up"
+                )}
               </Button>
               <div className="text-center">
                 <p className="text-sm">
@@ -134,14 +206,13 @@ const SignUpPage = () => {
                 </p>
               </div>
             </form>
-            <div className="flex felx-row items-center mt-4">
+            <div className="flex flex-row items-center mt-4">
               <div className="w-full h-[1px] bg-gray-400" />
               <label className="pl-2 pr-2 text-gray-400">or</label>
               <div className="w-full h-[1px] bg-gray-400" />
             </div>
-
             <Button
-              variant={"secondary"}
+              variant="secondary"
               className="w-full mt-4 flex items-center justify-center"
               onClick={handleGoogleLogin}
               disabled={googleLoading}
@@ -150,14 +221,78 @@ const SignUpPage = () => {
                 <Loader2 className="animate-spin" size={20} />
               ) : (
                 <>
-                  <FcGoogle className=" scale-110 mr-1" />
-                  Continue with Google
+                  <FcGoogle className="scale-110 mr-1" /> Continue with Google
                 </>
               )}
             </Button>
           </CardContent>
         </Card>
       </div>
+
+      {otpModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-md">
+          <MotionDiv
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white shadow-2xl rounded-xl p-6 max-w-md w-full"
+          >
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl font-bold text-gray-800">
+                Verify OTP
+              </CardTitle>
+              <p className="text-sm text-gray-500 mt-2">
+                Enter the OTP sent to your email
+              </p>
+            </CardHeader>
+            <CardContent>
+              {error && <p className="text-red-500 text-center">{error}</p>}
+              <div className="flex justify-center mb-4">
+                <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              <Button
+                onClick={handleOtpSubmit}
+                className="w-full py-3"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  "Verify OTP"
+                )}
+              </Button>
+              <p className="text-center text-sm mt-4 text-gray-500">
+                Didn’t receive the code?
+                {remainingTime ? (
+                  <span className="ml-1 text-blue-600">{remainingTime}</span>
+                ) : (
+                  <button
+                    className="text-blue-600 font-medium ml-1"
+                    onClick={handleResendOtp}
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </p>
+            </CardContent>
+          </MotionDiv>
+        </div>
+      )}
     </BackgroundWrapper>
   );
 };
