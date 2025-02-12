@@ -155,6 +155,14 @@ export default function SignInPage() {
                 {loading ? <Loader2 className="animate-spin" /> : "Login"}
               </Button>
             </form>
+            <div className="flex w-full mt-2">
+              <button
+                className="text-sm ml-auto text-gray-600 hover:text-blue-600"
+                onClick={() => router.push("/signin/forgot-password")}
+              >
+                Forgot Password?
+              </button>
+            </div>
 
             <div className="flex justify-center mt-5">
               <label className="text-sm">

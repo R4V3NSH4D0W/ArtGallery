@@ -18,5 +18,5 @@ export function getRemainingTime(expiresAt: string): string {
   const minutes = Math.floor(diffMs / (1000 * 60));
   const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
 
-  return `${minutes}m ${seconds}s remaining`;
+  return `Resend in ${minutes}m ${seconds}s`;
 }

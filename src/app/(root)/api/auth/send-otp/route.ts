@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
-    console.log(email)
 
     const result = await sendOtpAction(email);
 
