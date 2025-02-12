@@ -1,22 +1,17 @@
 import { NextResponse } from "next/server";
 import { verifyJwt } from "@/lib/jwt";
+import { cookies } from "next/headers";
 
-export async function GET(req: Request) {
-  const cookies = req.headers.get("cookie");
-  const token = cookies
-    ?.split("; ")
-    .find((cookie) => cookie.startsWith("auth_token="))
-    ?.split("=")[1];
-
-  if (!token) {
-    return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
-  }
-
+export async function GET() {
   try {
-    
-    const decoded = await verifyJwt(token); 
+    const token = (await cookies()).get("auth_token")?.value;
 
-  
+    if (!token) {
+      return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
+    }
+
+    const decoded = await verifyJwt(token);
+
     if (!decoded || !decoded.email || !decoded.name) {
       return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
     }
@@ -31,7 +26,7 @@ export async function GET(req: Request) {
       },
     });
   } catch (error) {
-    console.error("Error verifying JWT:", error); 
+    console.error("Error verifying JWT:", error);
     return NextResponse.json({ authenticated: false, user: null }, { status: 401 });
   }
 }

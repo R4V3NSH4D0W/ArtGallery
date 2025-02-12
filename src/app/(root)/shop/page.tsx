@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface IProducts {
-  id: number;
+  id: string;
   name: string;
   price: number;
   quantity: number;
@@ -69,7 +69,7 @@ export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeType, setActiveType] = useState("All");
   const [products, setProducts] = useState<IProducts[]>([]);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>([]);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -95,7 +95,7 @@ export default function ShopPage() {
     fetchProducts();
   }, [activeCategory, activeType, offset]);
 
-  const toggleWishlist = (productId: number) => {
+  const toggleWishlist = (productId: string) => {
     setWishlist((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
@@ -105,7 +105,7 @@ export default function ShopPage() {
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
-    setOffset(0); // Reset offset when changing category
+    setOffset(0);
   };
 
   return (
@@ -199,7 +199,7 @@ export default function ShopPage() {
                   </Link>
                   <button
                     onClick={() => toggleWishlist(product.id)}
-                    className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
+                    className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
                   >
                     <FaHeart
                       className={`text-lg ${
