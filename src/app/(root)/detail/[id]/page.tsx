@@ -6,13 +6,12 @@ import Buttons from "@/components/product/buttons";
 import AddToCartIcon from "@/components/product/add-to-cart-icon";
 import NotFoundPage from "@/app/not_found";
 
-interface Params {
-  id: string;
-}
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-export default async function ProductDetail({ params }: { params: Params }) {
-  const { id } = await params;
-
+export default async function ProductDetail({ params }: Props) {
+  const id = (await params).id;
   const product = await prisma.product.findUnique({
     where: {
       id: id,
