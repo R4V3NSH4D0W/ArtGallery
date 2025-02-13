@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file
 
 generator client {
   provider = "prisma-client-js"
@@ -14,13 +10,14 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(cuid()) // User ID should be String since cuid() returns a string
   name      String
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @default(USER)
+  cartItems Cart[] // Relation to Cart model
 }
 
 enum Role {
@@ -29,13 +26,13 @@ enum Role {
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String   @id @default(cuid()) // Product ID should be String as well
   name        String
   price       Float
   quantity    Int
   description String
-  category    String[] // Change to an array of strings to handle multiple categories
-  material    String[] // Add a material field as an array of strings
+  category    String[] // Array of strings to handle multiple categories
+  material    String[] // Array of strings for materials
   length      Float? // Optional field for product length
   width       Float? // Optional field for product width
   breadth     Float? // Optional field for product breadth
@@ -43,6 +40,7 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   status      String   @default("inactive")
+  cartItems   Cart[] // Relation to Cart model
 }
 
 model OTP {
@@ -51,4 +49,18 @@ model OTP {
   otp       String
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Cart {
+  id        Int      @id @default(autoincrement())
+  userId    String // User ID is now String to match the User model
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId]) // Ensures unique combination of user and product
 }
