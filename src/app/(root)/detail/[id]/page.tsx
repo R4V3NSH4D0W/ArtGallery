@@ -1,10 +1,9 @@
 import { FaTruck, FaPalette } from "react-icons/fa";
 import prisma from "@/lib/prisma";
 import ImageGallery from "@/components/product/image-gallery";
-import WishListIcon from "@/components/product/wishlist-icon";
 import Buttons from "@/components/product/buttons";
-import AddToCartIcon from "@/components/product/add-to-cart-icon";
 import NotFoundPage from "@/app/not_found";
+import WishListIcon from "@/components/product/wishlist-icon";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -17,7 +16,6 @@ export default async function ProductDetail({ params }: Props) {
       id: id,
     },
   });
-
   if (!product) {
     return <NotFoundPage />;
   }
@@ -30,7 +28,7 @@ export default async function ProductDetail({ params }: Props) {
 
         {/* Product Details */}
         <div className="flex flex-col gap-4 lg:gap-6">
-          {/* Header with Wishlist Icon for small screens */}
+          {/* Header with Buy Now Button */}
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <h1 className="text-xl lg:text-4xl font-bold tracking-tight">
@@ -108,11 +106,11 @@ export default async function ProductDetail({ params }: Props) {
             </div>
           )}
 
-          <Buttons id={product.id} />
+          <Buttons id={product.id} stockQuantity={product.quantity} />
         </div>
       </div>
-
-      <AddToCartIcon />
     </div>
   );
 }
+
+// Dropdown Menu Component

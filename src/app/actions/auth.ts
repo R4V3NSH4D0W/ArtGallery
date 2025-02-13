@@ -40,6 +40,7 @@ export async function sendOtpAction(email: string) {
 export async function verifyOtpAction(email: string, otp: string, password: string, name: string) {
   try {
     const otpRecord = await prisma.oTP.findUnique({ where: { email } });
+    console.log(otpRecord);
 
     if (!otpRecord || otpRecord.otp !== otp || otpRecord.expiresAt < new Date()) {
       throw new Error("Invalid or expired OTP");
@@ -61,7 +62,9 @@ export async function verifyOtpAction(email: string, otp: string, password: stri
 
 
     return { message: "Account created successfully", user };
-  } catch  {
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+
     throw new Error("Error verifying OTP");
   }
 }
