@@ -37,7 +37,11 @@ export default async function ProductDetail({ params }: Props) {
               <h2 className="text-lg lg:text-3xl text-primary font-semibold">
                 NPR {product.price.toLocaleString()}
               </h2>
-              <p className="text-gray-600 text-sm lg:text-base">
+              <p
+                className={`text-sm lg:text-base ${
+                  product.quantity > 0 ? "text-gray-600" : "text-red-500"
+                }`}
+              >
                 {product.quantity > 0
                   ? `${product.quantity} In Stock`
                   : "Out of Stock"}

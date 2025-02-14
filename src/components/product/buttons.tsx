@@ -29,6 +29,7 @@ function Buttons({ id, stockQuantity }: IButtons) {
       setQuantity(newQuantity);
     }
   };
+
   const handelAddToCart = async () => {
     try {
       if (user) {
@@ -47,7 +48,7 @@ function Buttons({ id, stockQuantity }: IButtons) {
   };
 
   return (
-    <div className=" flex flex-col gap-4 ">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 items-center">
         <label className="text-gray-600">Quantity</label>
         <div className="flex items-center gap-4">
@@ -70,15 +71,17 @@ function Buttons({ id, stockQuantity }: IButtons) {
       </div>
       <div className="flex flex-row gap-4 justify-center mt-2">
         <Button
+          disabled={stockQuantity <= 0}
           onClick={handelAddToCart}
-          className="flex-1 h-[3rem] lg:h-14 lg:text-lg gap-3 hover:scale-[1.02] transition-transfor bg-black"
+          className="flex-1 h-[3rem] lg:h-14 lg:text-lg gap-3 hover:scale-[1.02] transition-transform bg-black"
         >
           <FaShoppingCart className="w-5 h-5" />
           Add to Cart
         </Button>
         <Button
+          disabled={stockQuantity <= 0}
           onClick={handelAddToWishlist}
-          className="flex-1 h-[3rem] lg:h-14 lg:text-lg gap-3 hover:scale-[1.02]  bg-blue-600 hover:bg-blue-800"
+          className="flex-1 h-[3rem] lg:h-14 lg:text-lg gap-3 hover:scale-[1.02] bg-blue-600 hover:bg-blue-800"
         >
           <HiShoppingBag className="w-5 h-5" />
           Buy Now
