@@ -122,3 +122,4 @@ export async function sendWelcomeEmail(email: string, username: string) {
     throw new Error("Failed to send welcome email");
   }
 }
+

@@ -15,7 +15,6 @@ interface IButtons {
 function Buttons({ id, stockQuantity }: IButtons) {
   const [quantity, setQuantity] = useState(1);
   const { user } = useAuthContext();
-  console.log(user);
 
   const handleIncrement = () => {
     if (quantity < stockQuantity) {
