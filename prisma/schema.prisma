@@ -1,5 +1,3 @@
-// This is your Prisma schema file
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,14 +8,17 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid()) // User ID should be String since cuid() returns a string
+  id        String   @id @default(cuid())
   name      String
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role      Role     @default(USER)
-  cartItems Cart[] // Relation to Cart model
+  cartItems Cart[]
+  orders    Order[]
+
+  address UserAddress?
 }
 
 enum Role {
@@ -26,21 +27,25 @@ enum Role {
 }
 
 model Product {
-  id          String   @id @default(cuid()) // Product ID should be String as well
+  id          String   @id @default(cuid())
   name        String
   price       Float
   quantity    Int
   description String
-  category    String[] // Array of strings to handle multiple categories
-  material    String[] // Array of strings for materials
-  length      Float? // Optional field for product length
-  width       Float? // Optional field for product width
-  breadth     Float? // Optional field for product breadth
-  images      String[] // Array of image URLs/paths
+  category    String[] // Supports multiple categories
+  material    String[] // Supports multiple materials
+  length      Float? // Optional dimension
+  width       Float? // Optional dimension
+  breadth     Float? // Optional dimension
+  images      String[] // Supports multiple images
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   status      String   @default("inactive")
-  cartItems   Cart[] // Relation to Cart model
+
+  // Relations
+  cartItems Cart[]
+
+  OrderItem OrderItem[]
 }
 
 model OTP {
@@ -53,14 +58,59 @@ model OTP {
 
 model Cart {
   id        Int      @id @default(autoincrement())
-  userId    String // User ID is now String to match the User model
+  userId    String
   productId String
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 
-  user    User    @relation(fields: [userId], references: [id])
+  @@unique([userId, productId])
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  userId        String
+  userAddressId String?
+  status        OrderStatus @default(PENDING)
+  totalAmount   Float       @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+  userAddress UserAddress? @relation(fields: [userAddressId], references: [id])
+  orderItems  OrderItem[]
+}
+
+model UserAddress {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  phoneNumber String
+  address     String
+  city        String
+  postalCode  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+}
+
+model OrderItem {
+  id        Int    @id @default(autoincrement())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+
+  order   Order   @relation(fields: [orderId], references: [id])
   product Product @relation(fields: [productId], references: [id])
+}
 
-  @@unique([userId, productId]) // Ensures unique combination of user and product
+enum OrderStatus {
+  PENDING
+  NOTICED
+  WORKING
+  DELIVERED
 }

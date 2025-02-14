@@ -20,9 +20,9 @@ import { useRefetch } from "@/context/refetchContext";
 import EditProductModal from "./components/editproduct";
 import { getStatusClass } from "@/lib/helper";
 import ConfirmationModal from "./components/confirmationModel";
-import { ProductResponse } from "@/lib/types";
+import { IProduct } from "@/lib/types";
 
-export function Product({ product }: { product: ProductResponse }) {
+export function Product({ product }: { product: IProduct }) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);

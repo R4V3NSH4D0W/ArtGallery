@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "./product";
-import { ProductResponse } from "@/lib/types";
+import { IProduct } from "@/lib/types";
 
 export function ProductsTable({
   products,
@@ -26,7 +26,7 @@ export function ProductsTable({
   totalProducts,
   limit,
 }: {
-  products: ProductResponse[];
+  products: IProduct[];
   offset: number;
   totalProducts: number;
   limit: number;

@@ -8,11 +8,13 @@ import { ProductResponse } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 function Cart() {
   const { user } = useAuthContext();
   const [cartItems, setCartItems] = useState<ProductResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
@@ -50,6 +52,9 @@ function Cart() {
     );
   };
 
+  const handleProceedToCheckout = () => {
+    router.push("/checkout");
+  };
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl mt-[5rem]">
       <h2 className="text-3xl font-bold mb-8 flex items-center gap-2">
@@ -107,8 +112,8 @@ function Cart() {
 
                 <div className="flex items-center justify-between md:justify-end gap-4">
                   <div className="space-y-1 text-right">
-                    <p className="font-medium text-lg">
-                      NRS{" "}
+                    <p className="font-medium text-md lg:text-lg">
+                      NPR{" "}
                       {(item.product.price * item.quantity).toLocaleString()}
                     </p>
                     <div className="flex items-center gap-2 text-sm">
@@ -133,12 +138,13 @@ function Cart() {
 
           <div className="mt-8 p-6 bg-gray-50 rounded-xl sticky bottom-4 border shadow-sm">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="text-xl font-bold">
-                Total: NRS {calculateTotalPrice().toLocaleString()}
+              <div className="lg:text-xl text-lg font-bold">
+                Total: NPR {calculateTotalPrice().toLocaleString()}
               </div>
               <Button
                 size="lg"
-                className="w-full md:w-auto bg-primary hover:bg-primary/90 px-8 py-6 text-lg"
+                className="w-full md:w-auto bg-primary hover:bg-primary/90 px-8 py-6 lg:text-lg text-md bg-blue-500 hover:bg-blue-700"
+                onClick={handleProceedToCheckout}
               >
                 Proceed to Checkout
               </Button>

@@ -226,7 +226,7 @@ export default function ShopPage() {
                         : null}
                     </div>
                     <p className="font-semibold text-sm lg:text-md mt-2 text-gray-800">
-                      NRS {product.price.toLocaleString()}
+                      NPR {product.price.toLocaleString()}
                     </p>
                   </div>
                 </div>

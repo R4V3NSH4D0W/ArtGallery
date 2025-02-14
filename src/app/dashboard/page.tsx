@@ -8,7 +8,7 @@ import AddProductModal from "./components/addproduct";
 import { ProductsTable } from "./product-table";
 import { useRefetch } from "@/context/refetchContext";
 import { BeatLoader } from "react-spinners";
-import { ProductResponse } from "@/lib/types";
+import { IProduct } from "@/lib/types";
 
 async function getProducts(
   search: string,
@@ -33,7 +33,7 @@ function DashBoard() {
   const limitParam = searchParams.get("limit") ?? "6";
   const statusParam = searchParams.get("status") ?? "all";
 
-  const [products, setProducts] = useState<ProductResponse[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [totalProducts, setTotalProducts] = useState(0);
   const [offset, setOffset] = useState(parseInt(offsetParam, 10));
   const [limit, setLimit] = useState(parseInt(limitParam, 10));
