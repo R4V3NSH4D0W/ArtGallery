@@ -73,3 +73,50 @@ export interface OrderItems {
     images: string[];
   };
 }
+
+export interface IOrderWithRelations {
+  id: string;
+  userId: string;
+  userAddressId: string | null;
+  status: string;
+  totalAmount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  userAddress: {
+    id: string;
+    userId: string;
+    phoneNumber: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null;
+  orderItems: Array<{
+    id: number;
+    orderId: string;
+    productId: string;
+    quantity: number;
+    price: number;
+    product: {
+      id: string; 
+      name: string;
+      price: number;
+      description: string;
+      category: string[];
+      material: string[];
+      length: number | null;
+      width: number | null;
+      breadth: number | null;
+      images: string[];
+      createdAt: Date;
+      updatedAt: Date;
+      status: string;
+    };
+  }>;
+}

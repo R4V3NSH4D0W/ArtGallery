@@ -1,4 +1,3 @@
-// components/admin/orders/order-table.tsx
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -13,14 +12,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { OrderStatus } from "@prisma/client";
 import { DataTableColumnHeader } from "./data-table-header";
-import {
-  OrderWithRelations,
-  updateOrderStatus,
-} from "@/app/actions/order-action";
+import { updateOrderStatus } from "@/app/actions/order-action";
 import { DataTable } from "./data-table";
 import { toast } from "react-toastify";
+import { IOrderWithRelations } from "@/lib/types";
 
-const columns: ColumnDef<OrderWithRelations>[] = [
+const columns: ColumnDef<IOrderWithRelations>[] = [
   {
     accessorKey: "id",
     header: "Order ID",
@@ -132,7 +129,7 @@ const columns: ColumnDef<OrderWithRelations>[] = [
   },
 ];
 
-export function OrderTable({ data }: { data: OrderWithRelations[] }) {
+export function OrderTable({ data }: { data: IOrderWithRelations[] }) {
   return (
     <DataTable columns={columns} data={data} placeholder="Search orders..." />
   );

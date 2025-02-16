@@ -24,5 +24,5 @@ ENV PORT=4000
 # Expose port 4000 to the host
 EXPOSE 4000
 
-# Set the default command to start the Next.js app
+# Start the Next.js app with Prisma client generation at runtime
 CMD ["yarn", "run", "start"]

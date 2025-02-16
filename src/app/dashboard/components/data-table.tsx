@@ -30,9 +30,9 @@ import {
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { OrderWithRelations } from "@/app/actions/order-action";
+import { IOrderWithRelations } from "@/lib/types";
 
-const fuzzyFilter: FilterFn<OrderWithRelations> = (row, _, value) => {
+const fuzzyFilter: FilterFn<IOrderWithRelations> = (row, _, value) => {
   const order = row.original;
   const searchTerm = value.toLowerCase();
 
@@ -46,8 +46,8 @@ const fuzzyFilter: FilterFn<OrderWithRelations> = (row, _, value) => {
 };
 
 interface DataTableProps {
-  columns: ColumnDef<OrderWithRelations>[];
-  data: OrderWithRelations[];
+  columns: ColumnDef<IOrderWithRelations>[];
+  data: IOrderWithRelations[];
   placeholder?: string;
 }
 
@@ -58,9 +58,8 @@ export function DataTable({
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState<OrderWithRelations | null>(
-    null
-  );
+  const [selectedOrder, setSelectedOrder] =
+    useState<IOrderWithRelations | null>(null);
 
   const table = useReactTable({
     data,

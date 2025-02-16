@@ -1,34 +1,51 @@
 "use server";
 
+
 import prisma from "@/lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-export type OrderWithRelations = Awaited<ReturnType<typeof getOrders>>[number];
-
 export async function getOrders() {
-  return prisma.order.findMany({
+  const orders = await prisma.order.findMany({
     include: {
-      user: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
       userAddress: true,
       orderItems: {
         include: {
           product: {
             select: {
+              id: true,
               name: true,
               price: true,
               description: true,
-              images: true
-            }
-          }
-        }
-      }
+              category: true,
+              material: true,
+              length: true,
+              width: true,
+              breadth: true,
+              images: true,
+              createdAt: true,
+              updatedAt: true,
+              status: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
-      createdAt: "desc"
-    }
+      createdAt: "desc",
+    },
   });
+  return orders;
 }
+
+
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
   return prisma.$transaction(async (tx) => {
