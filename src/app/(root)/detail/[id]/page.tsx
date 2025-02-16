@@ -1,10 +1,9 @@
 import { FaTruck, FaPalette } from "react-icons/fa";
 import prisma from "@/lib/prisma";
 import ImageGallery from "@/components/product/image-gallery";
-import WishListIcon from "@/components/product/wishlist-icon";
 import Buttons from "@/components/product/buttons";
-import AddToCartIcon from "@/components/product/add-to-cart-icon";
 import NotFoundPage from "@/app/not_found";
+import WishListIcon from "@/components/product/wishlist-icon";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -17,7 +16,6 @@ export default async function ProductDetail({ params }: Props) {
       id: id,
     },
   });
-
   if (!product) {
     return <NotFoundPage />;
   }
@@ -30,16 +28,20 @@ export default async function ProductDetail({ params }: Props) {
 
         {/* Product Details */}
         <div className="flex flex-col gap-4 lg:gap-6">
-          {/* Header with Wishlist Icon for small screens */}
+          {/* Header with Buy Now Button */}
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <h1 className="text-xl lg:text-4xl font-bold tracking-tight">
                 {product.name}
               </h1>
               <h2 className="text-lg lg:text-3xl text-primary font-semibold">
-                NRS {product.price.toLocaleString()}
+                NPR {product.price.toLocaleString()}
               </h2>
-              <p className="text-gray-600 text-sm lg:text-base">
+              <p
+                className={`text-sm lg:text-base ${
+                  product.quantity > 0 ? "text-gray-600" : "text-red-500"
+                }`}
+              >
                 {product.quantity > 0
                   ? `${product.quantity} In Stock`
                   : "Out of Stock"}
@@ -75,7 +77,7 @@ export default async function ProductDetail({ params }: Props) {
             (product.category && product.category.length > 0)) && (
             <div className="grid grid-cols-2 gap-4">
               {product.length && product.width && product.breadth && (
-                <div className="p-4 bg-background rounded-xl border">
+                <div className="p-4  bg-gray-50 rounded-xl border">
                   <h4 className="text-xs md:text-sm font-semibold uppercase text-gray-500 mb-1">
                     Dimensions
                   </h4>
@@ -86,7 +88,7 @@ export default async function ProductDetail({ params }: Props) {
                 </div>
               )}
               {product.material && product.material.length > 0 && (
-                <div className="p-4 bg-background rounded-xl border">
+                <div className="p-4  bg-gray-50 rounded-xl border">
                   <h4 className="text-xs md:text-sm font-semibold uppercase text-gray-500 mb-1">
                     Material
                   </h4>
@@ -96,7 +98,7 @@ export default async function ProductDetail({ params }: Props) {
                 </div>
               )}
               {product.category && product.category.length > 0 && (
-                <div className="p-4 bg-background rounded-xl border">
+                <div className="p-4  bg-gray-50 rounded-xl border">
                   <h4 className="text-xs md:text-sm font-semibold uppercase text-gray-500 mb-1">
                     Category
                   </h4>
@@ -108,11 +110,11 @@ export default async function ProductDetail({ params }: Props) {
             </div>
           )}
 
-          <Buttons id={product.id} />
+          <Buttons id={product.id} stockQuantity={product.quantity} />
         </div>
       </div>
-
-      <AddToCartIcon />
     </div>
   );
 }
+
+// Dropdown Menu Component
