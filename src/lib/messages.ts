@@ -22,7 +22,7 @@ export async function userOrderConfirmationEmail(email: string, orderId: string)
           </div>
 
           <p style="color: #666; font-size: 16px; margin-bottom: 20px;">
-            Thank you for your purchase! Your order #${orderId} has been successfully placed and is now being processed.
+            Thank you for your purchase! Your order #${orderId.slice(0, 8)} has been successfully placed and is now being processed.
           </p>
 
           <div style="text-align: center;">
@@ -46,7 +46,7 @@ export async function userOrderConfirmationEmail(email: string, orderId: string)
   };
 
   await transporter.sendMail(mailOptions);
-  console.log('Welcome email sent successfully');
+
 } catch (error) {
     console.error("Failed to send welcome email:", error);
     throw new Error("Failed to send welcome email");
