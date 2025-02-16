@@ -1,20 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
-
 import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-
-import { createUserAddress, getUserAddress } from "@/app/actions/address";
-import { checkoutAction } from "@/app/actions/checkout";
-import { toast } from "react-toastify";
-
 import { PaymentConfirmationModal } from "@/components/checkout/payment-conformation-model";
+import { createUserAddress, getUserAddress } from "@/app/actions/address";
+import { toast } from "react-toastify";
+import { buyNowAction } from "@/app/actions/buy-now";
+import { getProduct } from "@/app/actions/get-product";
+import { Product } from "@prisma/client";
 
-export default function CheckoutPage() {
+export default function BuyNowCheckoutPage() {
   const { user, loading } = useAuthContext();
   const router = useRouter();
+  const params = useParams<{ ids: string[] }>();
+  const [productId, quantity] = params.ids || [];
 
   const [formData, setFormData] = useState({
     phoneNumber: "",
@@ -31,17 +33,24 @@ export default function CheckoutPage() {
     orderId?: string;
   }>({ show: false });
   const [addressId, setAddressId] = useState<string | null>(null);
+  const [productDetails, setProductDetails] = useState<Product | null>(null);
 
   useEffect(() => {
-    if (!user && !loading) {
+    if (loading) return;
+    if (!user) {
       router.push("/signin");
       return;
     }
 
-    const loadUserAddress = async () => {
-      if (!user) return;
-
+    const loadData = async () => {
       try {
+        if (!user || !productId) return;
+
+        const productRes = await getProduct(productId);
+        if (!productRes.success) throw new Error("Product not found");
+
+        setProductDetails(productRes.product as Product);
+
         const address = await getUserAddress(user.id);
         if (address) {
           setFormData({
@@ -52,14 +61,15 @@ export default function CheckoutPage() {
           });
         }
       } catch {
-        toast.error("Failed to load address");
+        toast.error("Failed to load required data");
+        router.push("/");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadUserAddress();
-  }, [user, router, loading]);
+    loadData();
+  }, [user, productId, loading, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -77,7 +87,7 @@ export default function CheckoutPage() {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !validateForm()) return;
+    if (!user || !productDetails || !validateForm()) return;
 
     setIsSubmitting(true);
 
@@ -106,10 +116,16 @@ export default function CheckoutPage() {
   };
 
   const handlePaymentConfirmation = async () => {
-    if (!user || !addressId) return;
+    if (!user || !addressId || !productDetails) return;
 
     try {
-      const result = await checkoutAction(user.id, addressId, user.email);
+      const result = await buyNowAction(
+        user.id,
+        productDetails.id,
+        Number(quantity),
+        addressId,
+        user.email
+      );
 
       if (result.success) {
         setOrderSuccessData({ show: true, orderId: result.orderId });
@@ -145,17 +161,79 @@ export default function CheckoutPage() {
 
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Checkout</h1>
-          <p className="text-gray-600">Complete your purchase</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Instant Checkout
+          </h1>
+          <p className="text-gray-600">Complete your direct purchase</p>
         </div>
+
+        {productDetails && (
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Product Image */}
+              <div className="relative md:w-1/3">
+                <img
+                  src={productDetails.images[0]}
+                  alt={productDetails.name}
+                  className="w-full h-48 md:h-56 object-cover rounded-xl shadow-sm border border-gray-200"
+                />
+                <span className="absolute top-2 right-2 bg-white/90 px-3 py-1 rounded-full text-sm font-medium text-gray-700 shadow-sm">
+                  Qty: {quantity}
+                </span>
+              </div>
+
+              {/* Product Details */}
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {productDetails.name}
+                  </h2>
+                  {productDetails.description && (
+                    <p className="text-gray-600 mt-2 line-clamp-2">
+                      {productDetails.description}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <span className="text-sm text-gray-500">Unit Price</span>
+                    <p className="text-md font-semibold text-blue-600">
+                      NRS {productDetails.price.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <span className="text-sm text-gray-500">Quantity</span>
+                    <p className="text-md font-semibold text-gray-900">
+                      × {quantity}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-medium text-gray-900">
+                      Total
+                    </span>
+                    <p className="text-lg font-bold text-blue-600">
+                      NRS{" "}
+                      {(
+                        productDetails.price * Number(quantity)
+                      ).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <form
           onSubmit={handleFormSubmit}
           className="bg-white rounded-xl shadow-lg p-6 md:p-8"
         >
           <div className="space-y-8">
-            {/* Contact Information */}
-
             <section>
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 Contact Information
@@ -198,7 +276,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </section>
-            {/* Shipping Address */}
+
             <section>
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 Shipping Address
@@ -249,10 +327,10 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </section>
-            {/* Submit Button */}
+
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-md font-semibold"
+              className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-md font-semibold"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -261,7 +339,7 @@ export default function CheckoutPage() {
                   Processing...
                 </div>
               ) : (
-                "Continue to Payment"
+                "Confirm Purchase"
               )}
             </Button>
           </div>

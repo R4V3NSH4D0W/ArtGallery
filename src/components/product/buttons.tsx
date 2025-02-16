@@ -2,6 +2,7 @@
 import { addToCart } from "@/app/actions/add-to-cart";
 import { Button } from "@/components/ui/button";
 import { useAuthContext } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaMinus, FaPlus, FaShoppingCart } from "react-icons/fa";
 import { HiShoppingBag } from "react-icons/hi2";
@@ -15,6 +16,7 @@ interface IButtons {
 function Buttons({ id, stockQuantity }: IButtons) {
   const [quantity, setQuantity] = useState(1);
   const { user } = useAuthContext();
+  const router = useRouter();
 
   const handleIncrement = () => {
     if (quantity < stockQuantity) {
@@ -43,8 +45,8 @@ function Buttons({ id, stockQuantity }: IButtons) {
     }
   };
 
-  const handelAddToWishlist = async () => {
-    console.log(`Added product with ID ${id} to wishlist.`);
+  const handelBuyNow = async () => {
+    router.push(`/checkout/buynow/${id}/${quantity}`);
   };
 
   return (
@@ -80,7 +82,7 @@ function Buttons({ id, stockQuantity }: IButtons) {
         </Button>
         <Button
           disabled={stockQuantity <= 0}
-          onClick={handelAddToWishlist}
+          onClick={handelBuyNow}
           className="flex-1 h-[3rem] lg:h-14 lg:text-lg gap-3 hover:scale-[1.02] bg-blue-600 hover:bg-blue-800"
         >
           <HiShoppingBag className="w-5 h-5" />
