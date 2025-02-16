@@ -186,22 +186,24 @@ const NavBar = () => {
               </button>
               {/* Profile Section */}
               {isUser && (
-                <div className="flex items-center gap-3 mb-6">
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-xl"
-                    style={{
-                      backgroundColor: getColorByFirstLetter(
-                        getFirstLetter(user?.name || "")
-                      ),
-                    }}
-                  >
-                    {getFirstLetter(user?.name || "")}
+                <Link href="/profile" onClick={closeMenu}>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold text-xl"
+                      style={{
+                        backgroundColor: getColorByFirstLetter(
+                          getFirstLetter(user?.name || "")
+                        ),
+                      }}
+                    >
+                      {getFirstLetter(user?.name || "")}
+                    </div>
+                    <div>
+                      <p className="font-semibold">{user?.name}</p>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold">{user?.name}</p>
-                    <p className="text-sm text-gray-500">{user?.email}</p>
-                  </div>
-                </div>
+                </Link>
               )}
               {/* Navigation Links */}
               <div className="flex flex-col gap-4">
