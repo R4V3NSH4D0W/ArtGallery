@@ -120,3 +120,42 @@ export interface IOrderWithRelations {
     };
   }>;
 }
+
+
+export interface IUser {
+  id: string;
+  name: string | null;
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IComment {
+  id: string;
+  userId: string;
+  reviewId: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ICommentWithUser extends IComment {
+  user?: IUser;
+  replies: ICommentWithUser[];
+}
+
+export interface IReview {
+  id: string;
+  userId: string;
+  productId: string;
+  rating: number;
+  comment: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IReviewWithComments extends IReview {
+  user?: IUser;
+  comments: ICommentWithUser[];
+}
+

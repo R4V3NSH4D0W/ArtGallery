@@ -19,6 +19,10 @@ model User {
   orders    Order[]
 
   address UserAddress?
+
+  Review Review[]
+
+  Comment Comment[]
 }
 
 enum Role {
@@ -46,6 +50,8 @@ model Product {
   cartItems Cart[]
 
   OrderItem OrderItem[]
+
+  Review Review[]
 }
 
 model OTP {
@@ -114,4 +120,37 @@ enum OrderStatus {
   WORKING
   DELIVERED
   CANCELLED
+}
+
+model Review {
+  id        String    @id @default(cuid())
+  productId String
+  userId    String
+  rating    Int       @default(5)
+  comment   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  comments  Comment[]
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  reviewId  String
+  userId    String
+  content   String
+  parentId  String?  @map("parent_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User      @relation(fields: [userId], references: [id])
+  review  Review    @relation(fields: [reviewId], references: [id])
+  parent  Comment?  @relation("Reply", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("Reply")
+
+  @@map("comments")
 }
