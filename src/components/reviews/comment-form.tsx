@@ -81,49 +81,54 @@ export function CommentForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn("flex gap-2 sm:gap-4 items-start w-full", className)}
+        className={cn(
+          "flex flex-col sm:flex-row gap-3 items-start w-full",
+          className
+        )}
       >
-        <Avatar className="w-6 h-6 sm:w-8 sm:h-8 mt-1 sm:mt-2">
-          <AvatarFallback className="bg-blue-500 text-white text-xs sm:text-sm">
+        <Avatar className="w-8 h-8 hidden sm:block">
+          <AvatarFallback className="bg-blue-500 text-white">
             {user?.name?.[0] || "Y"}
           </AvatarFallback>
         </Avatar>
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormControl>
-                <Textarea
-                  {...field}
-                  placeholder={isEdit ? "" : "Write your reply..."}
-                  className="min-h-[40px] text-sm sm:text-base border-2 border-gray-200 rounded-xl p-2 sm:p-3 focus-visible:ring-blue-500"
-                />
-              </FormControl>
-              <FormMessage className="text-red-500 text-xs sm:text-sm" />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-1 sm:gap-2">
-          <Button
-            type="submit"
-            size="sm"
-            className="text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-2 sm:px-4"
-            disabled={isPending}
-          >
-            {isPending ? "Posting..." : isEdit ? "Save" : "Post"}
-          </Button>
-          {!isEdit && (
+
+        <div className="w-full  flex flex-col gap-5">
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder={isEdit ? "" : "Write your reply..."}
+                    className="min-h-[80px] sm:min-h-[40px] text-sm sm:text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  />
+                </FormControl>
+                <FormMessage className="text-red-500 text-sm" />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex gap-2 justify-end">
             <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={onSuccess}
-              className="text-xs sm:text-sm"
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 w-full sm:w-auto"
+              disabled={isPending}
             >
-              Cancel
+              {isPending ? "Posting..." : isEdit ? "Save" : "Post"}
             </Button>
-          )}
+            {!isEdit && (
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-gray-600 hover:bg-gray-50 w-full sm:w-auto"
+                onClick={onSuccess}
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
         </div>
       </form>
     </Form>

@@ -118,6 +118,7 @@ export default async function ProductDetail({ params }: Props) {
       </div>
       <ReviewSection
         productId={product.id}
+        // In your ReviewSection component
         reviews={await prisma.review.findMany({
           where: { productId: product.id },
           include: {
@@ -127,9 +128,11 @@ export default async function ProductDetail({ params }: Props) {
               include: {
                 user: true,
                 replies: {
+                  // Level 1 replies
                   include: {
                     user: true,
                     replies: {
+                      // Level 2 replies (MAX DEPTH)
                       include: {
                         user: true,
                       },

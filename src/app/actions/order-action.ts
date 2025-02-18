@@ -80,6 +80,7 @@ export async function updateOrderStatus(id: string, status: OrderStatus) {
     }
 
     revalidatePath("/dashboard/order");
+    revalidatePath('/dashboard/analytics')
     return updatedOrder;
   });
 }

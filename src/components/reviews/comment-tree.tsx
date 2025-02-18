@@ -1,3 +1,4 @@
+// CommentTree.tsx
 "use client";
 
 import { useState, useTransition } from "react";
@@ -10,12 +11,16 @@ import { toast } from "react-toastify";
 import { deleteComment } from "@/app/actions/review";
 import { ICommentWithUser } from "@/lib/types";
 
+const MAX_DEPTH = 1;
+
 export function CommentTree({
   comment,
   currentUserId,
+  depth = 1,
 }: {
   comment: ICommentWithUser;
   currentUserId?: string;
+  depth?: number;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
@@ -34,29 +39,32 @@ export function CommentTree({
   };
 
   return (
-    <div className="relative group">
-      <div className="flex items-start gap-2 sm:gap-3">
-        <Avatar className="w-6 h-6 sm:w-8 sm:h-8 mt-1">
-          <AvatarFallback className="bg-green-500 text-white text-xs sm:text-sm">
+    <div className="group relative">
+      <div className="flex items-start gap-3">
+        <Avatar className="w-8 h-8 mt-1">
+          <AvatarFallback className="bg-blue-500 text-white">
             {comment.user?.name?.[0] || "A"}
           </AvatarFallback>
         </Avatar>
+
         <div className="flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h4 className="text-sm font-semibold text-gray-900">
+          <div className="flex items-baseline flex-wrap gap-2">
+            <h4 className="text-base font-medium text-gray-900">
               {comment.user?.name || "Anonymous"}
             </h4>
-            <span className="text-xs text-gray-500">
+            <span className="text-sm text-gray-500">
               {new Date(comment.createdAt).toLocaleDateString()}
             </span>
+
             {currentUserId === comment.userId && (
-              <div className="flex gap-1 sm:gap-2 ml-auto">
+              <div className="flex gap-2 ml-auto">
                 <Button
                   variant="ghost"
-                  className="text-gray-500 hover:text-blue-600 p-1 sm:p-2"
+                  size="sm"
+                  className="text-gray-500 hover:text-blue-600 p-1.5"
                   onClick={() => setIsEditing(!isEditing)}
                 >
-                  <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <Edit className="w-4 h-4" />
                 </Button>
                 <DeleteButton
                   title="Delete Comment?"
@@ -65,10 +73,11 @@ export function CommentTree({
                 >
                   <Button
                     variant="ghost"
-                    className="text-gray-500 hover:text-red-600 p-1 sm:p-2"
+                    size="sm"
+                    className="text-gray-500 hover:text-red-600 p-1.5"
                     disabled={isDeleting}
                   >
-                    <Trash className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <Trash className="w-4 h-4" />
                   </Button>
                 </DeleteButton>
               </div>
@@ -76,47 +85,54 @@ export function CommentTree({
           </div>
 
           {isEditing ? (
-            <CommentForm
-              reviewId={comment.reviewId}
-              parentId={comment.id}
-              initialContent={comment.content}
-              onSuccess={() => setIsEditing(false)}
-              className="mt-2"
-            />
+            <div className="mt-2">
+              <CommentForm
+                reviewId={comment.reviewId}
+                parentId={comment.id}
+                initialContent={comment.content}
+                onSuccess={() => setIsEditing(false)}
+              />
+            </div>
           ) : (
-            <p className="mt-1 text-gray-700 text-sm leading-relaxed">
+            <p className="mt-1 text-gray-700 text-sm sm:text-base">
               {comment.content}
             </p>
           )}
 
-          {!isEditing && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-1 sm:mt-2 text-gray-600 hover:text-blue-600 text-xs sm:text-sm"
-              onClick={() => setIsReplying(!isReplying)}
+          {!isEditing && depth < MAX_DEPTH && (
+            <div className="mt-2 flex items-center gap-2 flex-wrap">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-blue-600 hover:bg-blue-50"
+                onClick={() => setIsReplying(!isReplying)}
+              >
+                <Reply className="w-4 h-4 mr-1" />
+                Reply
+              </Button>
+            </div>
+          )}
+
+          {isReplying && depth < MAX_DEPTH && (
+            <div className="mt-3">
+              <CommentForm
+                reviewId={comment.reviewId}
+                parentId={comment.id}
+                onSuccess={() => setIsReplying(false)}
+              />
+            </div>
+          )}
+
+          {depth < MAX_DEPTH && comment.replies?.length > 0 && (
+            <div
+              className={`mt-4 space-y-4 pl-2 sm:pl-4 border-l border-gray-100`}
             >
-              <Reply className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-              Reply
-            </Button>
-          )}
-
-          {isReplying && (
-            <CommentForm
-              reviewId={comment.reviewId}
-              parentId={comment.id}
-              onSuccess={() => setIsReplying(false)}
-              className="mt-2 sm:mt-4"
-            />
-          )}
-
-          {comment.replies.length > 0 && (
-            <div className="mt-2 sm:mt-4 space-y-2 sm:space-y-4 pl-4 sm:pl-6 border-l-2 border-gray-100">
               {comment.replies.map((reply) => (
                 <CommentTree
                   key={reply.id}
                   comment={reply}
                   currentUserId={currentUserId}
+                  depth={depth + 1}
                 />
               ))}
             </div>

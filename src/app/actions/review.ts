@@ -9,7 +9,7 @@ export async function createReview(data: {
   rating: number;
   productId: string;
 }) {
-    console.log(data)
+ 
   try {
     await prisma.review.create({
       data: {
@@ -21,8 +21,8 @@ export async function createReview(data: {
     });
     revalidatePath(`/detail/${data.productId}`);
     return { success: "Review created successfully" };
-  } catch (error) {
-    console.log(error)
+  } catch  {
+   
     return { error: "Failed to create review" };
   }
 }

@@ -12,9 +12,10 @@ export async function buyNowAction(
   email: string
 ) {
   try {
-    return await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const product = await tx.product.findUnique({
         where: { id: productId },
+        select: { price: true, quantity: true },
       });
 
       if (!product) {
@@ -32,11 +33,11 @@ export async function buyNowAction(
           status: "PENDING",
           totalAmount: product.price * quantity,
           orderItems: {
-            create: [{
+            create: {
               productId,
               quantity,
               price: product.price,
-            }]
+            },
           },
         },
       });
@@ -46,11 +47,21 @@ export async function buyNowAction(
         data: { quantity: { decrement: quantity } },
       });
 
-      await userOrderConfirmationEmail(email, order.id);
-      revalidatePath("/page/[id]", "page");
-
       return { success: true, orderId: order.id };
     });
+
+    if (result.success) {
+      if (result.orderId) {
+        userOrderConfirmationEmail(email, result.orderId).catch((err) =>
+          console.error("Email sending error:", err)
+        );
+      }
+      console.error("Email sending error:")
+    }
+
+    revalidatePath("/dashboard/order");
+
+    return result;
   } catch (error) {
     console.error("Buy Now error:", error);
     return { success: false, message: "Failed to process order" };

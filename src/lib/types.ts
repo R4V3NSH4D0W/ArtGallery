@@ -159,3 +159,32 @@ export interface IReviewWithComments extends IReview {
   comments: ICommentWithUser[];
 }
 
+export type IOrder = {
+  id: string;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+  user: { 
+    name: string;
+    email: string;
+  };
+  orderItems: Array<{
+    quantity: number;
+    price: number;
+    product: {
+      name: string;
+      price: number;
+    };
+  }>;
+  userAddress?: {
+    address: string;
+    city: string;
+    postalCode: string;
+  };
+};
+
+export type ProductPerformance = {
+  name: string
+  sales: number
+  price: number
+}
