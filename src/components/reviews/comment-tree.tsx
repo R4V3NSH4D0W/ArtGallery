@@ -10,6 +10,7 @@ import { DeleteButton } from "./delete-button";
 import { toast } from "react-toastify";
 import { deleteComment } from "@/app/actions/review";
 import { ICommentWithUser } from "@/lib/types";
+import { formatDate } from "@/lib/utils";
 
 const MAX_DEPTH = 1;
 
@@ -53,7 +54,7 @@ export function CommentTree({
               {comment.user?.name || "Anonymous"}
             </h4>
             <span className="text-sm text-gray-500">
-              {new Date(comment.createdAt).toLocaleDateString()}
+              {formatDate(comment.createdAt)}
             </span>
 
             {currentUserId === comment.userId && (

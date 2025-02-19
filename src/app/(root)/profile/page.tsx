@@ -7,6 +7,7 @@ import { getUserProfile, updateUserProfile } from "@/app/actions/user";
 import { getOrders } from "@/app/actions/order";
 import { useAuthContext } from "@/context/AuthContext";
 import { Order, Profile } from "@/lib/types";
+import { formatDate } from "@/lib/utils";
 
 export default function ProfilePage() {
   const { user } = useAuthContext();
@@ -75,7 +76,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 mt-[5rem]">
+    <div className="min-h-screen py-12  sm:px-6 lg:px-8 mt-[2rem] lg:mt-[5rem]">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Profile Section */}
         <div className="bg-white rounded-2xl shadow-md p-8">
@@ -199,7 +200,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Orders Section */}
-        <div className="bg-white rounded-2xl shadow-md p-8">
+        <div className="bg-white rounded-2xl p-4 shadow-md lg:p-8 ">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             Order History
           </h2>
@@ -207,21 +208,23 @@ export default function ProfilePage() {
           <div className="space-y-6">
             {orders.map((order) => (
               <div key={order.id} className="border rounded-lg p-6 ">
-                <div className="flex flex-col md:flex-row justify-between mb-4">
+                <div className="flex flex-row justify-between mb-4">
                   <div className="space-y-1">
                     <p className="text-lg font-semibold">
                       Order #{order.id.slice(0, 8)}
                     </p>
                     <p className="text-gray-600">
-                      {new Date(order.createdAt).toLocaleDateString()}
+                      {formatDate(order.createdAt)}
                     </p>
                   </div>
                   <div
-                    className={`px-4 py-2 rounded-lg h-[2.3rem] text-sm font-medium ${
+                    className={`px-4 py-2 rounded-lg h-[2.3rem] w-[8rem] flex  justify-center text-sm font-medium ${
                       order.status === "DELIVERED"
                         ? "bg-green-100 text-green-800"
                         : order.status === "WORKING"
                         ? "bg-blue-100 text-blue-800"
+                        : order.status === "CANCELLED"
+                        ? "bg-red-100 text-red-800"
                         : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
@@ -233,7 +236,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="text-sm text-gray-600">Total Amount</p>
                     <p className="font-medium">
-                      NPR {order.totalAmount.toFixed(2)}
+                      NRS {order.totalAmount.toFixed(2)}
                     </p>
                   </div>
                   <div>
@@ -252,7 +255,7 @@ export default function ProfilePage() {
 
                 <div className="border-t pt-4">
                   <h3 className="text-sm font-semibold mb-2">Items:</h3>
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex flex-wrap lg:gap-10">
                     {order.orderItems.map((item) => (
                       <div key={item.id} className="flex items-center gap-4">
                         <div className="h-12 w-12 bg-gray-100 rounded-lg overflow-hidden">
@@ -268,7 +271,7 @@ export default function ProfilePage() {
                         <div>
                           <p className="font-medium">{item.product.name}</p>
                           <p className="text-sm text-gray-600">
-                            {item.quantity} × NPR {item.price.toFixed(2)}
+                            {item.quantity} × NRS {item.price.toFixed(2)}
                           </p>
                         </div>
                       </div>

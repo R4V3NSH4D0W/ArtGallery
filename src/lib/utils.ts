@@ -47,8 +47,16 @@ export const getCurrentMonthStart = () => {
 
 export function getAcronym(text: string): string {
   return text
-    .split(" ")               // Split the text into words
-    .map((word) => word[0])   // Take the first letter of each word
-    .join("")                 // Join them into a single string
-    .toUpperCase();           // Ensure the acronym is uppercase
+    .split(" ")               
+    .map((word) => word[0])   
+    .join("")                 
+    .toUpperCase();          
 }
+
+export const formatDate = (date: string | Date): string => {
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+};

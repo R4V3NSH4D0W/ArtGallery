@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Reply, Star } from "lucide-react";
+import { Reply } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,6 +24,7 @@ import { CommentForm } from "../reviews/comment-form";
 import { CommentTree } from "../reviews/comment-tree";
 import { IReviewWithComments } from "@/lib/types";
 import { MdKeyboardArrowRight, MdStar } from "react-icons/md";
+import { formatDate } from "@/lib/utils";
 
 const reviewSchema = z.object({
   comment: z.string().min(1, "Review is required"),
@@ -113,7 +114,7 @@ export function ReviewSection({
                       <MdStar
                         className={`w-8 h-8 cursor-pointer ${
                           reviewForm.watch("rating") >= rating
-                            ? "text-yellow-400"
+                            ? "text-blue-400"
                             : "text-gray-300"
                         }`}
                       />
@@ -165,24 +166,17 @@ export function ReviewSection({
                 </Avatar>
 
                 <div className="flex-1">
-                  <div className="flex items-baseline flex-wrap gap-2">
+                  <div className="flex items-center flex-wrap gap-2">
                     <h4 className="text-lg font-semibold text-gray-900">
                       {review.user?.name || "Anonymous"}
                     </h4>
                     <div className="flex items-center gap-1">
                       {Array.from({ length: review.rating }, (_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-yellow-400 stroke-yellow-500"
-                        />
+                        <MdStar key={i} className="w-6 h-6 text-blue-400" />
                       ))}
                     </div>
                     <span className="text-sm text-gray-500">
-                      {new Date(review.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
+                      {formatDate(review.createdAt)}
                     </span>
                   </div>
 

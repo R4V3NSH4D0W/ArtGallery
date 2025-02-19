@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import ImageGallery from "@/components/product/image-gallery";
 import Buttons from "@/components/product/buttons";
 import NotFoundPage from "@/app/not_found";
-import WishListIcon from "@/components/product/wishlist-icon";
+// import WishListIcon from "@/components/product/wishlist-icon";
 import { ReviewSection } from "@/components/reviews/review-section";
 
 type Props = {
@@ -49,7 +49,7 @@ export default async function ProductDetail({ params }: Props) {
                     : "Out of Stock"}
                 </p>
               </div>
-              <WishListIcon />
+              {/* <WishListIcon /> */}
             </div>
 
             {/* Highlights */}

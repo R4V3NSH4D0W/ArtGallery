@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { FaHeart } from "react-icons/fa";
+// import { FaHeart } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -69,7 +69,7 @@ export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeType, setActiveType] = useState("All");
   const [products, setProducts] = useState<IProducts[]>([]);
-  const [wishlist, setWishlist] = useState<string[]>([]);
+  // const [wishlist, setWishlist] = useState<string[]>([]);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -95,13 +95,13 @@ export default function ShopPage() {
     fetchProducts();
   }, [activeCategory, activeType, offset]);
 
-  const toggleWishlist = (productId: string) => {
-    setWishlist((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
-  };
+  // const toggleWishlist = (productId: string) => {
+  //   setWishlist((prev) =>
+  //     prev.includes(productId)
+  //       ? prev.filter((id) => id !== productId)
+  //       : [...prev, productId]
+  //   );
+  // };
 
   const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
@@ -197,7 +197,7 @@ export default function ShopPage() {
                       />
                     </div>
                   </Link>
-                  <button
+                  {/* <button
                     onClick={() => toggleWishlist(product.id)}
                     className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100"
                   >
@@ -208,7 +208,7 @@ export default function ShopPage() {
                           : "text-gray-400"
                       }`}
                     />
-                  </button>
+                  </button> */}
                   <div className="px-2 pb-2 lg:px-4 lg:pb-4">
                     <h3 className="font-bold text-sm lg:text-md mt-3 mb-1 text-gray-900">
                       {product.name}
