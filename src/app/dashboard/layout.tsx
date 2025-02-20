@@ -83,7 +83,7 @@ function DesktopNav() {
           <ShoppingCart className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard/products" label="Products">
+        <NavItem href="/dashboard/gallery" label="Products">
           <Package className="h-5 w-5" />
         </NavItem>
 
@@ -146,7 +146,7 @@ function MobileNav() {
             Orders
           </Link>
           <Link
-            href="/dashboard/products"
+            href="/dashboard/gallery"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Package className="h-5 w-5" />

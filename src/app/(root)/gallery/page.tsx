@@ -1,13 +1,19 @@
-"use client";
 import ImageSlider from "@/components/image_slider";
 import MotionDiv from "@/components/motiondiv";
 import ReviewSection from "@/components/review";
 import { Button } from "@/components/ui/button";
-import { CollectionTypes } from "@/lib/data";
 import Image from "next/image";
-import React, { useState, Suspense } from "react";
+import React, { Suspense } from "react";
 import { FaBrush, FaRulerCombined } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { getGalleryArts } from "@/app/actions/gallery";
 
 const LazyArtCollection = React.lazy(
   () => import("@/components/art-collection")
@@ -16,32 +22,26 @@ const LazyArtPiecesTable = React.lazy(
   () => import("@/components/artpiece_table")
 );
 
-function CollectionPage() {
-  const [selectedType, setSelectedType] = useState<number>(1);
-
+async function Gallery() {
+  const data = await getGalleryArts();
+  console.log(data);
   return (
-    <div className="flex flex-col min-h-screen">
-      <MotionDiv className="flex flex-row gap-2 mt-[7rem] lg:px-[10rem] px-4 flex-wrap">
-        {CollectionTypes.map((type) => (
-          <div
-            key={type.id}
-            onClick={() => setSelectedType(type.id)}
-            className={`border px-3 lg:px-10 rounded-3xl py-2 cursor-pointer ${
-              selectedType === type.id
-                ? "bg-blue-skyblue text-blue-900"
-                : "hover:bg-blue-background hover:text-white"
-            }`}
-          >
-            {type.type}
-          </div>
-        ))}
-      </MotionDiv>
+    <div className="flex flex-col min-h-screen mt-[5rem]">
+      <div className=" mt-[2rem] lg:px-[10rem] px-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/gallery">Gallery</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
-      {/* Content */}
-
-      <LazyArtCollection />
-
-      {/* Discover Section */}
+      <LazyArtCollection images={data} />
       <section className="lg:px-[12rem] px-4 flex flex-col py-[4rem]">
         <label className="text-md lg:text-lg text-blue-600 mb-4">
           Inspired by Nature and Imagination
@@ -102,7 +102,7 @@ function CollectionPage() {
       </section>
 
       {/* Explore Techniques Section */}
-      <section className="px-6 md:px-12 lg:px-[12rem] flex flex-col items-center justify-center">
+      <section className="px-6 md:px-12 lg:px-[12rem] mt-4 flex flex-col items-center justify-center">
         <label className="text-blue-600 text-lg pb-2">
           Explore Our Techniques
         </label>
@@ -149,4 +149,4 @@ function CollectionPage() {
   );
 }
 
-export default CollectionPage;
+export default Gallery;

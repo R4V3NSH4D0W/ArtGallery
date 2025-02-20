@@ -188,3 +188,14 @@ export type ProductPerformance = {
   sales: number
   price: number
 }
+// Define types at the top
+export type ActionResult<T = unknown> = 
+  | { success: true; data?: T }
+  | { success: false; error: string };
+
+export interface GalleryArt {
+  id: string;
+  images: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
