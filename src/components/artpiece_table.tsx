@@ -2,30 +2,18 @@
 import React from "react";
 import Image from "next/image";
 
-const ArtPiecesTable = () => {
-  const artPieces = [
-    {
-      image: "https://w.wallhaven.cc/full/9d/wallhaven-9dp3y1.jpg",
-      title: "Ethereal Patterns",
-      size: "24x36 inches",
-      material: "Cotton String on Canvas",
-      price: "$450",
-    },
-    {
-      image: "https://w.wallhaven.cc/full/9d/wallhaven-9dqojx.jpg",
-      title: "Forest Symphony",
-      size: "30x40 inches",
-      material: "Silk String on Wood",
-      price: "$600",
-    },
-    {
-      image: "https://w.wallhaven.cc/full/vq/wallhaven-vq6x28.jpg",
-      title: "Modern Whirl",
-      size: "20x30 inches",
-      material: "Polyester String on Metal",
-      price: "$500",
-    },
-  ];
+interface IArtPiece {
+  artPieces: {
+    title: string;
+    image: string;
+    size: string;
+    material: string;
+    price: string;
+  }[];
+}
+
+const ArtPiecesTable = ({ artPieces }: IArtPiece) => {
+  if (!artPieces?.length) return null;
 
   return (
     <div className="overflow-x-auto">
@@ -55,7 +43,13 @@ const ArtPiecesTable = () => {
               >
                 <td className="px-6 py-4 flex items-center space-x-4">
                   <div className="relative h-12 w-12 rounded-full overflow-hidden">
-                    <Image src={art.image} alt={art.title} fill />
+                    <Image
+                      src={art.image}
+                      alt={art.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover"
+                    />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-800">

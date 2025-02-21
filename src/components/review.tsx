@@ -1,39 +1,24 @@
 "use client";
 import React from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import MotionDiv from "@/components/motiondiv";
 
-const reviews = [
-  {
-    rating: 5,
-    title: "Artistic Quality",
-    description:
-      "The string art pieces are truly mesmerizing and add a unique touch to my home decor.",
-    reviewer: "Emily Johnson",
-    reviewerImage: "https://w.wallhaven.cc/full/vq/wallhaven-vq6x28.jpg",
-    date: "September 10, 2024",
-  },
-  {
-    rating: 5,
-    title: "Customer Service",
-    description:
-      "Exceptional customer service and stunning artwork. Highly recommend Artful Threads!",
-    reviewer: "Michael Smith",
-    reviewerImage: "https://w.wallhaven.cc/full/1p/wallhaven-1pv19v.png",
-    date: "August 22, 2024",
-  },
-  {
-    rating: 5,
-    title: "Design Innovation",
-    description:
-      "The creativity and innovation in their designs are simply unparalleled.",
-    reviewer: "Sophia Brown",
-    reviewerImage: "https://w.wallhaven.cc/full/kx/wallhaven-kx5v57.jpg",
-    date: "July 15, 2024",
-  },
-];
+interface Review {
+  rating: number;
+  title: string;
+  date: string;
+  description: string;
+  reviewer: string;
+  reviewerImage?: string;
+}
 
-const ReviewSection = () => {
+interface ReviewSectionProps {
+  reviews: Review[];
+}
+
+const ReviewSection: React.FC<ReviewSectionProps> = ({ reviews }) => {
+  if (!reviews?.length) return null;
+
   return (
     <>
       {reviews.map((review, index) => (
@@ -65,9 +50,20 @@ const ReviewSection = () => {
           </div>
           <p className="mt-3 text-gray-600">{review.description}</p>
           <div className="mt-4 flex items-center">
-            <div className=" relative h-10 w-10 rounded-full overflow-hidden">
-              <Image src={review.reviewerImage} alt={review.reviewer} fill />
+            {/* {review.reviewerImage ? (
+              <div className="relative h-10 w-10 rounded-full overflow-hidden">
+                <Image
+                  src={review.reviewerImage}
+                  alt={review.reviewer}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ) : ( */}
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-medium">
+              {review.reviewer.charAt(0).toUpperCase()}
             </div>
+            {/* )} */}
             <p className="ml-3 text-sm font-medium text-gray-700">
               {review.reviewer}
             </p>

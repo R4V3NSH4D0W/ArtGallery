@@ -5,7 +5,6 @@ import Image from "next/image";
 import { GalleryArt } from "@/lib/types";
 
 function ArtCollection({ images }: { images: GalleryArt[] }) {
-  console.log(images);
   const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(
     null
   );

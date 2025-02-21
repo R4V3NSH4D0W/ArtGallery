@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ImageSlider from "@/components/image_slider";
 import MotionDiv from "@/components/motiondiv";
 import ReviewSection from "@/components/review";
@@ -14,6 +15,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { getGalleryArts } from "@/app/actions/gallery";
+import { getArtDimensions } from "@/app/actions/art-dimensions";
+import { getTopReviews } from "@/app/actions/top-review";
 
 const LazyArtCollection = React.lazy(
   () => import("@/components/art-collection")
@@ -23,8 +26,11 @@ const LazyArtPiecesTable = React.lazy(
 );
 
 async function Gallery() {
-  const data = await getGalleryArts();
-  console.log(data);
+  const [galleryArts, artDimensions, topReviews] = await Promise.all([
+    getGalleryArts(),
+    getArtDimensions(),
+    getTopReviews(),
+  ]);
   return (
     <div className="flex flex-col min-h-screen mt-[5rem]">
       <div className=" mt-[2rem] lg:px-[10rem] px-4">
@@ -41,7 +47,9 @@ async function Gallery() {
         </Breadcrumb>
       </div>
 
-      <LazyArtCollection images={data} />
+      <Suspense fallback={<div>Loading Art Collection...</div>}>
+        <LazyArtCollection images={galleryArts} />
+      </Suspense>
       <section className="lg:px-[12rem] px-4 flex flex-col py-[4rem]">
         <label className="text-md lg:text-lg text-blue-600 mb-4">
           Inspired by Nature and Imagination
@@ -90,16 +98,17 @@ async function Gallery() {
       </main>
 
       {/* Art Dimensions Section */}
-      <section className="px-[1rem] lg:px-[12rem] flex flex-col">
-        <label className="text-4xl">Art Dimensions</label>
-        <label className="text-stone-500 max-w-[30rem] mt-4">
-          Understand the size and scale of each string art piece to find the
-          perfect fit for your space.
-        </label>
-        <Suspense fallback={<div>Loading Art Pieces Table...</div>}>
-          <LazyArtPiecesTable />
-        </Suspense>
-      </section>
+      {artDimensions.length > 0 && (
+        <section className="px-[1rem] lg:px-[12rem] flex flex-col">
+          <label className="text-4xl">Art Dimensions</label>
+          <label className="text-stone-500 max-w-[30rem] mt-4">
+            Understand the size and scale of each string art piece...
+          </label>
+          <Suspense fallback={<div>Loading Art Pieces Table...</div>}>
+            <LazyArtPiecesTable artPieces={artDimensions} />
+          </Suspense>
+        </section>
+      )}
 
       {/* Explore Techniques Section */}
       <section className="px-6 md:px-12 lg:px-[12rem] mt-4 flex flex-col items-center justify-center">
@@ -134,17 +143,23 @@ async function Gallery() {
       </section>
 
       {/* Review Section */}
-      <section className="px-4 lg:px-[10rem] lg:pt-[10rem] mt-10 lg:mt-0">
-        <div className="flex flex-col">
-          <label className="text-2xl lg:text-4xl">Artful Threads Reviews</label>
-          <label className="text-slate-500 pt-4 text-md lg:text-lg">
-            5 Reviews
-          </label>
-        </div>
-        <div className="py-10">
-          <ReviewSection />
-        </div>
-      </section>
+      {topReviews.length > 0 && (
+        <section className="px-4 lg:px-[10rem] lg:pt-[10rem] mt-10 lg:mt-0">
+          <div className="flex flex-col">
+            <label className="text-2xl lg:text-4xl">
+              Artful Threads Reviews
+            </label>
+            <label className="text-slate-500 pt-4 text-md lg:text-lg">
+              {topReviews.length} Reviews
+            </label>
+          </div>
+          <div className="py-10">
+            <Suspense fallback={<div>Loading Reviews...</div>}>
+              <ReviewSection reviews={topReviews} />
+            </Suspense>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

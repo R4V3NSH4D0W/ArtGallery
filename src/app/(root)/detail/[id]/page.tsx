@@ -37,7 +37,7 @@ export default async function ProductDetail({ params }: Props) {
                   {product.name}
                 </h1>
                 <h2 className="text-lg lg:text-3xl text-primary font-semibold">
-                  NPR {product.price.toLocaleString()}
+                  NRS {product.price.toLocaleString()}
                 </h2>
                 <p
                   className={`text-sm lg:text-base ${

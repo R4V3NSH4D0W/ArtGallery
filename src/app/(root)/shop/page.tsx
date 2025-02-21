@@ -13,6 +13,7 @@ import {
 import { BeatLoader } from "react-spinners";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import clsx from "clsx";
 
 export interface IProducts {
   id: string;
@@ -210,9 +211,20 @@ export default function ShopPage() {
                     />
                   </button> */}
                   <div className="px-2 pb-2 lg:px-4 lg:pb-4">
-                    <h3 className="font-bold text-sm lg:text-md mt-3 mb-1 text-gray-900">
-                      {product.name}
-                    </h3>
+                    <div className="flex flex-row items-center space-x-2 my-2">
+                      <h3 className="font-bold text-sm lg:text-md text-gray-900">
+                        {product.name}
+                      </h3>
+                      <h3
+                        className={clsx(
+                          " text-xs lg:text-md px-2 py-1 rounded-lg text-white",
+                          product.quantity > 0 ? "bg-green-400" : "bg-red-400"
+                        )}
+                      >
+                        {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+                      </h3>
+                    </div>
+
                     <div className="flex flex-wrap gap-1 lg:gap-2">
                       {Array.isArray(product.category)
                         ? product.category.map((cat, index) => (
@@ -226,7 +238,7 @@ export default function ShopPage() {
                         : null}
                     </div>
                     <p className="font-semibold text-sm lg:text-md mt-2 text-gray-800">
-                      NPR {product.price.toLocaleString()}
+                      NRS {product.price.toLocaleString()}
                     </p>
                   </div>
                 </div>

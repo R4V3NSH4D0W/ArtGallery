@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {
   Home,
+  ImageIcon,
   LineChart,
-  Package,
   Package2,
   PanelLeft,
   Settings,
@@ -83,8 +83,8 @@ function DesktopNav() {
           <ShoppingCart className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard/gallery" label="Products">
-          <Package className="h-5 w-5" />
+        <NavItem href="/dashboard/gallery" label="Gallery">
+          <ImageIcon className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/dashboard/customers" label="Customers">
@@ -149,8 +149,8 @@ function MobileNav() {
             href="/dashboard/gallery"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
-            <Package className="h-5 w-5" />
-            Products
+            <ImageIcon className="h-5 w-5" />
+            Gallery
           </Link>
           <Link
             href="#"

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { OrderTable } from "../components/order-table";
 
 import { getOrders } from "@/app/actions/order-action";

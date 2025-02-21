@@ -1,4 +1,5 @@
 // app/dashboard/gallery/page.tsx
+export const dynamic = "force-dynamic";
 import { getGalleryArts } from "@/app/actions/gallery";
 import GalleryUploadForm from "../components/gallery/gallery-upload-form";
 import GalleryGrid from "../components/gallery/gallery-grid";

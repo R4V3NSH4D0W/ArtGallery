@@ -113,7 +113,7 @@ function Cart() {
                 <div className="flex items-center justify-between md:justify-end gap-4">
                   <div className="space-y-1 text-right">
                     <p className="font-medium text-md lg:text-lg">
-                      NPR{" "}
+                      NRS{" "}
                       {(item.product.price * item.quantity).toLocaleString()}
                     </p>
                     <div className="flex items-center gap-2 text-sm">
@@ -139,7 +139,7 @@ function Cart() {
           <div className="mt-8 p-6 bg-gray-50 rounded-xl sticky bottom-4 border shadow-sm">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="lg:text-xl text-lg font-bold">
-                Total: NPR {calculateTotalPrice().toLocaleString()}
+                Total: NRS {calculateTotalPrice().toLocaleString()}
               </div>
               <Button
                 size="lg"
