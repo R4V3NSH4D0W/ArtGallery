@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   env: {
     JWT_SECRET: process.env.JWT_SECRET,
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '5mb',
+    },
+  },
   
   images: {
     remotePatterns: [

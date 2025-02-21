@@ -164,3 +164,12 @@ export const Collections = [
     description: "Classic art piece 1.",
   },
 ];
+
+export const GalleryImages = [
+  { name: "/stringart/string1.jpg", alt: "String Art 1" },
+  { name: "/stringart/string2.jpg", alt: "String Art 2" },
+  { name: "/stringart/string3.jpg", alt: "String Art 3" },
+  { name: "/stringart/string4.jpg", alt: "String Art 4" },
+  { name: "/stringart/string5.jpg", alt: "String Art 5" },
+  { name: "/stringart/string6.jpg", alt: "String Art 6" },
+];

@@ -154,3 +154,10 @@ model Comment {
 
   @@map("comments")
 }
+
+model GalleryArt {
+  id        String   @id @default(cuid())
+  images    String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
