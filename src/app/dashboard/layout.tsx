@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {
   Home,
+  ImageIcon,
   LineChart,
-  Package,
   Package2,
   PanelLeft,
   Settings,
@@ -15,8 +15,8 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+  // BreadcrumbPage,
+  // BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -83,15 +83,15 @@ function DesktopNav() {
           <ShoppingCart className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard/products" label="Products">
-          <Package className="h-5 w-5" />
+        <NavItem href="/dashboard/gallery" label="Gallery">
+          <ImageIcon className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/dashboard/customers" label="Customers">
           <Users2 className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="#" label="Analytics">
+        <NavItem href="/dashboard/analytics" label="Analytics">
           <LineChart className="h-5 w-5" />
         </NavItem>
       </nav>
@@ -146,11 +146,11 @@ function MobileNav() {
             Orders
           </Link>
           <Link
-            href="/dashboard/products"
+            href="/dashboard/gallery"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
-            <Package className="h-5 w-5" />
-            Products
+            <ImageIcon className="h-5 w-5" />
+            Gallery
           </Link>
           <Link
             href="#"
@@ -187,10 +187,10 @@ function DashboardBreadcrumb() {
             <Link href="/dashboard/products">Products</Link>
           </BreadcrumbLink>
         </BreadcrumbItem> */}
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
+        {/* <BreadcrumbSeparator /> */}
+        {/* <BreadcrumbItem>
           <BreadcrumbPage>All Products</BreadcrumbPage>
-        </BreadcrumbItem>
+        </BreadcrumbItem> */}
       </BreadcrumbList>
     </Breadcrumb>
   );

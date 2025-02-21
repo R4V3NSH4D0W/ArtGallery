@@ -120,3 +120,82 @@ export interface IOrderWithRelations {
     };
   }>;
 }
+
+
+export interface IUser {
+  id: string;
+  name: string | null;
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IComment {
+  id: string;
+  userId: string;
+  reviewId: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ICommentWithUser extends IComment {
+  user?: IUser;
+  replies: ICommentWithUser[];
+}
+
+export interface IReview {
+  id: string;
+  userId: string;
+  productId: string;
+  rating: number;
+  comment: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IReviewWithComments extends IReview {
+  user?: IUser;
+  comments: ICommentWithUser[];
+}
+
+export type IOrder = {
+  id: string;
+  totalAmount: number;
+  status: string;
+  createdAt: Date;
+  user: { 
+    name: string;
+    email: string;
+  };
+  orderItems: Array<{
+    quantity: number;
+    price: number;
+    product: {
+      name: string;
+      price: number;
+    };
+  }>;
+  userAddress?: {
+    address: string;
+    city: string;
+    postalCode: string;
+  };
+};
+
+export type ProductPerformance = {
+  name: string
+  sales: number
+  price: number
+}
+// Define types at the top
+export type ActionResult<T = unknown> = 
+  | { success: true; data?: T }
+  | { success: false; error: string };
+
+export interface GalleryArt {
+  id: string;
+  images: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}

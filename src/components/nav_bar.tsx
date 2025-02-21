@@ -49,7 +49,7 @@ const NavBar = () => {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/collections", label: "Gallery" },
+    { href: "/gallery", label: "Gallery" },
     { href: "/shop", label: "Shop" },
   ];
 
