@@ -111,7 +111,7 @@ async function Gallery() {
       )}
 
       {/* Explore Techniques Section */}
-      <section className="px-6 md:px-12 lg:px-[12rem] mt-4 flex flex-col items-center justify-center">
+      <section className="px-6 md:px-12 lg:px-[12rem] mt-4 flex flex-col items-center justify-center mb-10">
         <label className="text-blue-600 text-lg pb-2">
           Explore Our Techniques
         </label>
@@ -144,7 +144,7 @@ async function Gallery() {
 
       {/* Review Section */}
       {topReviews.length > 0 && (
-        <section className="px-4 lg:px-[10rem] lg:pt-[10rem] mt-10 lg:mt-0">
+        <section className="px-4 lg:px-[10rem]">
           <div className="flex flex-col">
             <label className="text-2xl lg:text-4xl">
               Artful Threads Reviews

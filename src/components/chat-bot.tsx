@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { FaFacebookMessenger } from "react-icons/fa";
 
@@ -7,7 +5,7 @@ function ChatBot() {
   return (
     <div className="fixed z-50 bottom-5 right-5">
       <a
-        href="https://m.me/594688667388632"
+        href={process.env.NEXT_FACEBOOK_PAGE}
         target="_blank"
         rel="noopener noreferrer"
       >

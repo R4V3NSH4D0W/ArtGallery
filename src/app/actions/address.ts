@@ -23,12 +23,11 @@ export async function createUserAddress(
   postalCode: string
 ) {
   try {
-    // Check if the user already has an address
+   
     const existingAddress = await prisma.userAddress.findUnique({
       where: { userId },
     });
 
-    // If the user already has an address, update it
     if (existingAddress) {
       const updatedAddress = await prisma.userAddress.update({
         where: { userId },
@@ -41,7 +40,6 @@ export async function createUserAddress(
       });
       return { success: true, addressId: updatedAddress.id };
     } else {
-      // If the user doesn't have an address, create a new one
       const newAddress = await prisma.userAddress.create({
         data: {
           userId,

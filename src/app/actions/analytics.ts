@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import prisma from '@/lib/prisma'
 import { getAcronym, getCurrentMonthStart, getLastMonthStart } from '@/lib/utils';

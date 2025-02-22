@@ -19,6 +19,7 @@
 /public/uploads/
 /uploads/products/
 /uploads/profile/
+/uploads/gallery/
 # production
 /build
 

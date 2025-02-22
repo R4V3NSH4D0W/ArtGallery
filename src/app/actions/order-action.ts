@@ -1,6 +1,7 @@
 "use server";
 
 
+import { sendOrderStatusEmail } from "@/lib/messages";
 import prisma from "@/lib/prisma";
 import { OrderStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -48,15 +49,16 @@ export async function getOrders() {
 
 
 export async function updateOrderStatus(id: string, status: OrderStatus) {
-  return prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx) => {
     const currentOrder = await tx.order.findUnique({
       where: { id },
-      include: { orderItems: true },
+      include: { 
+        orderItems: true,
+        user: { select: { email: true } }, 
+      },
     });
 
-    if (!currentOrder) {
-      throw new Error("Order not found");
-    }
+    if (!currentOrder) throw new Error("Order not found");
 
     const updatedOrder = await tx.order.update({
       where: { id },
@@ -79,8 +81,21 @@ export async function updateOrderStatus(id: string, status: OrderStatus) {
       }
     }
 
-    revalidatePath("/dashboard/order");
-    revalidatePath('/dashboard/analytics')
-    return updatedOrder;
+    return { currentOrder, updatedOrder };
   });
+
+  try {
+     sendOrderStatusEmail(
+      result.currentOrder.user.email, 
+      id,
+      status
+    );
+  } catch (error) {
+    console.error("Email failed to send:", error);
+  }
+
+  revalidatePath("/dashboard/order");
+  revalidatePath('/dashboard/analytics');
+
+  return result.updatedOrder;
 }

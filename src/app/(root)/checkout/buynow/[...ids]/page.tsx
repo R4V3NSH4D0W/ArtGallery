@@ -145,8 +145,61 @@ export default function BuyNowCheckoutPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-[4rem]">
+        <div className="max-w-2xl mx-auto animate-pulse space-y-8">
+          {/* Skeleton for Page Heading */}
+          <div className="text-center mb-12">
+            <div className="h-10 w-3/4 bg-gray-300 rounded mx-auto mb-4"></div>
+            <div className="h-6 w-1/2 bg-gray-300 rounded mx-auto"></div>
+          </div>
+          {/* Skeleton for Product Details */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="relative md:w-1/3">
+                <div className="w-full h-48 md:h-56 bg-gray-300 rounded-xl"></div>
+                <div className="absolute top-2 right-2 bg-gray-300 rounded-full h-6 w-6"></div>
+              </div>
+              <div className="flex-1 space-y-4">
+                <div className="h-8 bg-gray-300 rounded w-full"></div>
+                <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                </div>
+                <div className="pt-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="h-6 bg-gray-300 rounded w-24"></div>
+                    <div className="h-6 bg-gray-300 rounded w-24"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Skeleton for Checkout Form */}
+          <form className="bg-white rounded-xl shadow-lg p-6 md:p-8">
+            <div className="space-y-8">
+              <section>
+                <div className="h-8 bg-gray-300 rounded w-1/2 mb-6"></div>
+                <div className="space-y-4">
+                  <div className="h-10 bg-gray-300 rounded w-full"></div>
+                  <div className="h-10 bg-gray-300 rounded w-full"></div>
+                  <div className="h-10 bg-gray-300 rounded w-full"></div>
+                </div>
+              </section>
+              <section>
+                <div className="h-8 bg-gray-300 rounded w-1/2 mb-6"></div>
+                <div className="space-y-4">
+                  <div className="h-10 bg-gray-300 rounded w-full"></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="h-10 bg-gray-300 rounded w-full"></div>
+                    <div className="h-10 bg-gray-300 rounded w-full"></div>
+                  </div>
+                </div>
+              </section>
+              <div className="h-12 bg-gray-300 rounded w-full"></div>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }

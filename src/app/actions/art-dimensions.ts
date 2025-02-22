@@ -11,7 +11,7 @@ export async function getArtDimensions() {
           { breadth: { not: null } }
         ]
       },
-      take: 5,
+      take: 3,
       orderBy: { createdAt: 'desc' }
     });
 
@@ -23,7 +23,7 @@ export async function getArtDimensions() {
         .filter(Boolean)
         .join('x') + ' cm',
       material: product.material.join(', '),
-      price: `NRS ${product.price.toFixed(2)}`
+      price: `NRS ${product.price.toLocaleString()}`
     }));
   } catch  {
     return [];

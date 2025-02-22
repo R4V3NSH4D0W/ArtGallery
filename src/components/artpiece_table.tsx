@@ -16,7 +16,7 @@ const ArtPiecesTable = ({ artPieces }: IArtPiece) => {
   if (!artPieces?.length) return null;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto mt-4">
       <div className="inline-block min-w-full overflow-hidden rounded-lg border border-gray-200">
         <table className="min-w-full border-collapse bg-white">
           <thead className="border-b">

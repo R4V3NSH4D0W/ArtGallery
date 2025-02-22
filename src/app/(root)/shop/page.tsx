@@ -10,10 +10,10 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { BeatLoader } from "react-spinners";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import clsx from "clsx";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface IProducts {
   id: string;
@@ -162,21 +162,33 @@ export default function ShopPage() {
         <section className="w-full md:w-3/4">
           {/* Loading state */}
           {loading ? (
-            <div className="flex justify-center items-center min-h-[400px]">
-              <BeatLoader size={15} color="#000000" loading={loading} />
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+              {Array.from({ length: LIMIT }).map((_, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-md ">
+                  <Skeleton className="w-full h-36 lg:h-64 rounded-lg" />
+                  <div className=" p-4">
+                    <Skeleton className="mt-2 h-4 w-3/4" />
+                    <div className=" flex flex-row gap-2">
+                      <Skeleton className="mt-2 h-4 w-[5rem]" />
+                      <Skeleton className="mt-2 h-4 w-[4rem]" />
+                    </div>
+                    <Skeleton className="mt-2 h-4 w-1/2" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : products.length === 0 ? (
             <div className="w-full text-center py-20 ">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              <h2 className=" text-2xl lg:text-3xl font-bold text-gray-800 mb-4">
                 Oops! No products found
               </h2>
-              <p className="text-lg text-gray-600 mb-6">
+              <p className=" text-sm lg:text-lg text-gray-600 mb-6">
                 We couldn&apos;t find any products in this category. Try another
                 filter or check back later!
               </p>
               <Link
                 href="/"
-                className="px-6 py-2 bg-blue-600 text-white rounded-full  hover:bg-blue-700 transition-all"
+                className="px-6 py-2 bg-blue-600 text-sm lg:text-lg text-white rounded-full  hover:bg-blue-700 transition-all"
               >
                 Go Back to Home
               </Link>
@@ -196,6 +208,14 @@ export default function ShopPage() {
                         fill
                         className="object-cover rounded-t-lg"
                       />
+                      <h3
+                        className={clsx(
+                          "absolute top-2 left-2 text-xs lg:text-md px-2 py-1 rounded-lg text-white bg-opacity-50",
+                          product.quantity > 0 ? "bg-green-600" : "bg-red-600"
+                        )}
+                      >
+                        {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+                      </h3>
                     </div>
                   </Link>
                   {/* <button
@@ -211,19 +231,9 @@ export default function ShopPage() {
                     />
                   </button> */}
                   <div className="px-2 pb-2 lg:px-4 lg:pb-4">
-                    <div className="flex flex-row items-center space-x-2 my-2">
-                      <h3 className="font-bold text-sm lg:text-md text-gray-900">
-                        {product.name}
-                      </h3>
-                      <h3
-                        className={clsx(
-                          " text-xs lg:text-md px-2 py-1 rounded-lg text-white",
-                          product.quantity > 0 ? "bg-green-400" : "bg-red-400"
-                        )}
-                      >
-                        {product.quantity > 0 ? "In Stock" : "Out of Stock"}
-                      </h3>
-                    </div>
+                    <h3 className="font-bold text-sm lg:text-md text-gray-900 my-2">
+                      {product.name}
+                    </h3>
 
                     <div className="flex flex-wrap gap-1 lg:gap-2">
                       {Array.isArray(product.category)

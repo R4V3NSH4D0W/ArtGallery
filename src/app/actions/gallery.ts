@@ -1,4 +1,3 @@
-// app/actions/gallery.ts
 'use server';
 
 import { writeFile, mkdir, unlink } from 'fs/promises';
@@ -14,7 +13,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 async function handleGalleryUpload(files: File[]): Promise<string[]> {
   try {
-    // Validate total payload size first
+
     const totalSize = files.reduce((acc, file) => acc + file.size, 0);
     if (totalSize > 5 * 1024 * 1024) {
       throw new Error('Total payload size exceeds 5MB');
@@ -25,7 +24,6 @@ async function handleGalleryUpload(files: File[]): Promise<string[]> {
 
     return Promise.all(
       files.map(async (file) => {
-        // Validate individual file
         if (!ALLOWED_MIME_TYPES.includes(file.type)) {
           throw new Error(`Invalid file type: ${file.type}`);
         }
@@ -34,7 +32,6 @@ async function handleGalleryUpload(files: File[]): Promise<string[]> {
           throw new Error(`File ${file.name} exceeds 5MB`);
         }
 
-        // Process valid file
         const buffer = Buffer.from(await file.arrayBuffer());
         const uniqueName = `${uuidv4()}${path.extname(file.name)}`;
         const filePath = join(uploadDir, uniqueName);
@@ -79,7 +76,6 @@ export async function deleteGalleryArt(
   imagePath: string
 ): Promise<ActionResult> {
   try {
-    // Extract filename from URL
     const url = new URL(imagePath);
     const fileName = url.searchParams.get('file');
     
@@ -87,7 +83,6 @@ export async function deleteGalleryArt(
       return { success: false, error: 'Invalid image URL' };
     }
 
-    // Delete file from filesystem
     const filePath = join(
       process.cwd(), 
       'uploads', 
@@ -97,7 +92,6 @@ export async function deleteGalleryArt(
     
     await unlink(filePath);
 
-    // Delete record from database
     await prisma.galleryArt.delete({
       where: { id: artId }
     });
