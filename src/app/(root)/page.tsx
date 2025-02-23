@@ -1,7 +1,6 @@
 import ChatBot from "@/components/chat-bot";
 import HeroSection from "@/components/hero_section";
 import MotionDiv from "@/components/motiondiv";
-import { Button } from "@/components/ui/button";
 import {
   creatorsData,
   gridData,
@@ -9,6 +8,7 @@ import {
   socialMediaLinks,
 } from "@/lib/data";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { FaArrowRight, FaLinkedin, FaMagic } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -25,15 +25,18 @@ function Home() {
               <h2 className="text-3xl lg:text-5xl xl:text-6xl text-white leading-tight">
                 Craftmanship Meets Creativity
               </h2>
-              <p className="text-sm lg:text-lg text-stone-300 mt-6 max-w-[40ch]">
-                Explore the intricate designs and vibrant colors that define our
-                string art collection, each piece a testament to exceptional
-                craftsmanship.
+              <p className="text-sm lg:text-lg text-stone-300 mt-6 max-w-[50ch]">
+                Discover the beauty of handcrafted string art where precision,
+                passion, and creativity come together to form mesmerizing
+                designs.
               </p>
-              <Button className="bg-blue-500 hover:bg-blue-300 text-white mt-6 w-full lg:w-[10rem] h-[3rem] flex items-center justify-center">
-                <FaArrowRight className="ml-2" />
+              <Link
+                href={"/shop"}
+                className="bg-blue-500 hover:bg-blue-300 text-white mt-6 w-full lg:w-[10rem] h-[3rem] flex items-center justify-center rounded-md"
+              >
+                <FaArrowRight className="mr-2" />
                 Discover Art
-              </Button>
+              </Link>
             </div>
 
             {/* Right Side - Grid */}
@@ -59,10 +62,10 @@ function Home() {
         {/* Creators Section */}
         <div className="px-10 py-4 flex flex-col items-center mt-20">
           <MotionDiv className=" text-center">
-            <h3 className="text-2xl lg:text-4xl">Our Artful Creators</h3>
+            <h3 className="text-2xl lg:text-4xl">Our String Art Creators</h3>
             <p className="text-sm lg:text-lg mt-4">
-              Meet the talented artists whose passion and vision bring Artful
-              Threads to life.
+              Meet the talented artists whose passion and vision bring String
+              Art to life.
             </p>
           </MotionDiv>
           <MotionDiv className=" flex flex-col lg:flex-row gap-10 mt-[5rem]">
@@ -91,12 +94,11 @@ function Home() {
             ))}
           </MotionDiv>
         </div>
-        {/* artful threads */}
 
         <MotionDiv className="lg:px-40 px:20 pl-4  flex flex-col lg:flex-row mt-20 items-center mb-8">
           <div className=" relative h-[30rem]  lg:h-[40rem] w-[100%] lg:w-[40rem] rounded-l-lg lg:rounded-lg overflow-hidden">
             <Image
-              src="/stringart/stringart.jpg"
+              src="/gallary_static/12021dfa8eb0dc7a06e22b17b7de92d7.jpg"
               alt="Threads"
               fill
               objectFit="cover"
@@ -105,18 +107,18 @@ function Home() {
           <div className=" flex flex-col pb-5  mt-5 lg:mt-0 px-4 lg:px-0 lg:pl-20 lg:w-[50%]">
             <div className=" flex flex-row items-center gap-4">
               <FaMagic />
-              <label className=" text-2xl lg:text-3xl">Artful Threads</label>
+              <label className=" text-2xl lg:text-3xl">String Art</label>
             </div>
             <label className=" mt-10 text-md lg:text-xl">
-              Artful Threads transformed my living space with their stunning
-              string art. It&apos;s a conversation starter for every visitor.
+              String Art transformed my living space with their stunning string
+              art. It&apos;s a conversation starter for every visitor.
             </label>
             <label className=" mt-5  text-md lg:text-xl text-slate-500">
               The attention to detail and creativity in each piece is
               remarkable. I couldn’t be happier with my purchase.
             </label>
             <label className=" 10 text-md lg:text-xl mt-5 text-slate-600">
-              Leslie Alexander, Interior Designer
+              Bishal Khadgi, Creator
             </label>
           </div>
         </MotionDiv>
@@ -126,7 +128,7 @@ function Home() {
           <div className="relative h-[15rem] lg:h-[25rem] w-full lg:w-[50%] bg-blue-skyblue">
             <div className="absolute h-[15rem] lg:h-[24rem] w-[80%] lg:w-[36rem] right-4 lg:right-10 top-[-20px] lg:top-[-40px] rounded-lg overflow-hidden">
               <Image
-                src={"/stringart/string4.jpg"}
+                src={"/gallary_static/bfcbaa8bdb924308e71a53540832014a.jpg"}
                 alt="straw"
                 fill
                 objectFit="cover"
@@ -152,15 +154,13 @@ function Home() {
                   {/* Office Details */}
                   <div className="flex flex-col">
                     <h4 className="text-lg md:text-xl  ">{office.title}</h4>
-                    <p className="pt-2 lg:pt-3 text-stone-400 text-sm md:text-base leading-relaxed">
+                    <p className="pt-2 lg:pt-3 text-slate-400 text-sm md:text-base leading-relaxed">
                       {office.details?.city ||
                         office.details?.days ||
                         office.details?.phone1}
                     </p>
                     <p className="pt-2 lg:pt-3 text-slate-400 text-sm md:text-base leading-relaxed">
-                      {office.details?.time ||
-                        office.details?.phone2 ||
-                        office.details?.country}
+                      {office.details?.time || office.details?.country}
                     </p>
                   </div>
                 </div>

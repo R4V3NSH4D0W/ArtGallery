@@ -1,10 +1,10 @@
 import {
   FaBrush,
   FaFacebook,
-  FaGlobe,
   FaInstagram,
   FaLeaf,
   FaTiktok,
+  FaTruck,
   FaTwitter,
 } from "react-icons/fa";
 import { IoIosColorPalette } from "react-icons/io";
@@ -19,9 +19,9 @@ export const gridData = [
   },
   {
     icon: <FaBrush size={20} />,
-    title: "Custom Commissions",
+    title: "Custom Creations",
     description:
-      "Collaborate with our artists to create a bespoke piece that perfectly complements your space.",
+      "Bring your vision to life! We accept custom requests to craft personalized string art.",
   },
   {
     icon: <FaLeaf size={20} />,
@@ -30,27 +30,27 @@ export const gridData = [
       "Our commitment to sustainability ensures that each piece is crafted with eco-friendly materials.",
   },
   {
-    icon: <FaGlobe size={20} />,
-    title: "Worldwide Shipping",
+    icon: <FaTruck size={20} />,
+    title: "Shipping in Nepal",
     description:
-      "Enjoy our art no matter where you are, with reliable shipping options available globally.",
+      "We currently ship across Nepal, ensuring your artwork reaches you safely and securely.",
   },
 ];
 
 export const creatorsData = [
   {
-    image: "/wallhaven-rrmwo7.png",
-    name: "Whitney Francis",
+    image: "/gallary_static/puranimage.jpeg",
+    name: "Puran Gupta",
     position: "Creative Director",
   },
   {
-    image: "/wallhaven-vq83e5.jpg",
-    name: "Leonard Krasner",
+    image: "/gallary_static/manish.jpeg",
+    name: "Manish shrestha",
     position: "Senior Designer",
   },
   {
-    image: "/wallhaven-gprxpq.jpg",
-    name: "Floyd Miles",
+    image: "/gallary_static/samiimage.jpeg",
+    name: "Samikshya Bhatta",
     position: "Visual Artist",
   },
 ];
@@ -70,11 +70,11 @@ export const officeData = [
     icon: <FaMapMarkerAlt size={20} />,
     title: "Our Studio",
     details: {
-      street: "123 Art Lane",
-      city: "Creativity City",
-      state: "CA",
+      street: "Taukhel",
+      city: "Godawari",
+      state: "Bagmati",
       zip: "90210",
-      country: "USA",
+      country: "Nepal",
     },
   },
   {
@@ -82,8 +82,7 @@ export const officeData = [
     icon: <FaPhoneAlt size={20} />,
     title: "Contact Us",
     details: {
-      phone1: "+1-555-789-1234",
-      phone2: "+1-555-456-7890",
+      phone1: process.env.NEXT_PUBLIC_PHONE_NUMBER,
     },
   },
 ];

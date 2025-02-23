@@ -36,17 +36,16 @@ model Product {
   price       Float
   quantity    Int
   description String
-  category    String[] // Supports multiple categories
-  material    String[] // Supports multiple materials
-  length      Float? // Optional dimension
-  width       Float? // Optional dimension
-  breadth     Float? // Optional dimension
-  images      String[] // Supports multiple images
+  category    String[]
+  material    String[]
+  length      Float?
+  width       Float?
+  breadth     Float?
+  images      String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   status      String   @default("inactive")
 
-  // Relations
   cartItems Cart[]
 
   OrderItem OrderItem[]
@@ -118,6 +117,8 @@ enum OrderStatus {
   PENDING
   NOTICED
   WORKING
+  READYTOSHIP
+  SHIPPED
   DELIVERED
   CANCELLED
 }

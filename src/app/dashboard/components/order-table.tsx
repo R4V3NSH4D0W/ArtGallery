@@ -112,6 +112,14 @@ const columns: ColumnDef<IOrderWithRelations>[] = [
               Mark as Working
             </DropdownMenuItem>
             <DropdownMenuItem
+              onClick={(e) => handleStatusUpdate("READYTOSHIP", e)}
+            >
+              Mark as Ready to Ship
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={(e) => handleStatusUpdate("SHIPPED", e)}>
+              Mark as Shipped
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={(e) => handleStatusUpdate("DELIVERED", e)}
             >
               Mark as Delivered

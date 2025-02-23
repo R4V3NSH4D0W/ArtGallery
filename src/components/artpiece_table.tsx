@@ -16,7 +16,7 @@ const ArtPiecesTable = ({ artPieces }: IArtPiece) => {
   if (!artPieces?.length) return null;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto mt-4">
       <div className="inline-block min-w-full overflow-hidden rounded-lg border border-gray-200">
         <table className="min-w-full border-collapse bg-white">
           <thead className="border-b">
@@ -42,7 +42,7 @@ const ArtPiecesTable = ({ artPieces }: IArtPiece) => {
                 className="border-b hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4 flex items-center space-x-4">
-                  <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                  <div className="relative h-12 w-[4.2rem] lg:w-12 rounded-full overflow-hidden">
                     <Image
                       src={art.image}
                       alt={art.title}

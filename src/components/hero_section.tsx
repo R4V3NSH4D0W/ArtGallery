@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import AnimatedLine from "./animated_line";
+import Link from "next/link";
 
 function HeroSection() {
   return (
@@ -34,11 +34,20 @@ function HeroSection() {
           tells a story and every knot captures imagination.
         </p>
         <div className="flex flex-row gap-4 lg:items-center">
-          <Button className="bg-blue-500 hover:bg-blue-300 text-white text-sm lg:text-md w-[12rem] h-[3rem]">
+          <Link
+            href={"/gallery"}
+            className="bg-blue-500 hover:bg-blue-600 text-white text-sm lg:text-base w-48 h-12 transition-all duration-300 items-center justify-center flex rounded-md"
+          >
             View Bishal&apos;s Gallery
-          </Button>
+          </Link>
           <label className="text-slate-300 cursor-pointer flex flex-row items-center gap-2">
-            Meet Bishal
+            <a
+              href={process.env.FACEBOOK_PAGE}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Meet Bishal
+            </a>
             <FaArrowRight />
           </label>
         </div>

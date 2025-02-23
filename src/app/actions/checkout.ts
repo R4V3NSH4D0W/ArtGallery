@@ -1,7 +1,7 @@
 "use server";
 
-import { userOrderConfirmationEmail } from "@/lib/messages";
 import prisma from "@/lib/prisma";
+import { userOrderConfirmationEmail } from "@/lib/messages";
 
 export async function checkoutAction(userId: string, addressId: string, email: string) {
   try {
@@ -15,7 +15,6 @@ export async function checkoutAction(userId: string, addressId: string, email: s
         return { success: false, message: "Your cart is empty" };
       }
 
-      // Stock validation
       const stockErrors = cartItems
         .filter((item) => item.product.quantity < item.quantity)
         .map((item) => item.product.name);
@@ -27,13 +26,11 @@ export async function checkoutAction(userId: string, addressId: string, email: s
         };
       }
 
-      // Calculate total
       const totalAmount = cartItems.reduce(
         (sum, item) => sum + item.product.price * item.quantity,
         0
       );
 
-      // Create order
       const order = await tx.order.create({
         data: {
           userId,
@@ -49,7 +46,6 @@ export async function checkoutAction(userId: string, addressId: string, email: s
         },
       });
 
-      // Update stock in bulk
       await Promise.all(
         cartItems.map((item) =>
           tx.product.update({
@@ -59,20 +55,17 @@ export async function checkoutAction(userId: string, addressId: string, email: s
         )
       );
 
-      // Clear cart
       await tx.cart.deleteMany({ where: { userId } });
 
       return { success: true, orderId: order.id };
     });
 
     if (result.success) {
-      // Send email **after** the transaction completes
       if (result.orderId) {
         userOrderConfirmationEmail(email, result.orderId).catch((err) =>
           console.error("Email sending error:", err)
         );
       }
-        console.error("Email sending email");
     
     }
 

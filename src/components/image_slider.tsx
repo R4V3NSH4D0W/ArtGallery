@@ -8,9 +8,9 @@ interface ImageData {
 
 // Image data array
 const images: ImageData[] = [
-  { src: "/wallhaven-2y7w7x.jpg" },
-  { src: "/wallhaven-d6y12l.jpg" },
-  { src: "/wallhaven-d6y12l.jpg" },
+  { src: "/gallary_static/eye.png" },
+  { src: "/gallary_static/puran.png" },
+  { src: "/gallary_static/samibhatta.png" },
 ];
 
 export default function ImageSlider() {

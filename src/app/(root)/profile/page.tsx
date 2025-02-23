@@ -8,6 +8,7 @@ import { getOrders } from "@/app/actions/order";
 import { useAuthContext } from "@/context/AuthContext";
 import { Order, Profile } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 export default function ProfilePage() {
   const { user } = useAuthContext();
@@ -67,16 +68,64 @@ export default function ProfilePage() {
     setLoading(false);
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Order ID copied to clipboard");
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-indigo-600" />
+      <div className="min-h-screen py-12 sm:px-6 lg:px-8 mt-[2rem] lg:mt-[5rem]">
+        <div className="max-w-7xl mx-auto space-y-8 animate-pulse">
+          {/* Profile Skeleton */}
+          <div className="bg-white rounded-2xl shadow-md p-8">
+            <div className="flex justify-between items-center mb-8">
+              <div className="h-8 w-48 bg-gray-300 rounded" />
+              <div className="h-8 w-24 bg-gray-300 rounded" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="h-10 bg-gray-300 rounded" />
+              <div className="h-10 bg-gray-300 rounded" />
+              <div className="h-10 bg-gray-300 rounded" />
+              <div className="h-10 bg-gray-300 rounded" />
+              <div className="h-10 bg-gray-300 rounded" />
+              <div className="h-10 bg-gray-300 rounded" />
+            </div>
+          </div>
+          {/* Orders Skeleton */}
+          <div className="bg-white rounded-2xl p-4 shadow-md lg:p-8">
+            <div className="h-8 w-64 bg-gray-300 rounded mb-6" />
+            <div className="space-y-6">
+              {[1, 2].map((skeleton) => (
+                <div key={skeleton} className="border rounded-lg p-6">
+                  <div className="flex flex-row justify-between mb-4">
+                    <div className="h-6 w-32 bg-gray-300 rounded" />
+                    <div className="h-8 w-20 bg-gray-300 rounded" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="h-4 bg-gray-300 rounded" />
+                    <div className="h-4 bg-gray-300 rounded" />
+                    <div className="h-4 bg-gray-300 rounded" />
+                  </div>
+                  <div className="border-t pt-4">
+                    <div className="h-4 w-20 bg-gray-300 rounded mb-2" />
+                    <div className="space-y-2 flex flex-wrap lg:gap-10">
+                      <div className="h-10 w-10 bg-gray-300 rounded" />
+                      <div className="h-10 w-10 bg-gray-300 rounded" />
+                      <div className="h-10 w-10 bg-gray-300 rounded" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-12  sm:px-6 lg:px-8 mt-[2rem] lg:mt-[5rem]">
+    <div className="min-h-screen py-12 sm:px-6 lg:px-8 mt-[2rem] lg:mt-[5rem]">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Profile Section */}
         <div className="bg-white rounded-2xl shadow-md p-8">
@@ -200,25 +249,29 @@ export default function ProfilePage() {
         </div>
 
         {/* Orders Section */}
-        <div className="bg-white rounded-2xl p-4 shadow-md lg:p-8 ">
+        <div className="bg-white rounded-2xl p-4 shadow-md lg:p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             Order History
           </h2>
 
           <div className="space-y-6">
             {orders.map((order) => (
-              <div key={order.id} className="border rounded-lg p-6 ">
+              <div key={order.id} className="border rounded-lg p-6">
                 <div className="flex flex-row justify-between mb-4">
                   <div className="space-y-1">
-                    <p className="text-lg font-semibold">
+                    <p
+                      className="text-lg font-semibold hover:cursor-pointer"
+                      onClick={() => copyToClipboard(order.id)}
+                    >
                       Order #{order.id.slice(0, 8)}
                     </p>
+
                     <p className="text-gray-600">
                       {formatDate(order.createdAt)}
                     </p>
                   </div>
                   <div
-                    className={`px-4 py-2 rounded-lg h-[2.3rem] w-[8rem] flex  justify-center text-sm font-medium ${
+                    className={`px-4 py-2 rounded-lg h-[2.3rem] w-[8rem] flex justify-center text-sm font-medium ${
                       order.status === "DELIVERED"
                         ? "bg-green-100 text-green-800"
                         : order.status === "WORKING"
@@ -236,7 +289,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="text-sm text-gray-600">Total Amount</p>
                     <p className="font-medium">
-                      NRS {order.totalAmount.toFixed(2)}
+                      NRS {order.totalAmount.toLocaleString()}
                     </p>
                   </div>
                   <div>
@@ -271,7 +324,7 @@ export default function ProfilePage() {
                         <div>
                           <p className="font-medium">{item.product.name}</p>
                           <p className="text-sm text-gray-600">
-                            {item.quantity} × NRS {item.price.toFixed(2)}
+                            {item.quantity} × NRS {item.price.toLocaleString()}
                           </p>
                         </div>
                       </div>
