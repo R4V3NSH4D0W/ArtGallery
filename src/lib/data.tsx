@@ -39,18 +39,18 @@ export const gridData = [
 
 export const creatorsData = [
   {
-    image: "/wallhaven-rrmwo7.png",
-    name: "Whitney Francis",
+    image: "/gallary_static/puranimage.jpeg",
+    name: "Puran Gupta",
     position: "Creative Director",
   },
   {
-    image: "/wallhaven-vq83e5.jpg",
-    name: "Leonard Krasner",
+    image: "/gallary_static/manish.jpeg",
+    name: "Manish shrestha",
     position: "Senior Designer",
   },
   {
-    image: "/wallhaven-gprxpq.jpg",
-    name: "Floyd Miles",
+    image: "/gallary_static/samiimage.jpeg",
+    name: "Samikshya Bhatta",
     position: "Visual Artist",
   },
 ];

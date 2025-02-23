@@ -206,6 +206,7 @@ export default function ShopPage() {
                         src={product.images[0]}
                         alt={product.name}
                         fill
+                        priority
                         className="object-cover rounded-t-lg"
                       />
                       <h3

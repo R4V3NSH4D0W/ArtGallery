@@ -8,6 +8,7 @@ import { getOrders } from "@/app/actions/order";
 import { useAuthContext } from "@/context/AuthContext";
 import { Order, Profile } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 export default function ProfilePage() {
   const { user } = useAuthContext();
@@ -65,6 +66,11 @@ export default function ProfilePage() {
     }
     setEditMode(false);
     setLoading(false);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Order ID copied to clipboard");
   };
 
   if (loading) {
@@ -253,9 +259,13 @@ export default function ProfilePage() {
               <div key={order.id} className="border rounded-lg p-6">
                 <div className="flex flex-row justify-between mb-4">
                   <div className="space-y-1">
-                    <p className="text-lg font-semibold">
+                    <p
+                      className="text-lg font-semibold hover:cursor-pointer"
+                      onClick={() => copyToClipboard(order.id)}
+                    >
                       Order #{order.id.slice(0, 8)}
                     </p>
+
                     <p className="text-gray-600">
                       {formatDate(order.createdAt)}
                     </p>
@@ -279,7 +289,7 @@ export default function ProfilePage() {
                   <div>
                     <p className="text-sm text-gray-600">Total Amount</p>
                     <p className="font-medium">
-                      NRS {order.totalAmount.toFixed(2)}
+                      NRS {order.totalAmount.toLocaleString()}
                     </p>
                   </div>
                   <div>
@@ -314,7 +324,7 @@ export default function ProfilePage() {
                         <div>
                           <p className="font-medium">{item.product.name}</p>
                           <p className="text-sm text-gray-600">
-                            {item.quantity} × NRS {item.price.toFixed(2)}
+                            {item.quantity} × NRS {item.price.toLocaleString()}
                           </p>
                         </div>
                       </div>

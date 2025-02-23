@@ -42,7 +42,7 @@ const ArtPiecesTable = ({ artPieces }: IArtPiece) => {
                 className="border-b hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4 flex items-center space-x-4">
-                  <div className="relative h-12 w-12 rounded-full overflow-hidden">
+                  <div className="relative h-12 w-[4.2rem] lg:w-12 rounded-full overflow-hidden">
                     <Image
                       src={art.image}
                       alt={art.title}

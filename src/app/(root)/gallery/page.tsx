@@ -82,9 +82,9 @@ async function Gallery() {
       </section>
 
       {/* Image Section */}
-      <MotionDiv className="relative flex items-center justify-center w-[95%] sm:w-[90%] md:w-[85%] lg:w-[70%] h-[20rem] sm:h-[25rem] md:h-[30rem] lg:h-[40rem] overflow-hidden mx-auto mb-10 rounded-t-lg">
+      <MotionDiv className="relative flex items-center justify-center w-[95%] sm:w-[90%] md:w-[85%] lg:w-[70%] h-[30rem] sm:h-[25rem] md:h-[30rem] lg:h-[50rem] overflow-hidden mx-auto mb-10 rounded-t-lg">
         <Image
-          src={"/art/kelly-sikkema-n4-ev9L8KHc-unsplash.jpg"}
+          src={"/gallary_static/eye2.png"}
           alt="art"
           fill
           objectFit="cover"
