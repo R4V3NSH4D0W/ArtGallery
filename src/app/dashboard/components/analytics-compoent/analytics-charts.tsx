@@ -4,7 +4,12 @@ import { formatCurrency } from "@/lib/utils";
 
 interface ChartProps {
   salesData: Array<{ date: string; sales: number }>;
-  productPerformance: Array<{ name: string; sales: number }>;
+  productPerformance: Array<{
+    short_name: string;
+    name: string;
+    sales: number;
+    price: number;
+  }>;
 }
 
 const colors = [
@@ -29,7 +34,6 @@ export function AnalyticsCharts({ salesData, productPerformance }: ChartProps) {
           data={salesData}
           index="date"
           categories={["sales"]}
-          // colors={["cyan"]}
           valueFormatter={formatCurrency}
           yAxisWidth={60}
         />
@@ -39,11 +43,24 @@ export function AnalyticsCharts({ salesData, productPerformance }: ChartProps) {
         <BarChart
           className="h-80"
           data={productPerformance}
-          index="name"
+          index="short_name"
           categories={["sales"]}
           colors={colors}
           valueFormatter={formatCurrency}
           yAxisWidth={60}
+          customTooltip={({ payload }) => {
+            if (!payload || payload.length === 0 || !payload[0]?.value)
+              return null;
+
+            const dataPoint = payload[0]?.payload;
+
+            return (
+              <div className="p-2 bg-white border border-gray-300 rounded-md shadow-md text-sm">
+                <p className="font-semibold">{dataPoint.name}</p>
+                <p>Sales: {formatCurrency(dataPoint.sales)}</p>
+              </div>
+            );
+          }}
         />
       </div>
     </div>

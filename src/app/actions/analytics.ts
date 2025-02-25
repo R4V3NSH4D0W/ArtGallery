@@ -80,16 +80,22 @@ export async function getSalesData() {
 
 export async function getProductPerformance() {
   const products = await prisma.product.findMany({
-    take: 5,
     include: {
       OrderItem: {
-        where: { order: { status: "DELIVERED" } }, 
-        select: { quantity: true, price: true },
+        where: {
+          order: {
+            status: "DELIVERED", 
+          },
+        },
+        select: {
+          quantity: true,
+          price: true,
+        },
       },
     },
   });
 
-  return products.map((product) => ({
+  const productPerformance = products.map((product) => ({
     short_name: getAcronym(product.name),
     name: product.name,
     sales: product.OrderItem.reduce(
@@ -98,4 +104,6 @@ export async function getProductPerformance() {
     ),
     price: product.price,
   }));
+
+  return productPerformance.sort((a, b) => b.sales - a.sales).slice(0, 5);
 }

@@ -30,7 +30,7 @@ function DashBoard() {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") ?? "";
   const offsetParam = searchParams.get("offset") ?? "0";
-  const limitParam = searchParams.get("limit") ?? "6";
+  const limitParam = searchParams.get("limit") ?? "10";
   const statusParam = searchParams.get("status") ?? "all";
 
   const [products, setProducts] = useState<IProduct[]>([]);
