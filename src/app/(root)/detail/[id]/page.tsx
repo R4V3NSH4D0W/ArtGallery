@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { FaTruck, FaPalette } from "react-icons/fa";
 import prisma from "@/lib/prisma";
 import ImageGallery from "@/components/product/image-gallery";

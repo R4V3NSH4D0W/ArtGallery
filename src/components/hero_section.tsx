@@ -42,7 +42,7 @@ function HeroSection() {
           </Link>
           <label className="text-slate-300 cursor-pointer flex flex-row items-center gap-2">
             <a
-              href={process.env.FACEBOOK_PAGE}
+              href="https://m.me/594688667388632"
               target="_blank"
               rel="noopener noreferrer"
             >

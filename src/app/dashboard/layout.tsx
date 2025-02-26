@@ -7,7 +7,7 @@ import {
   PanelLeft,
   Settings,
   ShoppingCart,
-  Users2,
+  // Users2,
 } from "lucide-react";
 
 import {
@@ -87,9 +87,9 @@ function DesktopNav() {
           <ImageIcon className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/dashboard/customers" label="Customers">
+        {/* <NavItem href="/dashboard/customers" label="Customers">
           <Users2 className="h-5 w-5" />
-        </NavItem>
+        </NavItem> */}
 
         <NavItem href="/dashboard/analytics" label="Analytics">
           <LineChart className="h-5 w-5" />
@@ -152,13 +152,13 @@ function MobileNav() {
             <ImageIcon className="h-5 w-5" />
             Gallery
           </Link>
-          <Link
+          {/* <Link
             href="#"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Users2 className="h-5 w-5" />
             Customers
-          </Link>
+          </Link> */}
           <Link
             href="#"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"

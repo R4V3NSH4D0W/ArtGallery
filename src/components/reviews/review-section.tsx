@@ -25,6 +25,7 @@ import { CommentTree } from "../reviews/comment-tree";
 import { IReviewWithComments } from "@/lib/types";
 import { MdKeyboardArrowRight, MdStar } from "react-icons/md";
 import { formatDate } from "@/lib/utils";
+import { getColorByFirstLetter } from "@/lib/helper";
 
 const reviewSchema = z.object({
   comment: z.string().min(1, "Review is required"),
@@ -160,7 +161,14 @@ export function ReviewSection({
             <div key={review.id} className="border-b border-gray-100 pb-6">
               <div className="flex items-start gap-4">
                 <Avatar className="w-10 h-10 border-2 border-blue-100">
-                  <AvatarFallback className="bg-blue-500 text-white">
+                  <AvatarFallback
+                    className=" text-white"
+                    style={{
+                      backgroundColor: getColorByFirstLetter(
+                        review.user?.name?.charAt(0).toUpperCase() || "U"
+                      ),
+                    }}
+                  >
                     {review.user?.name?.[0] || "U"}
                   </AvatarFallback>
                 </Avatar>

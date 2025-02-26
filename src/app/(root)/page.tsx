@@ -172,13 +172,18 @@ function Home() {
         {/* Social Media */}
         <div className="flex flex-wrap py-10 items-center justify-center gap-6 sm:gap-10">
           {socialMediaLinks.map((item, index) => (
-            <div
+            <a
               key={index}
-              className="flex flex-row items-center gap-2 text-center text-base sm:text-lg"
+              className=" cursor-pointer"
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <div>{item.icon}</div>
-              <span>{item.name}</span>
-            </div>
+              <div className="flex flex-row items-center gap-2 text-center text-base sm:text-lg">
+                <div>{item.icon}</div>
+                <span>{item.name}</span>
+              </div>
+            </a>
           ))}
         </div>
         <ChatBot />

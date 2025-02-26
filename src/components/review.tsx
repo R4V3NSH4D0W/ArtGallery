@@ -2,6 +2,7 @@
 import React from "react";
 // import Image from "next/image";
 import MotionDiv from "@/components/motiondiv";
+import { getColorByFirstLetter } from "@/lib/helper";
 
 interface Review {
   rating: number;
@@ -60,7 +61,14 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ reviews }) => {
                 />
               </div>
             ) : ( */}
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-medium">
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-medium"
+              style={{
+                backgroundColor: getColorByFirstLetter(
+                  review.reviewer.charAt(0).toUpperCase()
+                ),
+              }}
+            >
               {review.reviewer.charAt(0).toUpperCase()}
             </div>
             {/* )} */}

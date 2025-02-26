@@ -5,7 +5,7 @@ function ChatBot() {
   return (
     <div className="fixed z-50 bottom-5 right-5">
       <a
-        href={process.env.NEXT_FACEBOOK_PAGE}
+        href="https://m.me/594688667388632"
         target="_blank"
         rel="noopener noreferrer"
       >

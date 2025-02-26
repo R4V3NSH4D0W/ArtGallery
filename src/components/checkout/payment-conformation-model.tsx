@@ -54,7 +54,7 @@ export function PaymentConfirmationModal({
                 href={`mailto:${process.env.EMAIL_USER}`}
                 className="font-medium"
               >
-                {process.env.NEXT_PUBLIC_EMAIL_USER}
+                artgallery.bishalkhadgi@gmail.com
               </a>
             </p>
           </div>

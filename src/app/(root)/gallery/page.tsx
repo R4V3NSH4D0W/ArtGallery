@@ -146,9 +146,7 @@ async function Gallery() {
       {topReviews.length > 0 && (
         <section className="px-4 lg:px-[10rem]">
           <div className="flex flex-col">
-            <label className="text-2xl lg:text-4xl">
-              Artful Threads Reviews
-            </label>
+            <label className="text-2xl lg:text-4xl">String Art Reviews</label>
             <label className="text-slate-500 pt-4 text-md lg:text-lg">
               {topReviews.length} Reviews
             </label>
